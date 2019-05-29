@@ -4,14 +4,15 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-#if UNITY
+#if OnUnity
 using UnityEngine;
+#else
+using System.Windows.Media;
 #endif
 
 namespace GKit {
 	/// <summary>
-	/// Unity API를 사용해 마우스 입력을 감지하는 클래스입니다.
+	/// 마우스 입력 정보를 제공하는 클래스입니다.
 	/// </summary>
 	public static class MouseInput {
 		private const int
@@ -19,7 +20,7 @@ namespace GKit {
 			Right = 1,
 			Middle = 2;
 		
-		public static bool LeftAuto {
+		public static bool LeftHold {
 			get; private set;
 		}
 		public static bool LeftDown {
@@ -28,7 +29,7 @@ namespace GKit {
 		public static bool LeftUp {
 			get; private set;
 		}
-		public static bool RightAuto {
+		public static bool RightHold {
 			get; private set;
 		}
 		public static bool RightDown {
@@ -37,7 +38,7 @@ namespace GKit {
 		public static bool RightUp {
 			get; private set;
 		}
-		public static bool MiddleAuto {
+		public static bool MiddleHold {
 			get; private set;
 		}
 		public static bool MiddleDown {
@@ -63,38 +64,38 @@ namespace GKit {
 			OnMiddleDown,
 			OnMiddleUp;
 
-#if WPF
+#if !OnUnity
 		[StructLayout(LayoutKind.Sequential)]
 		public struct POINT {
 			public int X;
 			public int Y;
 
-			public static implicit operator Point(POINT point) {
-				return new Point(point.X, point.Y);
+			public static implicit operator System.Drawing.Point(POINT point) {
+				return new System.Drawing.Point(point.X, point.Y);
 			}
 		}
 		[DllImport("user32.dll")]
 		public static extern bool GetCursorPos(out POINT lpPoint);
 #endif
 
-#if UNITY
+#if OnUnity
 		public static Vector2 ScreenPos {
 			get; private set;
 		}
 		public static Vector2 ScrollDelta {
 			get; private set;
 		}
-#elif WPF
+#else
 		public static Vector2 AbsolutePosition {
 			get; private set;
 		}
 #endif
 
 		internal static void Update() {
-#if UNITY
+#if OnUnity
 			ScreenPos = Input.mousePosition;
 			ScrollDelta = Input.mouseScrollDelta;
-#elif WPF
+#else
 			POINT nativePos;
 			GetCursorPos(out nativePos);
 
@@ -103,16 +104,16 @@ namespace GKit {
 
 			bool current;
 			//Left
-#if UNITY
+#if OnUnity
 			current = Input.GetMouseButton(Left);
-#elif WPF
-			current = KeyInput.GetKey(WinKey.MouseLeft); //Mouse.LeftButton == MouseButtonState.Pressed;
+#else
+			current = KeyInput.GetKeyHold(WinKey.MouseLeft); //Mouse.LeftButton == MouseButtonState.Pressed;
 #endif
 			if (LeftUp) {
 				LeftUp = false;
 			}
 			if(current) {
-				if(!LeftAuto) {
+				if(!LeftHold) {
 					LeftDown = true;
 					OnLeftDownOnce.SafeInvoke();
 					OnLeftDownOnce = null;
@@ -121,7 +122,7 @@ namespace GKit {
 					LeftDown = false;
 				}
 			} else {
-				if(LeftAuto) {
+				if(LeftHold) {
 					LeftDown = false;
 					LeftUp = true;
 
@@ -130,19 +131,19 @@ namespace GKit {
 					OnLeftUp.SafeInvoke();
 				}
 			}
-			LeftAuto = current;
+			LeftHold = current;
 
 			//Right
-#if UNITY
+#if OnUnity
 			current = Input.GetMouseButton(Right);
-#elif WPF
-			current = KeyInput.GetKey(WinKey.MouseRight); //Mouse.RightButton == MouseButtonState.Pressed;
+#else
+			current = KeyInput.GetKeyHold(WinKey.MouseRight); //Mouse.RightButton == MouseButtonState.Pressed;
 #endif
 			if (RightUp) {
 				RightUp = false;
 			}
 			if(current) {
-				if(!RightAuto) {
+				if(!RightHold) {
 					RightDown = true;
 
 					OnRightDownOnce.SafeInvoke();
@@ -152,7 +153,7 @@ namespace GKit {
 					RightDown = false;
 				}
 			} else {
-				if(RightAuto) {
+				if(RightHold) {
 					RightDown = false;
 					RightUp = true;
 
@@ -161,19 +162,19 @@ namespace GKit {
 					OnRightUp.SafeInvoke();
 				}
 			}
-			RightAuto = current;
+			RightHold = current;
 
 			//Middle
-#if UNITY
+#if OnUnity
 			current = Input.GetMouseButton(Middle);
-#elif WPF
-			current = KeyInput.GetKey(WinKey.MouseMiddle); //Mouse.MiddleButton == MouseButtonState.Pressed;
+#else
+			current = KeyInput.GetKeyHold(WinKey.MouseMiddle); //Mouse.MiddleButton == MouseButtonState.Pressed;
 #endif
 			if (MiddleUp) {
 				MiddleUp = false;
 			}
 			if (current) {
-				if (!MiddleAuto) {
+				if (!MiddleHold) {
 					MiddleDown = true;
 
 					OnMiddleDownOnce.SafeInvoke();
@@ -183,7 +184,7 @@ namespace GKit {
 					MiddleDown = false;
 				}
 			} else {
-				if (MiddleAuto) {
+				if (MiddleHold) {
 					MiddleDown = false;
 					MiddleUp = true;
 
@@ -192,13 +193,9 @@ namespace GKit {
 					OnMiddleUp.SafeInvoke();
 				}
 			}
-			MiddleAuto = current;
+			MiddleHold = current;
 		}
-#if WPF
-		//private static Vector2 GetAbsolutePosition() {
-		//	var pos = System.Windows.Forms.Cursor.Position;
-		//	return new Vector2(pos.X, pos.Y);
-		//}
+#if OnWPF
 		public static Vector2 GetWindowPosition(Window window) {
 			return (AbsolutePosition - (Vector2)window.PointToScreen(new Point()));
 		}
@@ -206,7 +203,7 @@ namespace GKit {
 			return (AbsolutePosition - (Vector2)visual.PointToScreen(new Point()));
 		}
 #endif
-#if UNITY
+#if OnUnity
 		public static Vector2 GetWorldPos(Camera cam, float zDepth = 1f) {
 			return cam.ScreenToWorldPoint(new Vector3(ScreenPos.x, ScreenPos.y, zDepth));
 		}

@@ -27,7 +27,7 @@ namespace GKit {
 					startupKey.Close();
 				}
 			} catch(Exception ex) {
-				ex.ToString().Log();
+				GDebug.Log(ex.ToString(), GLogLevel.Warnning);
 			}
 		}
 		public static bool Get(string KeyName) {
@@ -36,7 +36,7 @@ namespace GKit {
 
 				return startupKey.GetValue(KeyName) != null;
 			} catch (Exception ex) {
-				ex.ToString().Log();
+				GDebug.Log(ex.ToString(), GLogLevel.Warnning);
 			}
 			return false;
 		}

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GKit;
 using GKit.Core;
-#if UNITY
+#if OnUnity
 using UnityEngine;
 #endif
 
@@ -38,52 +38,16 @@ namespace GKit {
 		public void Stop() {
 			ownerCore.RemoveGRoutine(this);
 		}
-		internal bool Run(float elapsedMillisec) {
+		internal bool Run(float deltaMillisec) {
 			try {
-				//대기 처리
-				if (delayFrame > 0) {
-					--delayFrame;
+				if(UpdateTime(deltaMillisec)) {
 					return true;
-				} else if (delayRoutine != null) {
-					if (delayRoutine.IsComplete) {
-						delayRoutine = null;
-					} else {
-						return true;
-					}
-				} else {
-					if (firstRun) {
-						firstRun = false;
-					} else {
-						delayMillisec = Mathf.Max(0f, delayMillisec - elapsedMillisec * ownerCore.TimeScale);
-					}
 				}
-				//대기 완료
 				if (delayMillisec <= 0f) {
-					bool result = routine.MoveNext();
-					if (result) {
-						//대기 추가
+					bool hasValue = routine.MoveNext();
+					if (hasValue) {
 						object returnObject = routine.Current;
-						GWait waitOrder = null;
-						if(returnObject == null) {
-							waitOrder = new GWait(GTimeUnit.Frame, 1);
-						} else {
-							if (returnObject is GWait) {
-								waitOrder = (GWait)returnObject;
-
-							} else if (returnObject is IEnumerable) {
-								IEnumerator coroutine = (IEnumerator)returnObject;
-								GRoutine targetRoutine = ownerCore.AddGRoutine(coroutine);
-								delayRoutine = targetRoutine;
-
-							} else if (routine.Current is GRoutine) {
-								GRoutine targetRoutine = (GRoutine)returnObject;
-								delayRoutine = targetRoutine;
-
-							} else {
-								GDebug.Log("지원되지 않는 반환 형식입니다. 'GWait', 'GRoutine', 'IEnumerator' 클래스를 반환하세요.", GLogLevel.Error);
-								waitOrder = new GWait(GTimeUnit.Frame, 1);
-							}
-						}
+						GWait waitOrder = CastWaitOrder(returnObject);
 						if (waitOrder != null) {
 							switch (waitOrder.unit) {
 								case GTimeUnit.Frame:
@@ -98,17 +62,59 @@ namespace GKit {
 							}
 						}
 					} else {
-						//실행 완료
 						Complete();
 					}
-					return result;
+					return hasValue;
 				}
 				return true;
 			} catch(Exception ex) {
-				ex.ToString().Log();
+				GDebug.Log(ex.ToString(), GLogLevel.Error);
 				Complete();
 				return false;
 			}
+		}
+		private bool UpdateTime(float deltaMillisec) {
+			if (delayFrame > 0) {
+				--delayFrame;
+				return true;
+			} else if (delayRoutine != null) {
+				if (delayRoutine.IsComplete) {
+					delayRoutine = null;
+				} else {
+					return true;
+				}
+			} else {
+				if (firstRun) {
+					firstRun = false;
+				} else {
+					delayMillisec = Mathf.Max(0f, delayMillisec - deltaMillisec);
+				}
+			}
+			return false;
+		}
+		private GWait CastWaitOrder(object returnObject) {
+			GWait waitOrder = null;
+			if (returnObject == null) {
+				waitOrder = new GWait(GTimeUnit.Frame, 1);
+			} else {
+				if (returnObject is GWait) {
+					waitOrder = (GWait)returnObject;
+
+				} else if (returnObject is IEnumerator) {
+					IEnumerator coroutine = (IEnumerator)returnObject;
+					GRoutine targetRoutine = ownerCore.AddGRoutine(coroutine);
+					delayRoutine = targetRoutine;
+
+				} else if (routine.Current is GRoutine) {
+					GRoutine targetRoutine = (GRoutine)returnObject;
+					delayRoutine = targetRoutine;
+
+				} else {
+					GDebug.Log("지원되지 않는 반환 형식입니다. 'GWait', 'GRoutine', 'IEnumerator' 클래스를 반환하세요.", GLogLevel.Error);
+					waitOrder = new GWait(GTimeUnit.Frame, 1);
+				}
+			}
+			return waitOrder;
 		}
 		private void Complete() {
 			if(IsComplete) 

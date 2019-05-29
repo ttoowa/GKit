@@ -22,7 +22,7 @@ namespace GKit.Network {
 					DownloadFile(url, directoryInfo);
 					OnComplete.RunInThread(null);
 				} catch(Exception ex) {
-					ex.ToString().Log();
+					GDebug.Log(ex.ToString(), GLogLevel.Warnning);
 					OnFailed.RunInThread(null);
 				}
 				OnFinalize.RunInThread(null);
@@ -60,7 +60,7 @@ namespace GKit.Network {
 						}
 					}
 				} catch (Exception ex) {
-					ex.ToString().Log();
+					GDebug.Log(ex.ToString(), GLogLevel.Warnning);
 					extension = "";
 				}
 			}
@@ -101,7 +101,7 @@ namespace GKit.Network {
 					SaveUnknownFile(data, directoryInfo);
 					OnComplete.RunInThread(null);
 				} catch (Exception ex) {
-					ex.ToString().Log();
+					GDebug.Log(ex.ToString(), GLogLevel.Warnning);
 					OnFailed.RunInThread(null);
 				}
 				OnFinalize.RunInThread(null);
@@ -125,7 +125,7 @@ namespace GKit.Network {
 					}
 				}
 			} catch (Exception ex) {
-				ex.ToString().Log();
+				GDebug.Log(ex.ToString(), GLogLevel.Warnning);
 			}
 
 			int num = 2;

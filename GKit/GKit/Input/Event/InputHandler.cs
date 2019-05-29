@@ -1,4 +1,4 @@
-﻿#if UNITY
+﻿#if OnUnity
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,7 +10,6 @@ namespace GKit {
 	/// </summary>
 	[RequireComponent(typeof(Collider))]
 	public class InputHandler : MonoBehaviour {
-		private static GLoopCore MainCore => GLoopCore.mainCore;
 		private const float DragThreshold = 20f;
 
 		public bool IsFocused {
@@ -32,6 +31,9 @@ namespace GKit {
 			get; private set;
 		}
 		
+		public GLoopEngine OwnerLoopEngine {
+			get; private set;
+		}
 		public int readMask;
 		public int writeMask;
 		public Vector2 Size {
@@ -88,8 +90,8 @@ namespace GKit {
 			//Focus
 			OnFocusOn,
 			OnFocusOut;
-		public event SingleDelegate<int> OnLayerChanged;
-		public event SingleDelegate<Vector2> OnScrolled;
+		public event Arg1Delegate<int> OnLayerChanged;
+		public event Arg1Delegate<Vector2> OnScrolled;
 
 		public Collider Collider {
 			get {
@@ -103,7 +105,9 @@ namespace GKit {
 		private Vector2 mouseDownPos;
 		private bool calledDragStart;
 
-
+		public void SetOwnerLoopEngine(GLoopEngine loopEngine) {
+			this.OwnerLoopEngine = loopEngine;
+		}
 		private void FindCollider() {
 			if (collider != null)
 				return;
@@ -138,10 +142,10 @@ namespace GKit {
 			OnMouseDown?.Invoke();
 			OnAnyMouseDown?.Invoke();
 
-			if (MainCore != null) {
+			if (OwnerLoopEngine != null) {
 				calledDragStart = false;
 				mouseDownPos = MouseInput.ScreenPos;
-				MainCore.AddLoopAction(OnMouseDragging, GLoopCycle.EveryFrame, GWhen.MouseUpRemove);
+				OwnerLoopEngine.AddLoopAction(OnMouseDragging, GLoopCycle.EveryFrame, GWhen.MouseUpRemove);
 			}
 		}
 		internal void CallMouseRightDown() {

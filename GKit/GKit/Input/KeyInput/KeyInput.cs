@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
-#if UNITY
+#if OnUnity
 using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
 #endif
@@ -25,7 +25,7 @@ namespace GKit {
 		private static float textKeyTimer;
 		private static WinKey currentTextKey;
 		private static Stack<WinKey> keyDownStack = new Stack<WinKey>();
-		private static List<WinKey> keyAutoList = new List<WinKey>();
+		private static List<WinKey> keyHoldList = new List<WinKey>();
 		private static Stack<WinKey> keyUpStack = new Stack<WinKey>();
 		private static List<WinKey> activeKeyList = new List<WinKey>();
 
@@ -36,7 +36,7 @@ namespace GKit {
 		private static extern short GetAsyncKeyState(int keyCode);
 
 		static KeyInput() {
-#if UNITY
+#if OnUnity
 			Condition += () => { return Application.isFocused; };
 #endif
 		}
@@ -47,12 +47,12 @@ namespace GKit {
 			core.AddLoopAction(UpdateFrame);
 		}
 
-		public static bool GetKey(WinKey key) {
+		public static bool GetKeyHold(WinKey key) {
 			RegistActiveKey(key);
 			if (!CheckCondition())
 				return false;
 
-			return keyAutoList.Contains(key);
+			return keyHoldList.Contains(key);
 		}
 		public static bool GetKeyDown(WinKey key) {
 			RegistActiveKey(key);
@@ -71,12 +71,12 @@ namespace GKit {
 				textKeyTimer = TextKeyDelayMillisec;
 				return true;
 			} else {
-				if (key == currentTextKey && keyAutoList.Contains(key)) {
+				if (key == currentTextKey && keyHoldList.Contains(key)) {
 					if (textKeyTimer <= 0) {
 						textKeyTimer = TextKeyFireDelayMillisec;
 						return true;
 					} else {
-						textKeyTimer -= ownerCore.DeltaMillisec;
+						textKeyTimer -= ownerCore.DeltaMilliseconds;
 						return false;
 					}
 				}
@@ -90,9 +90,9 @@ namespace GKit {
 
 			if (keyUpStack.Contains(key)) {
 				return true;
-			} else if (!keyAutoList.Contains(key)) {
+			} else if (!keyHoldList.Contains(key)) {
 				if (GetAsyncKeyState(GetVKCode(key)) != 0) {
-					keyAutoList.Add(key);
+					keyHoldList.Add(key);
 					keyDownStack.Push(key);
 				}
 			}
@@ -101,32 +101,32 @@ namespace GKit {
 
 		public static Vector2 GetInputWASD() {
 			Vector2 inputVector = new Vector2();
-			if (GetKey(WinKey.W)) {
+			if (GetKeyHold(WinKey.W)) {
 				inputVector.y += 1f;
 			}
-			if (GetKey(WinKey.S)) {
+			if (GetKeyHold(WinKey.S)) {
 				inputVector.y -= 1f;
 			}
-			if (GetKey(WinKey.A)) {
+			if (GetKeyHold(WinKey.A)) {
 				inputVector.x -= 1f;
 			}
-			if (GetKey(WinKey.D)) {
+			if (GetKeyHold(WinKey.D)) {
 				inputVector.x += 1f;
 			}
 			return inputVector;
 		}
 		public static Vector2 GetInputArrow() {
 			Vector2 inputVector = new Vector2();
-			if (GetKey(WinKey.UpArrow)) {
+			if (GetKeyHold(WinKey.UpArrow)) {
 				inputVector.y += 1f;
 			}
-			if (GetKey(WinKey.DownArrow)) {
+			if (GetKeyHold(WinKey.DownArrow)) {
 				inputVector.y -= 1f;
 			}
-			if (GetKey(WinKey.LeftArrow)) {
+			if (GetKeyHold(WinKey.LeftArrow)) {
 				inputVector.x -= 1f;
 			}
-			if (GetKey(WinKey.RightArrow)) {
+			if (GetKeyHold(WinKey.RightArrow)) {
 				inputVector.x += 1f;
 			}
 			return inputVector;
@@ -145,19 +145,19 @@ namespace GKit {
 				WinKey key = activeKeyList[i];
 				if (GetAsyncKeyStateAutoWinKey(key)) {
 					//키를 누른 경우
-					if (!keyAutoList.Contains(key)) {
+					if (!keyHoldList.Contains(key)) {
 						if (!keyDownStack.Contains(key)) {
 							keyDownStack.Push(key);
 						}
-						keyAutoList.Add(key);
+						keyHoldList.Add(key);
 					}
 				} else {
 					//키를 누르지 않은 경우
-					if (keyAutoList.Contains(key)) {
+					if (keyHoldList.Contains(key)) {
 						if (!keyUpStack.Contains(key)) {
 							keyUpStack.Push(key);
 						}
-						keyAutoList.Remove(key);
+						keyHoldList.Remove(key);
 					}
 				}
 			}

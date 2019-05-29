@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-#if UNITY
+#if OnUnity
 using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
-#elif WPF
+#else
 using Vector2 = GKit.Vector2;
 using Vector3 = GKit.Vector3;
 #endif

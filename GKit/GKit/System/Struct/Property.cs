@@ -20,7 +20,7 @@ namespace GKit {
 		public event Action OnValueChangedSimple;
 		public event ValueChangedDelegate OnValueChanged;
 		public event ValueChangingDelegate OnValueChanging;
-#if UNITY
+#if OnUnity
 		[UnityEngine.SerializeField]
 #endif
 		private T value;

@@ -16,10 +16,10 @@ namespace GKit {
 		}
 		public void Call() {
 			while (actionQueue.Count > 0) {
-				actionQueue.Dequeue().SafeInvoke();
+				actionQueue.Dequeue().Invoke();
 			}
 			for (int i = 0; i < actionList.Count; ++i) {
-				actionList[i].SafeInvoke();
+				actionList[i].Invoke();
 			}
 		}
 		public void Add(Action action, bool executeOnce = false) {

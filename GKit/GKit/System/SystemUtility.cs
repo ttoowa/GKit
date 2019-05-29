@@ -4,15 +4,21 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-#if UNITY
+#if OnUnity
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 #endif
 
 namespace GKit {
-	public delegate void SingleDelegate<T>(T value);
-	public delegate T ReturnDelegate<T>();
-	public delegate T2 DuplexDelegate<T1, T2>(T1 value);
+	public delegate void Arg1Delegate<ArgT>(ArgT value);
+	public delegate void Arg2Delegate<ArgT1, ArgT2>(ArgT1 value1, ArgT2 value2);
+	public delegate void Arg3Delegate<ArgT1, ArgT2, ArgT3>(ArgT1 value1, ArgT2 value2, ArgT3 value3);
+	public delegate void Arg3Delegate<ArgT1, ArgT2, ArgT3, ArgT4>(ArgT1 value1, ArgT2 value2, ArgT3 value3, ArgT4 value4);
+	public delegate ReturnT ReturnDelegate<ReturnT>();
+	public delegate ReturnT Arg1ReturnDelegate<ReturnT, ArgT>(ArgT value);
+	public delegate ReturnT Arg2ReturnDelegate<ReturnT, ArgT1, ArgT2>(ArgT1 value1, ArgT2 value2);
+	public delegate ReturnT Arg2ReturnDelegate<ReturnT, ArgT1, ArgT2, ArgT3>(ArgT1 value1, ArgT2 value2, ArgT3 value3);
+	public delegate ReturnT Arg2ReturnDelegate<ReturnT, ArgT1, ArgT2, ArgT3, ArgT4>(ArgT1 value1, ArgT2 value2, ArgT3 value3, ArgT4 value4);
 
 	public static class SystemExtension {
 		public static float GetElapsedMilliseconds(this Stopwatch stopwatch) {
@@ -25,7 +31,7 @@ namespace GKit {
 			try {
 				action?.Invoke();
 			} catch(Exception ex) {
-				ex.ToString().Log();
+				GDebug.Log(ex.ToString(), GLogLevel.Warnning);
 			}
 		}
 
@@ -51,6 +57,10 @@ namespace GKit {
 		}
 		public static bool Contained(this int value, int min, int max) {
 			return value <= max && value >= min;
+		}
+
+		public static T Cast<T> (this object obj) {
+			return (T)obj;
 		}
 	}
 }

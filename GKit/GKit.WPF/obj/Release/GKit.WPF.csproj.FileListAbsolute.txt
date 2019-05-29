@@ -1,0 +1,5 @@
+X:\Dropbox\WorkDesk\A_Programing\Csharp\2019\20190217_GKit\GKit\GKit.WPF\obj\Release\GKit.WPF.csproj.CoreCompileInputs.cache
+X:\Dropbox\WorkDesk\A_Programing\Csharp\Library\GKit\GKit.WPF.dll
+X:\Dropbox\WorkDesk\A_Programing\Csharp\Library\GKit\GKit.WPF.pdb
+X:\Dropbox\WorkDesk\A_Programing\Csharp\2019\20190217_GKit\GKit\GKit.WPF\obj\Release\GKit.WPF.dll
+X:\Dropbox\WorkDesk\A_Programing\Csharp\2019\20190217_GKit\GKit\GKit.WPF\obj\Release\GKit.WPF.pdb

@@ -17,7 +17,7 @@ namespace GKit {
 				process.Start();
 				return true;
 			} catch(Exception ex) {
-				ex.ToString().Log();
+				GDebug.Log(ex.ToString(), GLogLevel.Warnning);
 				return false;
 			}
 		}

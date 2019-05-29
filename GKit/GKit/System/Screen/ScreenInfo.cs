@@ -2,15 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Windows;
-#if UNITY
+#if OnUnity
 using UnityEngine;
 using Screen = UnityEngine.Screen;
-#elif WPF
+#else
 using System.Windows.Forms;
 #endif
 
 namespace GKit {
-#if UNITY
+#if OnUnity
 	/// <summary>
 	/// 화면에 대한 정보를 제공하는 클래스입니다.
 	/// </summary>
@@ -37,10 +37,10 @@ namespace GKit {
 
 		private Camera camera;
 		
-		public ScreenInfo(GLoopCore core, Camera camera) {
+		public ScreenInfo(GLoopEngine loopEngine, Camera camera) {
 			this.camera = camera;
 
-			core.AddLoopAction(Update);
+			loopEngine.AddLoopAction(Update);
 			UpdateInfo();
 		}
 		private void Update() {
@@ -72,7 +72,7 @@ namespace GKit {
 			}
 		}
 	}
-#elif WPF
+#else
 	public static class ScreenInfo {
 		/// <summary>
 		/// 기본 모니터의 화면 크기를 가져옵니다.

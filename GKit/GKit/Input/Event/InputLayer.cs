@@ -1,4 +1,4 @@
-﻿#if UNITY
+﻿#if OnUnity
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,7 +53,7 @@ namespace GKit {
 				}
 
 				if (cursorFocus != handler) {
-					if (!MouseInput.LeftAuto) {
+					if (!MouseInput.LeftHold) {
 						CursorFocusOut();
 
 						//새 포커스
@@ -103,7 +103,7 @@ namespace GKit {
 				PreviewCursorFocusOut();
 				if (MouseInput.LeftDown || MouseInput.RightDown || MouseInput.MiddleDown) {
 					KeyFocusOut();
-				} else if (!MouseInput.LeftAuto && !MouseInput.RightAuto && !MouseInput.MiddleAuto) {
+				} else if (!MouseInput.LeftHold && !MouseInput.RightHold && !MouseInput.MiddleHold) {
 					CursorFocusOut();
 				}
 			}

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-#if UNITY
+#if OnUnity
 using UnityEngine;
 #endif
 
@@ -18,9 +18,10 @@ namespace GKit.MultiThread {
 	/// </summary>
 	public class ParallelLoop {
 		public static int
-			ThreadCount_High,
+			ThreadCount_Low,
 			ThreadCount_Normal,
-			ThreadCount_Low;
+			ThreadCount_High,
+			ThreadCount_Full;
 
 		public int ThreadCount {
 			get; private set;
@@ -31,6 +32,11 @@ namespace GKit.MultiThread {
 		public int EndIndex {
 			get; private set;
 		}
+		public int LoopRange {
+			get {
+				return EndIndex - StartIndex;
+			}
+		}
 		private LoopDelegate func;
 		private SingleTask[] singleTasks;
 		private Task[] taskArray;
@@ -38,29 +44,15 @@ namespace GKit.MultiThread {
 		static ParallelLoop() {
 			int coreCount = Environment.ProcessorCount;
 
-			if (coreCount >= 8) {
-				ThreadCount_Low = coreCount / 2;
-				ThreadCount_Normal = coreCount - 4;
-				ThreadCount_High = coreCount - 2;
-			} else if (coreCount >= 6) {
-				ThreadCount_Low = coreCount - 4;
-				ThreadCount_Normal = coreCount - 3;
-				ThreadCount_High = coreCount - 1;
-			} else if (coreCount >= 4) {
-				ThreadCount_Low = coreCount - 3;
-				ThreadCount_Normal = coreCount - 2;
-				ThreadCount_High = coreCount - 1;
-			} else {
-				ThreadCount_Low = 1;
-				ThreadCount_Normal = 1;
-				ThreadCount_High = coreCount;
-			}
+			ThreadCount_Low = coreCount / 8;
+			ThreadCount_Normal = coreCount / 4;
+			ThreadCount_High = coreCount / 2;
+			ThreadCount_Full = coreCount;
 		}
-		public ParallelLoop(LoopDelegate parallelFunction, int startIndex, int endIndex, ParallelPriolity priolity) {
+		public ParallelLoop(int fromInclusive, int toExclusive, ParallelPriolity priolity, LoopDelegate parallelFunction) {
+			this.StartIndex = fromInclusive;
+			this.EndIndex = toExclusive;
 			this.func = parallelFunction;
-			this.StartIndex = startIndex;
-			this.EndIndex = endIndex;
-			int coreCount = Environment.ProcessorCount;
 
 			//코어16 : Low4, Normal8, High14
 			//코어8 : Low2 Normal4 High6
@@ -77,6 +69,9 @@ namespace GKit.MultiThread {
 				case ParallelPriolity.High:
 					ThreadCount = ThreadCount_High;
 					break;
+				case ParallelPriolity.Full:
+					ThreadCount = ThreadCount_Full;
+					break;
 			}
 
 			Init();
@@ -85,28 +80,32 @@ namespace GKit.MultiThread {
 		/// 스레드를 분할해 함수를 병렬로 실행합니다.
 		/// </summary>
 		/// <param name="parallelFunction">void (int startIndex, int endIndex) 형식의 병렬 함수</param>
-		/// <param name="loopCount">총 루프 횟수</param>
+		/// <param name="LoopRange">총 루프 횟수</param>
 		/// <param name="threadCountFactor">코어 개수에 곱한 만큼의 스레드 생성</param>
-		public ParallelLoop(LoopDelegate parallelFunction, int startIndex, int endIndex, float threadCountFactor) : this(parallelFunction, startIndex, endIndex, (int)(Environment.ProcessorCount * threadCountFactor)) {
+		public ParallelLoop(int fromInclusive, int toExclusive, float threadCountFactor, LoopDelegate parallelFunction) : this(fromInclusive, toExclusive, (int)(Environment.ProcessorCount * threadCountFactor), parallelFunction) {
 
 		}
 		/// <summary>
 		/// 스레드를 분할해 함수를 병렬로 실행합니다.
 		/// </summary>
 		/// <param name="parallelFunction">void (int startIndex, int endIndex) 형식의 병렬 함수</param>
-		/// <param name="loopCount">총 루프 횟수</param>
+		/// <param name="LoopRange">총 루프 횟수</param>
 		/// <param name="priolity">분할 갯수</param>
-		public ParallelLoop(LoopDelegate parallelFunction, int startIndex, int endIndex, int threadCount) {
+		public ParallelLoop(int fromInclusive, int toExclusive, int threadCount, LoopDelegate parallelFunction, bool clipProcessorCount = true) {
 			this.func = parallelFunction;
-			this.StartIndex = startIndex;
-			this.EndIndex = endIndex;
+			this.StartIndex = fromInclusive;
+			this.EndIndex = toExclusive;
 			int coreCount = Environment.ProcessorCount;
 
-			ThreadCount = Mathf.Clamp(threadCount, 1, coreCount);
+			ThreadCount = clipProcessorCount ? Mathf.Clamp(threadCount, 1, coreCount) : threadCount;
 
 			Init();
 		}
 		private void Init() {
+			if(LoopRange < ThreadCount) {
+				ThreadCount = LoopRange;
+			}
+
 			singleTasks = new SingleTask[ThreadCount];
 			for(int i=0; i<ThreadCount; i++) {
 				singleTasks[i] = new SingleTask(i, this, func);
@@ -128,7 +127,7 @@ namespace GKit.MultiThread {
 			Run();
 			Wait();
 		}
-		public static void CreateBGThread() {
+		public static void PreloadBGThread() {
 			int count = Environment.ProcessorCount;
 			ManualResetEvent threadSwitch = new ManualResetEvent(false);
 			ManualResetEvent mainSwitch = new ManualResetEvent(false);
@@ -161,7 +160,7 @@ namespace GKit.MultiThread {
 			public int EndIndex {
 				get; private set;
 			}
-			public int LoopCount {
+			public int LoopRange {
 				get {
 					return Mathf.Max(0, EndIndex - StartIndex);
 				}
@@ -179,25 +178,42 @@ namespace GKit.MultiThread {
 			}
 
 			public Task Run() {
-				return Task.Factory.StartNew(TaskFunc, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
+				return Task.Factory.StartNew(TaskFunc, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Current);
 			}
 			public void TaskFunc() {
 				func(StartIndex, EndIndex);
 			}
 			private void FindCheckRange() {
 				int globalEndIndex = Owner.EndIndex;
-				int globalLoopCount = Owner.EndIndex - Owner.StartIndex;
-				int singleLoopCount = globalLoopCount / Owner.ThreadCount + 1;
-				StartIndex = singleLoopCount * ThreadIndex + Owner.StartIndex;
-				EndIndex = singleLoopCount * (ThreadIndex + 1) + Owner.StartIndex;
+				int globalLoopRange = Owner.LoopRange;
 
-				if (StartIndex >= globalEndIndex) {
-					StartIndex = EndIndex = 0;
-				} else if (EndIndex > globalEndIndex) {
-					EndIndex = globalEndIndex;
-				}
+				int singleLoopRange = globalLoopRange / Owner.ThreadCount;
+				int remainLoopRange = globalLoopRange % Owner.ThreadCount;
+
+				if (remainLoopRange == 0) {
+					//Job의 개수가 스레드에 나누어 떨어질 때
+					StartIndex = singleLoopRange * ThreadIndex + Owner.StartIndex;
+					EndIndex = singleLoopRange * (ThreadIndex + 1) + Owner.StartIndex;
+				} else {
+					int singleLoopRangePlus = singleLoopRange + 1;
+					if(ThreadIndex < remainLoopRange) {
+						StartIndex = singleLoopRangePlus * ThreadIndex + Owner.StartIndex;
+						EndIndex = singleLoopRangePlus * (ThreadIndex + 1) + Owner.StartIndex;
+					} else {
+						StartIndex = singleLoopRange * ThreadIndex + Owner.StartIndex + remainLoopRange;
+						EndIndex = singleLoopRange * (ThreadIndex + 1) + Owner.StartIndex + remainLoopRange;
+					}
+				}// else {
+				//	//Job이 스레드의 2배 초과일 때
+				//	StartIndex = (singleLoopRange + 1) * ThreadIndex + Owner.StartIndex;
+				//	EndIndex = (singleLoopRange + 1) * (ThreadIndex + 1) + Owner.StartIndex;
+
+				//	if (StartIndex >= globalEndIndex) {
+				//		StartIndex = EndIndex = 0;
+				//	}
+				//}
+				EndIndex = Mathf.Min(EndIndex, globalEndIndex);
 			}
-
 		}
 	}
 }

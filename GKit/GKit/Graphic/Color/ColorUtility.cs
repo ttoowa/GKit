@@ -6,11 +6,11 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Globalization;
-#if UNITY
+#if OnUnity
 using UnityEngine;
 using ColorB = UnityEngine.Color32;
 using ColorF = UnityEngine.Color;
-#elif WPF
+#else
 using System.Windows;
 using System.Windows.Media;
 using ColorB = System.Windows.Media.Color;
@@ -19,15 +19,15 @@ using ColorB = System.Windows.Media.Color;
 namespace GKit {
 	public static class ColorUtility {
 		public static string ToHex(this ColorB color) {
-#if UNITY
+#if OnUnity
 			string hex = color.r.ToString("X2") + color.g.ToString("X2") + color.b.ToString("X2");
-#elif WPF
+#else
 			string hex = color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2");
 #endif
 			return hex;
 		}
 
-#if UNITY
+#if OnUnity
 		public static ColorF Add(this ColorF color, float value) {
 			return new ColorF(
 				Mathf.Clamp01(color.r + value),
@@ -37,13 +37,13 @@ namespace GKit {
 		}
 		public static ColorB Add(this ColorB color, float value) {
 			byte byteValue = (byte)(value * 255f);
-#if UNITY
+#if OnUnity
 			return new ColorB(
 				(byte)(Mathf.Clamp((int)color.r + byteValue, 0, 255)),
 				(byte)(Mathf.Clamp((int)color.g + byteValue, 0, 255)),
 				(byte)(Mathf.Clamp((int)color.b + byteValue, 0, 255)),
 				color.a);
-#elif WPF
+#else
 			return ColorB.FromArgb(
 				color.A,
 				(byte)(Mathf.Clamp((int)color.R + byteValue, 0, 255)),
@@ -52,13 +52,13 @@ namespace GKit {
 #endif
 		}
 		public static ColorB Add(this ColorB color, byte value) {
-#if UNITY
+#if OnUnity
 			return new ColorB(
 				(byte)(Mathf.Clamp((int)color.r + value, 0, 255)),
 				(byte)(Mathf.Clamp((int)color.g + value, 0, 255)),
 				(byte)(Mathf.Clamp((int)color.b + value, 0, 255)),
 				color.a);
-#elif WPF
+#else
 			return ColorB.FromArgb(
 				color.A,
 				(byte)(Mathf.Clamp((int)color.R + value, 0, 255)),
@@ -79,9 +79,9 @@ namespace GKit {
 			if (hex.Length == 8) {
 				a = byte.Parse(hex.Substring(6, 2), NumberStyles.HexNumber);
 			}
-#if UNITY
+#if OnUnity
 			return new ColorB(r, g, b, a);
-#elif WPF
+#else
 			return Color.FromArgb(a, r, g, b);
 #endif
 		}
@@ -100,7 +100,7 @@ namespace GKit {
 			byte t = (byte)(hsv.value * (1 - (1 - f) * hsv.saturation));
 
 			int hi = (int)(Math.Floor(hD60)) % 6;
-#if UNITY
+#if OnUnity
 			if (hi == 0)
 				return new ColorB(v, t, p, 255);
 			else if (hi == 1)
@@ -113,7 +113,7 @@ namespace GKit {
 				return new ColorB(t, p, v, 255);
 			else
 				return new ColorB(v, p, q, 255);
-#elif WPF
+#else
 			if (hi == 0)
 				return Color.FromArgb(255, v, t, p);
 			else if (hi == 1)
@@ -131,7 +131,7 @@ namespace GKit {
 		public static HSV ToHSV(this ColorB color) {
 			float hue, saturation, value;
 
-#if UNITY
+#if OnUnity
 			int max = Math.Max(color.r, Math.Max(color.g, color.b));
 			int min = Math.Min(color.r, Math.Min(color.g, color.b));
 			float delta = max - min;
@@ -140,6 +140,9 @@ namespace GKit {
 				saturation = 0;
 			} else {
 				saturation = 1f - (1f * min / max);
+				if(Mathf.Abs(delta) < float.Epsilon) {
+					delta = float.Epsilon;
+				}
 				if (color.r == max) {
 					hue = (color.g - color.b) / delta;
 				} else if (color.g == max) {
@@ -152,7 +155,7 @@ namespace GKit {
 					hue += 360;
 				}
 			}
-#elif WPF
+#else
 			int max = Math.Max(color.R, Math.Max(color.G, color.B));
 			int min = Math.Min(color.R, Math.Min(color.G, color.B));
 			if (max == 0) {
@@ -178,7 +181,7 @@ namespace GKit {
 
 			return new HSV(hue, saturation, value);
 		}
-#if WPF
+#if OnWPF
 		public static SolidColorBrush ToBrush(this string hex) {
 			return hex.ToColor().ToBrush();
 		}
@@ -186,10 +189,10 @@ namespace GKit {
 			return new SolidColorBrush(color);
 		}
 #endif
-		public static float GetHashFloat(this string String, float saturation = 0.5f, float value = 0.9f) {
+		public static float GetHashFloat(this string text) {
 			const float _765To1 = 0.001307f;
 			MD5 md5 = MD5.Create();
-			byte[] hash = md5.ComputeHash(Encoding.UTF8.GetBytes(String));
+			byte[] hash = md5.ComputeHash(Encoding.UTF8.GetBytes(text));
 			if (hash.Length < 3) {
 				if (hash.Length == 0) {
 					hash = new byte[] { 0, 0, 0 };
@@ -201,10 +204,10 @@ namespace GKit {
 			}
 			return ((float)hash[0] + hash[1] + hash[2]) * _765To1;
 		}
-		public static ColorB GetHashColor(this string String, float saturation = 0.5f, float value = 0.9f) {
+		public static ColorB GetHashColor(this string Strtextng, float saturation = 0.5f, float value = 0.9f) {
 			const float _765To360 = 0.470588f;
 			MD5 md5 = MD5.Create();
-			byte[] hash = md5.ComputeHash(Encoding.UTF8.GetBytes(String));
+			byte[] hash = md5.ComputeHash(Encoding.UTF8.GetBytes(Strtextng));
 			if (hash.Length < 3) {
 				if (hash.Length == 0) {
 					hash = new byte[] { 0, 0, 0 };

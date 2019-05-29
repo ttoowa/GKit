@@ -12,32 +12,30 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Unity|AnyCPU' ">
-    <OutputPath>bin\Unity\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;UNITY</DefineConstants>
-    <Optimize>true</Optimize>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>false</Optimize>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <DebugSymbols>true</DebugSymbols>
-    <DocumentationFile>
-    </DocumentationFile>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'WPF|AnyCPU'">
-    <OutputPath>bin\WPF\</OutputPath>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\..\..\Library\GKit\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <DefineConstants>DEBUG;TRACE;WPF</DefineConstants>
-    <DocumentationFile>
-    </DocumentationFile>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
@@ -54,59 +52,46 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="UnityEditor">
-      <HintPath>..\..\Dependency\UnityEditor.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>..\..\Dependency\UnityEngine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Debug\GProfiler.cs" />
+    <Compile Include="Debug\GProfile.cs" />
+    <Compile Include="GLoopEngine\GLoopSyncMode.cs" />
     <Compile Include="GLoopEngine\GLoopEngine.cs" />
     <Compile Include="GLoopEngine\GRoutine\GRoutine.cs" />
     <Compile Include="GLoopEngine\GRoutine\GTimeUnit.cs" />
     <Compile Include="GLoopEngine\GRoutine\GWait.cs" />
-    <Compile Include="GLoopEngine\Job\JobManager.cs" />
-    <Compile Include="GLoopEngine\Scheduler\GScheduler.cs" />
-    <Compile Include="GLoopEngine\Scheduler\GScheduleTask.cs" />
-    <Compile Include="GLoopEngine\Scheduler\GScheduleTaskType.cs" />
-    <Compile Include="GLoopEngine\Task\GLoopAction.cs" />
-    <Compile Include="GLoopEngine\Task\GLoopCycle.cs" />
-    <Compile Include="GLoopEngine\Task\GLoopGroup.cs" />
-    <Compile Include="GLoopEngine\Task\GWhen.cs" />
+    <Compile Include="GLoopEngine\GJob\GJobManager.cs" />
+    <Compile Include="GLoopEngine\GScheduler\GScheduler.cs" />
+    <Compile Include="GLoopEngine\GScheduler\GScheduleTask.cs" />
+    <Compile Include="GLoopEngine\GScheduler\GScheduleTaskType.cs" />
+    <Compile Include="GLoopEngine\GLoopAction\GLoopAction.cs" />
+    <Compile Include="GLoopEngine\GLoopAction\GLoopCycle.cs" />
+    <Compile Include="GLoopEngine\GLoopAction\GLoopGroup.cs" />
+    <Compile Include="GLoopEngine\GLoopAction\GWhen.cs" />
     <Compile Include="Input\Event\InputMask.cs" />
-    <Compile Include="Input\TabletInput\Source\Element\WContextMode.cs" />
-    <Compile Include="Input\TabletInput\Source\WContext.cs" />
-    <Compile Include="Input\TabletInput\Source\WData.cs" />
-    <Compile Include="Input\TabletInput\Source\WInfo.cs" />
-    <Compile Include="Input\TabletInput\Source\WMemUtils.cs" />
-    <Compile Include="Input\TabletInput\Source\WMessageEvents.cs" />
-    <Compile Include="Input\TabletInput\Source\WNativeMethods.cs" />
-    <Compile Include="Network\IPv4\Element\IPv4Type.cs" />
+    <Compile Include="Input\TabletInput\WContextMode.cs" />
+    <Compile Include="Input\TabletInput\WContext.cs" />
+    <Compile Include="Input\TabletInput\WData.cs" />
+    <Compile Include="Input\TabletInput\WInfo.cs" />
+    <Compile Include="Input\TabletInput\WMemUtils.cs" />
+    <Compile Include="Input\TabletInput\WMessageEvents.cs" />
+    <Compile Include="Input\TabletInput\WNativeMethods.cs" />
     <Compile Include="Network\IPv4\IPv4.cs" />
-    <Compile Include="Network\Pipe\BPipeClient.cs" />
-    <Compile Include="Network\Pipe\BPipeServer.cs" />
+    <Compile Include="Network\IPv4\IPv4Type.cs" />
+    <Compile Include="Network\Pipe\GPipeClient.cs" />
+    <Compile Include="Network\Pipe\GPipeServer.cs" />
     <Compile Include="Network\Socket\ClientBase.cs" />
-    <Compile Include="Network\Socket\Component\ClientData.cs" />
-    <Compile Include="Network\Socket\Component\ClientState.cs" />
-    <Compile Include="Network\Socket\Component\NetProtocol.cs" />
-    <Compile Include="Network\Socket\Component\ServerState.cs" />
+    <Compile Include="Network\Socket\Element\ClientData.cs" />
+    <Compile Include="Network\Socket\Element\ClientState.cs" />
+    <Compile Include="Network\Socket\Element\NetProtocol.cs" />
+    <Compile Include="Network\Socket\Element\ServerState.cs" />
     <Compile Include="Network\Socket\ServerBase.cs" />
-    <Compile Include="Network\Utility\EndianFactory.cs" />
+    <Compile Include="Network\Utility\EndianConverter.cs" />
     <Compile Include="Network\Utility\PacketBuilder.cs" />
     <Compile Include="Network\Utility\PacketData.cs" />
     <Compile Include="Network\Utility\PacketUtility.cs" />
     <Compile Include="Network\Web\Web.cs" />
-    <Compile Include="Platform\Unity\AnimatorBoolSetter.cs" />
-    <Compile Include="Platform\Unity\Box2D\B2Body.cs" />
-    <Compile Include="Platform\Unity\Box2D\B2Environment.cs" />
-    <Compile Include="Platform\Unity\Box2D\B2Manager.cs" />
-    <Compile Include="Platform\WPF\BitmapUtility.cs" />
-    <Compile Include="Platform\WPF\IgnoreWindow.cs" />
     <Compile Include="Security\Encrypt.cs" />
     <Compile Include="Graphic\Color\ColorStruct.cs" />
     <Compile Include="Input\TabletInput\WintabInput.cs" />
@@ -115,16 +100,21 @@
     <Compile Include="Security\SafeProperty.cs" />
     <Compile Include="Security\SecurityEvent.cs" />
     <Compile Include="System\AssemblyInfo.cs" />
+    <Compile Include="System\EnumHelper.cs" />
     <Compile Include="System\Event\ActionEvent.cs" />
-    <Compile Include="System\Event\CoreRoutineEvent.cs" />
+    <Compile Include="System\Event\GRoutineEvent.cs" />
     <Compile Include="System\Interface\INeedInitialization.cs" />
-    <Compile Include="System\Log\GLog.cs" />
-    <Compile Include="System\Log\GLogLevel.cs" />
+    <Compile Include="Debug\Log\GDebug.cs" />
+    <Compile Include="Debug\Log\GLogLevel.cs" />
     <Compile Include="System\MathUtility.cs" />
+    <Compile Include="System\MultiThread\Parallel\ParallelPriolity.cs" />
+    <Compile Include="System\OS\WinUtility.cs" />
     <Compile Include="System\ProcessCheker.cs" />
     <Compile Include="System\ProcessUtility.cs" />
     <Compile Include="System\Struct\MotionValue.cs" />
     <Compile Include="System\Struct\Property.cs" />
+    <Compile Include="System\Time\TimeFormat.cs" />
+    <Compile Include="System\TrayIcon.cs" />
     <Compile Include="Utility\BRandom.cs" />
     <Compile Include="System\Screen\ScreenInfo.cs" />
     <Compile Include="Input\Event\InputHandler.cs" />
@@ -137,27 +127,27 @@
     <Compile Include="System\ClipBoard.cs" />
     <Compile Include="System\Cursor\CursorInfo.cs" />
     <Compile Include="System\Cursor\CursorManager.cs" />
-    <Compile Include="System\MultiThread\Parallel\Element\ParallelPriolity.cs" />
     <Compile Include="System\MultiThread\Parallel\ParallelLoop.cs" />
     <Compile Include="System\MultiThread\Channel\ThreadChannel.cs" />
     <Compile Include="System\Startup.cs" />
     <Compile Include="System\SystemInfo.cs" />
-    <Compile Include="System\TimeUtility.cs" />
+    <Compile Include="System\Time\TimeUtility.cs" />
     <Compile Include="Utility\BMath.cs" />
     <Compile Include="Utility\BSpline.cs" />
     <Compile Include="Graphic\Color\ColorUtility.cs" />
     <Compile Include="Utility\IDGenerator.cs" />
-    <Compile Include="Platform\WPF\Mathf.cs" />
+    <Compile Include="Utility\Mathf.cs" />
     <Compile Include="Utility\NativeUtility.cs" />
+    <Compile Include="Utility\ObjectPool.cs" />
     <Compile Include="Utility\ResourceManager.cs" />
     <Compile Include="System\Struct\Structs.cs" />
     <Compile Include="System\SystemUtility.cs" />
-    <Compile Include="Platform\WPF\UIExtension.cs" />
-    <Compile Include="Platform\Unity\UnityExtension.cs" />
     <Compile Include="Utility\StringUtility.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Data\DB\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>

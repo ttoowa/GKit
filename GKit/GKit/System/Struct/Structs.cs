@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows;
 using System.Runtime.InteropServices;
-#if UNITY
+#if OnUnity
 using UnityEngine;
 #endif
 
@@ -238,8 +238,7 @@ namespace GKit {
 			return "(" + xMin.ToString() + ", " + xMax.ToString() + "), (" + yMin.ToString() + ", " + yMax.ToString() + ")";
 		}
 	}
-#if UNITY
-#elif WPF
+#if !OnUnity
 	public struct Vector2 {
 		public float x, y;
 

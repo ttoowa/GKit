@@ -4,7 +4,9 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+#if OnUnity
 using UnityEngine;
+#endif
 
 namespace GKit {
 	/// <summary>

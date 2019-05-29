@@ -5,7 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+#if OnUnity
 using UnityEngine;
+#endif
 
 namespace GKit {
 	/// <summary>
@@ -203,7 +205,7 @@ namespace GKit {
 //				return false;
 //			}
 //		}
-//#if UNITY
+//#if OnUnity
 //		public static bool RegistDeltaMotionPath(string resourcePath, string key) {
 //			return RegistDeltaMotion(resourcePath.GetResource<TextAsset>().bytes, key);
 //		}

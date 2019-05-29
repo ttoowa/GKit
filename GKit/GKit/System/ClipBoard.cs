@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-#if UNITY
+#if OnUnity
 using UnityEngine;
 #endif
 
@@ -13,16 +13,16 @@ namespace GKit {
 	/// </summary>
 	public static class Clipboard {
 		public static void SetText(string text) {
-#if UNITY
+#if OnUnity
 			GUIUtility.systemCopyBuffer = text;
-#elif WPF
+#else
 			System.Windows.Clipboard.SetText(text);
 #endif
 		}
 		public static string GetText() {
-#if UNITY
+#if OnUnity
 			return GUIUtility.systemCopyBuffer;
-#elif WPF
+#else
 			return System.Windows.Clipboard.GetText();
 #endif
 		}

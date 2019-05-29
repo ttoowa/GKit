@@ -3,17 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
-#if UNITY
+#if OnUnity
 using UnityEngine;
+#else
+using System.Windows.Media.Imaging;
 #endif
 
 namespace GKit {
 	/// <summary>
 	/// 리소스를 불러오는 클래스입니다.
 	/// </summary>
-	public static class ResourceManager {
-#if UNITY
+	public static class GResourceUtility {
+#if OnUnity
 		public static Type Get<Type>(string path) where Type : UnityEngine.Object {
 			return Resources.Load<Type>(path);
 		}
@@ -34,7 +35,7 @@ namespace GKit {
 
 			return (Type)request.asset;
 		}
-#elif WPF
+#elif OnWPF
 		public static Uri GetUri(string relativePath) {
 			return new Uri("pack://application:,,,/" + relativePath, UriKind.Absolute);
 		}

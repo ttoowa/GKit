@@ -123,7 +123,7 @@ namespace GKit.MultiThread {
 						try {
 							mainJobQueue.Dequeue()();
 						} catch (Exception ex) {
-							("메인스레드 채널에서 예외 발생 : " + Environment.NewLine + ex.ToString()).Log();
+							GDebug.Log($"{nameof(ThreadChannel)} ::{Environment.NewLine}{ex.ToString()}", GLogLevel.Warnning);
 						}
 					}
 				}
@@ -226,7 +226,7 @@ namespace GKit.MultiThread {
 							}
 							job?.Invoke();
 						} catch (Exception ex) {
-							("스레드 채널 \"" + name + "\" " + "예외 발생 : " + Environment.NewLine + ex.ToString()).Log();
+							GDebug.Log($"ThreadChannel '{name}' :: {Environment.NewLine}{ex.ToString()}");
 						}
 					}
 				}

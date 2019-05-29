@@ -61,7 +61,7 @@ namespace GKit {
 						}
 						fileInfo.MoveTo(newFilePath);
 					} catch(Exception ex) {
-						ex.ToString().Log();
+						GDebug.Log(ex.ToString());
 					}
 				}
 				foreach (DirectoryInfo subDirectory in originInfo.GetDirectories()) {
@@ -69,7 +69,7 @@ namespace GKit {
 					MoveAllFiles(subDirectory, nextDestDir);
 				}
 			} catch(Exception ex) {
-				ex.ToString().Log();
+				GDebug.Log(ex.ToString());
 			}
 		}
 
@@ -139,20 +139,41 @@ namespace GKit {
 			return ImageFileFormat.unknown;
 		}
 
-		public static void SaveText(this string text, string filePath) {
-			FileInfo fileInfo = new FileInfo(filePath);
+		public static void SaveText(this string text, string filename) {
+			SaveText(text, filename, Encoding.UTF8);
+		}
+		public static void SaveText(this string text, string filename, Encoding encoding) {
+			FileInfo fileInfo = new FileInfo(filename);
 			if (!fileInfo.Directory.Exists) {
 				fileInfo.Directory.Create();
 			}
-			using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write)) {
-				using (StreamWriter writer = new StreamWriter(fileStream, Encoding.UTF8)) {
+			using (FileStream fileStream = new FileStream(filename, FileMode.Create, FileAccess.Write)) {
+				using (StreamWriter writer = new StreamWriter(fileStream, encoding)) {
 					writer.Write(text);
 				}
 			}
 		}
-		public static string LoadText(this string filePath) {
-			using (FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read)) {
-				using (StreamReader reader = new StreamReader(fileStream, Encoding.UTF8)) {
+		public static void SaveTextAppend(this string text, string filename) {
+			SaveTextAppend(text, filename, Encoding.UTF8);
+		}
+		public static void SaveTextAppend(this string text, string filename, Encoding encoding) {
+			FileInfo fileInfo = new FileInfo(filename);
+			if (!fileInfo.Directory.Exists) {
+				fileInfo.Directory.Create();
+			}
+			using (FileStream fileStream = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.Write)) {
+				fileStream.Seek(0, SeekOrigin.End);
+				using (StreamWriter writer = new StreamWriter(fileStream, encoding)) {
+					writer.WriteLine(text);
+				}
+			}
+		}
+		public static string LoadText(string filename) {
+			return LoadText(filename, Encoding.UTF8);
+		}
+		public static string LoadText(string filename, Encoding encoding) {
+			using (FileStream fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read)) {
+				using (StreamReader reader = new StreamReader(fileStream, encoding)) {
 					return reader.ReadToEnd();
 				}
 			}

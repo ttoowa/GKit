@@ -7,12 +7,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using WintabDN;
 using System.Windows.Forms;
 using GKit.MultiThread;
-#if UNITY
+#if OnUnity
 using UnityEngine;
+#else
+using System.Windows.Media;
 #endif
 
 namespace GKit {
@@ -132,7 +133,7 @@ namespace GKit {
 				}
 				IsRunning = false;
 				for(int i=0; i<taskList.Count; ++i) {
-					taskList[i].Stop();
+					taskList[i].StopAndDispose();
 				}
 				taskList.Clear();
 			} catch(Exception ex) {
@@ -240,12 +241,12 @@ namespace GKit {
 					}
 				}
 			} catch (Exception ex) {
-				ex.ToString().Log();
+				GDebug.Log(ex.ToString(), GLogLevel.Warnning);
 			}
 		}
 
 		private void UpdateState() {
-			activeCheckDelaySec -= core.DeltaMillisec;
+			activeCheckDelaySec -= core.LoopElapsedMilliseconds;
 			if (activeCheckDelaySec <= 0f) {
 				activeCheckDelaySec = ActiveCheckFrequency;
 
@@ -265,7 +266,7 @@ namespace GKit {
 				}
 			}
 		}
-#if WPF
+#if OnWPF
 		public Vector2 GetRelativePos(Visual visual) {
 			Vector2 visualPos = (Vector2)visual.PointToScreen(new Point()) - (Vector2)ScreenInfo.VirtualPosition;
 

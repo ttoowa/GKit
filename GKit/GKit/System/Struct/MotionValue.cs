@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-#if UNITY
+#if OnUnity
 using UnityEngine;
 #endif
 
@@ -12,7 +12,7 @@ namespace GKit {
 		public T dstValue;
 		public T currentValue;
 		public T Delta => (dynamic)dstValue - (dynamic)currentValue;
-		public event SingleDelegate<T> OnUpdated;
+		public event Arg1Delegate<T> OnUpdated;
 
 		public MotionValue() {
 
