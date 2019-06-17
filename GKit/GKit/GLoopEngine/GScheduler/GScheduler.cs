@@ -58,10 +58,10 @@ namespace GKit {
 					GScheduleTask task = jobQueue.Dequeue();
 					switch (task.type) {
 						case GScheduleTaskType.CoreTask:
-							((Action)task.action).SafeInvoke();
+							((Action)task.action).TryInvoke();
 							break;
 						case GScheduleTaskType.CoreRoutine:
-							yield return ((IEnumerator)task.action).Run(ownerCore);
+							yield return ((IEnumerator)task.action).Invoke(ownerCore);
 							break;
 					}
 				}

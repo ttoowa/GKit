@@ -36,7 +36,7 @@ namespace GKit.Security {
 		private T GetValue() {
 			if (hashBuffer != GetChecksum()) {
 				SecurityEvent.CallMemoryHacked();
-				OnHackedInstance.SafeInvoke();
+				OnHackedInstance.TryInvoke();
 
 			}
 			return value;
@@ -53,7 +53,7 @@ namespace GKit.Security {
 		}
 
 		public void RunEvent() {
-			OnValueChanged.SafeInvoke();
+			OnValueChanged.TryInvoke();
 		}
 		public void ClearEvent() {
 			OnValueChanged = null;

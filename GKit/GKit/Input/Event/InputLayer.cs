@@ -53,7 +53,7 @@ namespace GKit {
 				}
 
 				if (cursorFocus != handler) {
-					if (!MouseInput.LeftHold) {
+					if (!MouseInput.Left.Hold) {
 						CursorFocusOut();
 
 						//새 포커스
@@ -62,7 +62,7 @@ namespace GKit {
 					}
 				}
 				if (keyFocus != handler) {
-					if (MouseInput.LeftDown) {
+					if (MouseInput.Left.Down) {
 						KeyFocusOut();
 						handler.CallFocusOn();
 						keyFocus = handler;
@@ -70,29 +70,29 @@ namespace GKit {
 				}
 				if (cursorFocus != null) {
 					//마우스다운
-					if (MouseInput.LeftDown) {
+					if (MouseInput.Left.Down) {
 						cursorFocus.CallMouseDown();
 					}
-					if (MouseInput.RightDown) {
+					if (MouseInput.Right.Down) {
 						cursorFocus.CallMouseRightDown();
 					}
-					if(MouseInput.MiddleDown) {
+					if(MouseInput.Middle.Down) {
 						cursorFocus.CallMouseMiddleDown();
 					}
 					//마우스업
-					if (MouseInput.LeftUp) {
+					if (MouseInput.Left.Up) {
 						if (cursorFocus.IsMousePressed) {
 							cursorFocus.CallMouseUp();
 							cursorFocus.CallClick();
 						}
 					}
-					if(MouseInput.RightUp) {
+					if(MouseInput.Right.Up) {
 						if(cursorFocus.IsMouseRightPressed) {
 							cursorFocus.CallMouseRightUp();
 							cursorFocus.CallRightClick();
 						}
 					}
-					if(MouseInput.MiddleUp) {
+					if(MouseInput.Middle.Up) {
 						if(cursorFocus.IsMouseMiddlePressed) {
 							cursorFocus.CallMouseMiddleUp();
 							cursorFocus.CallMiddleClick();
@@ -101,9 +101,9 @@ namespace GKit {
 				}
 			} else {
 				PreviewCursorFocusOut();
-				if (MouseInput.LeftDown || MouseInput.RightDown || MouseInput.MiddleDown) {
+				if (MouseInput.Left.Down || MouseInput.Right.Down || MouseInput.Middle.Down) {
 					KeyFocusOut();
-				} else if (!MouseInput.LeftHold && !MouseInput.RightHold && !MouseInput.MiddleHold) {
+				} else if (!MouseInput.Left.Hold && !MouseInput.Right.Hold && !MouseInput.Middle.Hold) {
 					CursorFocusOut();
 				}
 			}

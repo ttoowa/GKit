@@ -29,7 +29,7 @@ namespace GKit {
 			this.delayTime = delayTime;
 			this.taskEvent = taskEvent;
 		}
-		public void StopAndDispose() {
+		public void Stop() {
 			ownerCore.RemoveLoopAction(this);
 		}
 		internal void RunTimer() {

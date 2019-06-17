@@ -16,8 +16,8 @@ namespace GKit {
 			routineQueue = new Queue<Func<IEnumerator>>();
 			routineList = new List<Func<IEnumerator>>();
 		}
-		public GRoutine Call() {
-			return CallTask().Run(core);
+		public GRoutine Invoke() {
+			return CallTask().Invoke(core);
 		}
 		public void Add(Func<IEnumerator> routine, bool executeOnce = false) {
 			if (executeOnce) {
@@ -32,11 +32,11 @@ namespace GKit {
 
 		private IEnumerator CallTask() {
 			while (routineQueue.Count > 0) {
-				yield return routineQueue.Dequeue()().Run(core);
+				yield return routineQueue.Dequeue()().Invoke(core);
 			}
 			for (int i = 0; i < routineList.Count; ++i) {
 				Func<IEnumerator> routine = routineList[i];
-				yield return routine().Run(core);
+				yield return routine().Invoke(core);
 			}
 		}
 

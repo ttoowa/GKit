@@ -133,7 +133,7 @@ namespace GKit {
 				}
 				IsRunning = false;
 				for(int i=0; i<taskList.Count; ++i) {
-					taskList[i].StopAndDispose();
+					taskList[i].Stop();
 				}
 				taskList.Clear();
 			} catch(Exception ex) {

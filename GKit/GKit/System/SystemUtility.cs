@@ -27,11 +27,13 @@ namespace GKit {
 		/// <summary>
 		/// 함수를 호출하며 예외를 검사합니다.
 		/// </summary>
-		public static void SafeInvoke(this Action action) {
+		public static bool TryInvoke(this Action action) {
 			try {
 				action?.Invoke();
+				return true;
 			} catch(Exception ex) {
 				GDebug.Log(ex.ToString(), GLogLevel.Warnning);
+				return false;
 			}
 		}
 

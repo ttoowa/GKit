@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Data;
 using System.Data.SQLite;
 using GKit;
-using GKit.IOPlus.SQLite;
+using GKit.SQLite;
 
 namespace ConsoleTest {
 	public class Program {

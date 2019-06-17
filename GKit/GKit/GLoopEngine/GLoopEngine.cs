@@ -338,7 +338,7 @@ namespace GKit {
 
 						switch (taskGroup.RemoveCondition) {
 							case GWhen.MouseUpRemove:
-								if (MouseInput.LeftUp) {
+								if (MouseInput.Left.Up) {
 									goto InvokeAndClear;
 								}
 								break;

@@ -14,7 +14,7 @@ namespace GKit {
 			actionQueue = new Queue<Action>();
 			actionList = new List<Action>();
 		}
-		public void Call() {
+		public void Invoke() {
 			while (actionQueue.Count > 0) {
 				actionQueue.Dequeue().Invoke();
 			}

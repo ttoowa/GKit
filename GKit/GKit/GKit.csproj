@@ -28,7 +28,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\..\..\..\Library\GKit\</OutputPath>
+    <OutputPath>..\..\..\..\Library\GKit\GKit\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
@@ -70,6 +70,7 @@
     <Compile Include="GLoopEngine\GLoopAction\GLoopGroup.cs" />
     <Compile Include="GLoopEngine\GLoopAction\GWhen.cs" />
     <Compile Include="Input\Event\InputMask.cs" />
+    <Compile Include="Input\InputButton.cs" />
     <Compile Include="Input\TabletInput\WContextMode.cs" />
     <Compile Include="Input\TabletInput\WContext.cs" />
     <Compile Include="Input\TabletInput\WData.cs" />

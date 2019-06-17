@@ -9,7 +9,7 @@ namespace GKit.Security {
 		public static event Action OnMemoryHacked;
 
 		internal static void CallMemoryHacked() {
-			OnMemoryHacked.SafeInvoke();
+			OnMemoryHacked.TryInvoke();
 		}
 	}
 }

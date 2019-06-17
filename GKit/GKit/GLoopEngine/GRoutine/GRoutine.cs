@@ -121,11 +121,11 @@ namespace GKit {
 				return;
 
 			IsComplete = true;
-			OnComplete.SafeInvoke();
+			OnComplete.TryInvoke();
 		}
 	}
 	public static class CoreRoutineUtility {
-		public static GRoutine Run(this IEnumerator routine, GLoopEngine core) {
+		public static GRoutine Invoke(this IEnumerator routine, GLoopEngine core) {
 			return core.AddGRoutine(routine);
 		}
 		//public static IEnumerator Clone(this IEnumerator source) {
