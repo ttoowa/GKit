@@ -48,21 +48,21 @@ namespace GKit {
 		}
 
 		public static bool GetKeyHold(WinKey key) {
-			RegistActiveKey(key);
+			RegisterActiveKey(key);
 			if (!CheckCondition())
 				return false;
 
 			return keyHoldList.Contains(key);
 		}
 		public static bool GetKeyDown(WinKey key) {
-			RegistActiveKey(key);
+			RegisterActiveKey(key);
 			if (!CheckCondition())
 				return false;
 
 			return keyDownStack.Contains(key);
 		}
 		public static bool GetKeyText(WinKey key) {
-			RegistActiveKey(key);
+			RegisterActiveKey(key);
 			if (!CheckCondition())
 				return false;
 
@@ -84,7 +84,7 @@ namespace GKit {
 			return false;
 		}
 		public static bool GetKeyUp(WinKey key) {
-			RegistActiveKey(key);
+			RegisterActiveKey(key);
 			if (!CheckCondition())
 				return false;
 
@@ -132,7 +132,7 @@ namespace GKit {
 			return inputVector;
 		}
 
-		private static void RegistActiveKey(WinKey key) {
+		private static void RegisterActiveKey(WinKey key) {
 			if (!activeKeyList.Contains(key)) {
 				activeKeyList.Add(key);
 			}
@@ -143,26 +143,22 @@ namespace GKit {
 
 			for (int i = activeKeyList.Count - 1; i >= 0; i--) {
 				WinKey key = activeKeyList[i];
-				if (GetAsyncKeyStateAutoWinKey(key)) {
-					//키를 누른 경우
-					if (!keyHoldList.Contains(key)) {
-						if (!keyDownStack.Contains(key)) {
-							keyDownStack.Push(key);
-						}
-						keyHoldList.Add(key);
+
+				bool onHold = GetAsyncKeyStateHoldWinKey(key);
+				if (keyHoldList.Contains(key)) {
+					if(!onHold) {
+						keyUpStack.Push(key);
+						keyHoldList.RemoveAll(x=>x == key);
 					}
 				} else {
-					//키를 누르지 않은 경우
-					if (keyHoldList.Contains(key)) {
-						if (!keyUpStack.Contains(key)) {
-							keyUpStack.Push(key);
-						}
-						keyHoldList.Remove(key);
+					if(onHold) {
+						keyDownStack.Push(key);
+						keyHoldList.Add(key);
 					}
 				}
 			}
 		}
-		//Utility
+
 		private static int GetVKCode(WinKey key) {
 			switch (key) {
 				case WinKey.MouseLeft:
@@ -372,7 +368,7 @@ namespace GKit {
 			}
 			return 0;
 		}
-		private static bool GetAsyncKeyStateAutoWinKey(WinKey key) {
+		private static bool GetAsyncKeyStateHoldWinKey(WinKey key) {
 			return GetAsyncKeyStateAuto(GetVKCode(key));
 		}
 		private static bool GetAsyncKeyStateAuto(int VKey) {

@@ -8,8 +8,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using GKit;
 using RectTransform = CoreModule::UnityEngine.RectTransform;
-using UVector2 = CoreModule::UnityEngine.Vector2;
-using Vector2 = UnityEngine.Vector2;
+using CVector2 = CoreModule::UnityEngine.Vector2;
+using CRect = CoreModule::UnityEngine.Rect;
+using Vector2 = global::UnityEngine.Vector2;
+using Rect = global::UnityEngine.Rect;
 
 namespace GKit.Unity {
 	[RequireComponent(typeof(RectTransform))]
@@ -33,7 +35,21 @@ namespace GKit.Unity {
 				RectTransform.SetVerticalAlignment(value);
 			}
 		}
-		public UVector2 Pivot {
+		public CVector2 Position {
+			get {
+				return RectTransform.anchoredPosition;
+			} set {
+				RectTransform.anchoredPosition = value;
+			}
+		}
+		public CVector2 SizeDelta {
+			get {
+				return RectTransform.sizeDelta;
+			} set {
+				RectTransform.sizeDelta = value;
+			}
+		}
+		public CVector2 Pivot {
 			get {
 				return RectTransform.pivot;
 			} set {
@@ -52,14 +68,14 @@ namespace GKit.Unity {
 			HorizontalAlignment = alignment;
 
 			if (setPivotAuto) {
-				Pivot =  new UVector2(UiUtility.GetPivotPosition(alignment), Pivot.y);
+				Pivot =  new CVector2(UiUtility.GetPivotPosition(alignment), Pivot.y);
 			}
 		}
 		public void SetVerticalAlignment(VerticalAlignment alignment, bool setPivotAuto = true) {
 			VerticalAlignment = alignment;
 
 			if (setPivotAuto) {
-				Pivot = new UVector2(Pivot.x, UiUtility.GetPivotPosition(alignment));
+				Pivot = new CVector2(Pivot.x, UiUtility.GetPivotPosition(alignment));
 			}
 		}
 	}

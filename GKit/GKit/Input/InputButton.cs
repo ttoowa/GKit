@@ -33,23 +33,24 @@ namespace GKit {
 		internal void UpdateState(bool onHold) {
 			Down = false;
 			Up = false;
-			if (onHold) {
-				if (!Hold) {
-					Down = true;
-					OnDownOnce?.Invoke();
-					OnDownOnce = null;
-					OnDown?.Invoke();
-				}
-			}
-			else {
-				if (Hold) {
+
+			if(Hold) {
+				if(!onHold) {
 					Up = true;
 
 					OnUpOnce?.Invoke();
 					OnUpOnce = null;
 					OnUp?.Invoke();
 				}
+			} else {
+				if(onHold) {
+					Down = true;
+					OnDownOnce?.Invoke();
+					OnDownOnce = null;
+					OnDown?.Invoke();
+				}
 			}
+			
 			Hold = onHold;
 		}
 	}

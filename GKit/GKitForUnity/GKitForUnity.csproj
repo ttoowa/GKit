@@ -327,15 +327,15 @@
     <Compile Include="..\GKit\Utility\StringUtility.cs">
       <Link>Utility\StringUtility.cs</Link>
     </Compile>
-    <Compile Include="Platform\Unity\AnimatorBoolSetter.cs" />
-    <Compile Include="Platform\Unity\Debug\FpsDisplayer.cs" />
-    <Compile Include="Platform\Unity\FpsInitializer.cs" />
-    <Compile Include="Platform\Unity\GameObjectDisabler.cs" />
-    <Compile Include="Platform\Unity\Transform\TransformUtility.cs" />
-    <Compile Include="Platform\Unity\Transform\Alignment.cs" />
-    <Compile Include="Platform\Unity\Transform\UiTransform.cs" />
-    <Compile Include="Platform\Unity\Transform\UiUtility.cs" />
-    <Compile Include="Platform\Unity\Utility\UnityUtility.cs" />
+    <Compile Include="Unity\AnimatorBoolSetter.cs" />
+    <Compile Include="Unity\Debug\FpsDisplayer.cs" />
+    <Compile Include="Unity\FpsInitializer.cs" />
+    <Compile Include="Unity\GameObjectDisabler.cs" />
+    <Compile Include="Unity\Transform\TransformUtility.cs" />
+    <Compile Include="Unity\Transform\Alignment.cs" />
+    <Compile Include="Unity\Transform\UiTransform.cs" />
+    <Compile Include="Unity\Transform\UiUtility.cs" />
+    <Compile Include="Unity\Utility\UnityUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
