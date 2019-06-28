@@ -1,32 +1,29 @@
-﻿extern alias CoreModule;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
-using RectTransform = CoreModule::UnityEngine.RectTransform;
-using UVector2 = CoreModule::UnityEngine.Vector2;
 
 namespace GKit.Unity {
 	public static class UiUtility {
 
 		public static void SetHorizontalAlignment(this RectTransform rectTransform, HorizontalAlignment alignment) {
 			Range anchorRange = GetAnchorRange(alignment);
-			rectTransform.anchorMin = new UVector2(anchorRange.min, rectTransform.anchorMin.y);
-			rectTransform.anchorMax = new UVector2(anchorRange.max, rectTransform.anchorMax.y);
+			rectTransform.anchorMin = new Vector2(anchorRange.min, rectTransform.anchorMin.y);
+			rectTransform.anchorMax = new Vector2(anchorRange.max, rectTransform.anchorMax.y);
 		}
 		public static void SetVerticalAlignment(this RectTransform rectTransform, VerticalAlignment alignment) {
 			Range anchorRange = GetAnchorRange(alignment);
-			rectTransform.anchorMin = new UVector2(rectTransform.anchorMin.x, anchorRange.min);
-			rectTransform.anchorMax = new UVector2(rectTransform.anchorMax.x, anchorRange.max);
+			rectTransform.anchorMin = new Vector2(rectTransform.anchorMin.x, anchorRange.min);
+			rectTransform.anchorMax = new Vector2(rectTransform.anchorMax.x, anchorRange.max);
 		}
 		public static void SetHorizontalPivot(this RectTransform rectTransform, HorizontalAlignment alignment) {
-			rectTransform.pivot = new UVector2(GetPivotPosition(alignment), rectTransform.pivot.y);
+			rectTransform.pivot = new Vector2(GetPivotPosition(alignment), rectTransform.pivot.y);
 		}
 		public static void SetVerticalPivot(this RectTransform rectTransform, VerticalAlignment alignment) {
-			rectTransform.pivot = new UVector2(rectTransform.pivot.x, GetPivotPosition(alignment));
+			rectTransform.pivot = new Vector2(rectTransform.pivot.x, GetPivotPosition(alignment));
 		}
 
 		public static Range GetAnchorRange(HorizontalAlignment alignment) {

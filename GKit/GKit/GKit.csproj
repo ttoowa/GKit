@@ -136,11 +136,11 @@
     <Compile Include="Utility\BMath.cs" />
     <Compile Include="Utility\BSpline.cs" />
     <Compile Include="Graphic\Color\ColorUtility.cs" />
+    <Compile Include="Utility\GResourceUtility.cs" />
     <Compile Include="Utility\IDGenerator.cs" />
     <Compile Include="Utility\Mathf.cs" />
     <Compile Include="Utility\NativeUtility.cs" />
     <Compile Include="Utility\ObjectPool.cs" />
-    <Compile Include="Utility\ResourceManager.cs" />
     <Compile Include="System\Struct\Structs.cs" />
     <Compile Include="System\SystemUtility.cs" />
     <Compile Include="Utility\StringUtility.cs" />

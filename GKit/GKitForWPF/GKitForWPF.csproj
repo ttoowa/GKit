@@ -298,6 +298,9 @@
     <Compile Include="..\GKit\Utility\BSpline.cs">
       <Link>Utility\BSpline.cs</Link>
     </Compile>
+    <Compile Include="..\GKit\Utility\GResourceUtility.cs">
+      <Link>Utility\GResourceUtility.cs</Link>
+    </Compile>
     <Compile Include="..\GKit\Utility\IDGenerator.cs">
       <Link>Utility\IDGenerator.cs</Link>
     </Compile>
@@ -310,17 +313,14 @@
     <Compile Include="..\GKit\Utility\ObjectPool.cs">
       <Link>Utility\ObjectPool.cs</Link>
     </Compile>
-    <Compile Include="..\GKit\Utility\ResourceManager.cs">
-      <Link>Utility\ResourceManager.cs</Link>
-    </Compile>
     <Compile Include="..\GKit\Utility\StringUtility.cs">
       <Link>Utility\StringUtility.cs</Link>
     </Compile>
     <Compile Include="WPF\BitmapUtility.cs" />
     <Compile Include="WPF\IgnoreWindow.cs" />
     <Compile Include="WPF\Resources\Converters\GraphicConverters.cs" />
+    <Compile Include="WPF\Resources\Styles\StyleResources.cs" />
     <Compile Include="WPF\Resources\Themes\ThemeType.cs" />
-    <Compile Include="WPF\Resources\Themes\ThemeResources.cs" />
     <Compile Include="WPF\UIExtension.cs" />
     <Compile Include="WPF\UI\Components\ContentTitle.xaml.cs">
       <DependentUpon>ContentTitle.xaml</DependentUpon>

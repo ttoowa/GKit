@@ -50,19 +50,13 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="Unity.ugui">
-      <HintPath>..\..\..\..\Library\UnityEngine\Unity.ugui.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Dependency\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\..\Library\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
-      <Aliases>CoreModule</Aliases>
-      <Private>False</Private>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\..\..\..\Library\UnityEngine\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -312,6 +306,9 @@
     <Compile Include="..\GKit\Utility\BSpline.cs">
       <Link>Utility\BSpline.cs</Link>
     </Compile>
+    <Compile Include="..\GKit\Utility\GResourceUtility.cs">
+      <Link>Utility\GResourceUtility.cs</Link>
+    </Compile>
     <Compile Include="..\GKit\Utility\IDGenerator.cs">
       <Link>Utility\IDGenerator.cs</Link>
     </Compile>
@@ -320,9 +317,6 @@
     </Compile>
     <Compile Include="..\GKit\Utility\ObjectPool.cs">
       <Link>Utility\ObjectPool.cs</Link>
-    </Compile>
-    <Compile Include="..\GKit\Utility\ResourceManager.cs">
-      <Link>Utility\ResourceManager.cs</Link>
     </Compile>
     <Compile Include="..\GKit\Utility\StringUtility.cs">
       <Link>Utility\StringUtility.cs</Link>

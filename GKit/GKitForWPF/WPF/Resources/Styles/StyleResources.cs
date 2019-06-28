@@ -22,13 +22,14 @@ namespace GKit.WPF.Resources {
 			ApplyCustom(appResource, themeUri);
 		}
 		public static void ApplyCustom(ResourceDictionary appResource, string assemblyName, string relativeXamlPath) {
-			string stylePath = $"pack://application:,,,/{assemblyName};component/{relativeXamlPath}";
-
-			ApplyCustom(appResource, stylePath);
+			ApplyCustom(appResource, GResourceUtility.GetUri(assemblyName, relativeXamlPath));
 		}
 		private static void ApplyCustom(ResourceDictionary appResource, string stylePath) {
+			ApplyCustom(appResource, new Uri(stylePath));
+		}
+		private static void ApplyCustom(ResourceDictionary appResource, Uri styleUri) {
 			ResourceDictionary resourceDict = new ResourceDictionary();
-			resourceDict.Source = new Uri(stylePath);
+			resourceDict.Source = styleUri;
 			appResource.MergedDictionaries.Add(resourceDict);
 		}
 	}

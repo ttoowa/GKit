@@ -36,8 +36,11 @@ namespace GKit {
 			return (Type)request.asset;
 		}
 #elif OnWPF
-		public static Uri GetUri(string relativePath) {
-			return new Uri("pack://application:,,,/" + relativePath, UriKind.Absolute);
+		public static Uri GetUri(string path) {
+			return new Uri("pack://application:,,,/" + path, UriKind.Absolute);
+		}
+		public static Uri GetUri(string assemblyName, string path) {
+			return new Uri($"pack://application:,,,/{assemblyName};component/{path}", UriKind.Absolute);
 		}
 		public static class Image {
 			public static BitmapImage FromUri(string relativePath) {
