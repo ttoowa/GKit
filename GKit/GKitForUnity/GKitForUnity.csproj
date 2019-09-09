@@ -57,9 +57,13 @@
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>..\..\..\..\Library\UnityEngine\UnityEngine.UI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\GKit\Data\NodeDelegates.cs">
+      <Link>Data\NodeDelegates.cs</Link>
+    </Compile>
     <Compile Include="..\GKit\Debug\GProfile.cs">
       <Link>Debug\GProfile.cs</Link>
     </Compile>

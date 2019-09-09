@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
 
-namespace GKit {
+namespace GKit.WPF {
 	public static class IgnoreWindowUtility {
 		private const int WS_EX_TRANSPARENT = 0x00000020;
 		private const int GWL_EXSTYLE = (-20);

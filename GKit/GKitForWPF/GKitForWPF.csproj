@@ -52,6 +52,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\GKit\Data\NodeDelegates.cs">
+      <Link>Data\NodeDelegates.cs</Link>
+    </Compile>
     <Compile Include="..\GKit\Debug\GProfile.cs">
       <Link>Debug\GProfile.cs</Link>
     </Compile>
@@ -318,41 +321,51 @@
     </Compile>
     <Compile Include="WPF\BitmapUtility.cs" />
     <Compile Include="WPF\IgnoreWindow.cs" />
-    <Compile Include="WPF\Resources\Converters\GraphicConverters.cs" />
+    <Compile Include="WPF\UI\Converters\BoolInvertConverter.cs" />
+    <Compile Include="WPF\UI\Converters\GraphicConverters.cs" />
     <Compile Include="WPF\Resources\Styles\StyleResources.cs" />
     <Compile Include="WPF\Resources\Themes\ThemeType.cs" />
     <Compile Include="WPF\UIExtension.cs" />
-    <Compile Include="WPF\UI\Components\ContentTitle.xaml.cs">
-      <DependentUpon>ContentTitle.xaml</DependentUpon>
+    <Compile Include="WPF\UI\Controls\EditListView\EditListView.xaml.cs">
+      <DependentUpon>EditListView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WPF\UI\Components\FileManagerBar.xaml.cs">
+    <Compile Include="WPF\UI\Controls\EditListView\IListFolder.cs" />
+    <Compile Include="WPF\UI\Controls\EditListView\IListItem.cs" />
+    <Compile Include="WPF\UI\Controls\EditListView\NodeDirection.cs" />
+    <Compile Include="WPF\UI\Controls\EditListView\NodeTarget.cs" />
+    <Compile Include="WPF\UI\Controls\EditListView\SelectedListItemSet.cs" />
+    <Compile Include="WPF\UI\Controls\EditTextBlock\EditTextBlock.xaml.cs">
+      <DependentUpon>EditTextBlock.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WPF\UI\Controls\FileManagerBar.xaml.cs">
       <DependentUpon>FileManagerBar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WPF\UI\Components\ListManagerBar.xaml.cs">
+    <Compile Include="WPF\UI\Controls\ListManagerBar.xaml.cs">
       <DependentUpon>ListManagerBar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WPF\Resources\VectorImages\Button_CopyMotion.xaml.cs">
-      <DependentUpon>Button_CopyMotion.xaml</DependentUpon>
+    <Compile Include="WPF\Resources\VectorImages\CopyIcon.xaml.cs">
+      <DependentUpon>CopyIcon.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WPF\Resources\VectorImages\Button_CreateFolder.xaml.cs">
-      <DependentUpon>Button_CreateFolder.xaml</DependentUpon>
+    <Compile Include="WPF\Resources\VectorImages\CreateFolderIcon.xaml.cs">
+      <DependentUpon>CreateFolderIcon.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WPF\Resources\VectorImages\Button_CreateMotion.xaml.cs">
-      <DependentUpon>Button_CreateMotion.xaml</DependentUpon>
+    <Compile Include="WPF\Resources\VectorImages\CreateItemIcon.xaml.cs">
+      <DependentUpon>CreateItemIcon.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WPF\Resources\VectorImages\Button_NewFile.xaml.cs">
-      <DependentUpon>Button_NewFile.xaml</DependentUpon>
+    <Compile Include="WPF\Resources\VectorImages\NewFileIcon.xaml.cs">
+      <DependentUpon>NewFileIcon.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WPF\Resources\VectorImages\Button_OpenFile.xaml.cs">
-      <DependentUpon>Button_OpenFile.xaml</DependentUpon>
+    <Compile Include="WPF\Resources\VectorImages\OpenFileIcon.xaml.cs">
+      <DependentUpon>OpenFileIcon.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WPF\Resources\VectorImages\Button_RemoveItem.xaml.cs">
-      <DependentUpon>Button_RemoveItem.xaml</DependentUpon>
+    <Compile Include="WPF\Resources\VectorImages\RemoveItemIcon.xaml.cs">
+      <DependentUpon>RemoveItemIcon.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WPF\Resources\VectorImages\Button_SaveFile.xaml.cs">
-      <DependentUpon>Button_SaveFile.xaml</DependentUpon>
+    <Compile Include="WPF\Resources\VectorImages\SaveFileIcon.xaml.cs">
+      <DependentUpon>SaveFileIcon.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WPF\UI\Converters\BoolToVisibilityConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="GLoopEngine\Scheduler\" />
@@ -366,43 +379,47 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WPF\UI\Components\ContentTitle.xaml">
+    <Page Include="WPF\UI\Controls\EditListView\EditListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WPF\UI\Controls\EditTextBlock\EditTextBlock.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="WPF\UI\Components\FileManagerBar.xaml">
+    <Page Include="WPF\UI\Controls\FileManagerBar.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="WPF\UI\Components\ListManagerBar.xaml">
+    <Page Include="WPF\UI\Controls\ListManagerBar.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="WPF\Resources\VectorImages\Button_CopyMotion.xaml">
+    <Page Include="WPF\Resources\VectorImages\CopyIcon.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="WPF\Resources\VectorImages\Button_CreateFolder.xaml">
+    <Page Include="WPF\Resources\VectorImages\CreateFolderIcon.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="WPF\Resources\VectorImages\Button_CreateMotion.xaml">
+    <Page Include="WPF\Resources\VectorImages\CreateItemIcon.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="WPF\Resources\VectorImages\Button_NewFile.xaml">
+    <Page Include="WPF\Resources\VectorImages\NewFileIcon.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="WPF\Resources\VectorImages\Button_OpenFile.xaml">
+    <Page Include="WPF\Resources\VectorImages\OpenFileIcon.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="WPF\Resources\VectorImages\Button_RemoveItem.xaml">
+    <Page Include="WPF\Resources\VectorImages\RemoveItemIcon.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="WPF\Resources\VectorImages\Button_SaveFile.xaml">
+    <Page Include="WPF\Resources\VectorImages\SaveFileIcon.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

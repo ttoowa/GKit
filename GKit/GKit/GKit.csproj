@@ -55,6 +55,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\NodeDelegates.cs" />
     <Compile Include="Debug\GProfile.cs" />
     <Compile Include="GLoopEngine\GLoopSyncMode.cs" />
     <Compile Include="GLoopEngine\GLoopEngine.cs" />

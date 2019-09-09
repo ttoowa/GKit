@@ -12,7 +12,7 @@ using Microsoft.Win32;
 using SRect = System.Windows.Rect;
 
 
-namespace GKit {
+namespace GKit.WPF {
 	public static class BitmapUtility {
 		public static BitmapSource OpenImageFile() {
 			BitmapSource image;
