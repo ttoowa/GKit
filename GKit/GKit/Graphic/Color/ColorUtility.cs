@@ -164,6 +164,9 @@ namespace GKit {
 			} else {
 				saturation = 1f - (1f * min / max);
 				float delta = max - min;
+				if (Mathf.Abs(delta) < float.Epsilon) {
+					delta = float.Epsilon;
+				}
 				if (color.R == max) {
 					hue = (color.G - color.B) / delta;
 				} else if (color.G == max) {

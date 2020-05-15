@@ -31,7 +31,7 @@
 	</UserControl.Resources>
 	
 	<StackPanel Name="ListControlContext" Orientation="Horizontal" DockPanel.Dock="Top" Height="45" Background="#FF454545">
-		<Border Width="6"></Border>
+		<Border Width="2"></Border>
 		<Button x:Name="CreateItemButton" x:FieldModifier="public" Style="{StaticResource AccentButton}" VerticalAlignment="Bottom">
 			<Image:CreateItemIcon Style="{StaticResource ButtonImage}"/>
 		</Button>

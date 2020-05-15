@@ -268,6 +268,9 @@
     <Compile Include="..\GKit\System\Startup.cs">
       <Link>System\Startup.cs</Link>
     </Compile>
+    <Compile Include="..\GKit\System\Struct\AnchorPreset.cs">
+      <Link>System\Struct\AnchorPreset.cs</Link>
+    </Compile>
     <Compile Include="..\GKit\System\Struct\MotionValue.cs">
       <Link>System\Struct\MotionValue.cs</Link>
     </Compile>
@@ -291,6 +294,9 @@
     </Compile>
     <Compile Include="..\GKit\System\TrayIcon.cs">
       <Link>System\TrayIcon.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\System\ReflectionUtility.cs">
+      <Link>System\ReflectionUtility.cs</Link>
     </Compile>
     <Compile Include="..\GKit\Utility\BMath.cs">
       <Link>Utility\BMath.cs</Link>
@@ -321,19 +327,25 @@
     </Compile>
     <Compile Include="WPF\BitmapUtility.cs" />
     <Compile Include="WPF\IgnoreWindow.cs" />
+    <Compile Include="WPF\Resources\VectorImages\ExportIcon.xaml.cs">
+      <DependentUpon>ExportIcon.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WPF\Resources\VectorImages\ImportIcon.xaml.cs">
+      <DependentUpon>ImportIcon.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WPF\UI\Converters\BoolInvertConverter.cs" />
     <Compile Include="WPF\UI\Converters\GraphicConverters.cs" />
     <Compile Include="WPF\Resources\Styles\StyleResources.cs" />
     <Compile Include="WPF\Resources\Themes\ThemeType.cs" />
     <Compile Include="WPF\UIExtension.cs" />
-    <Compile Include="WPF\UI\Controls\EditListView\EditListView.xaml.cs">
-      <DependentUpon>EditListView.xaml</DependentUpon>
+    <Compile Include="WPF\UI\Controls\EditTreeView\EditTreeView.xaml.cs">
+      <DependentUpon>EditTreeView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WPF\UI\Controls\EditListView\IListFolder.cs" />
-    <Compile Include="WPF\UI\Controls\EditListView\IListItem.cs" />
-    <Compile Include="WPF\UI\Controls\EditListView\NodeDirection.cs" />
-    <Compile Include="WPF\UI\Controls\EditListView\NodeTarget.cs" />
-    <Compile Include="WPF\UI\Controls\EditListView\SelectedListItemSet.cs" />
+    <Compile Include="WPF\UI\Controls\EditTreeView\ITreeFolder.cs" />
+    <Compile Include="WPF\UI\Controls\EditTreeView\ITreeItem.cs" />
+    <Compile Include="WPF\UI\Controls\EditTreeView\NodeDirection.cs" />
+    <Compile Include="WPF\UI\Controls\EditTreeView\NodeTarget.cs" />
+    <Compile Include="WPF\UI\Controls\EditTreeView\SelectedListItemSet.cs" />
     <Compile Include="WPF\UI\Controls\EditTextBlock\EditTextBlock.xaml.cs">
       <DependentUpon>EditTextBlock.xaml</DependentUpon>
     </Compile>
@@ -366,6 +378,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WPF\UI\Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="WPF\Utility\ControlFindUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="GLoopEngine\Scheduler\" />
@@ -379,7 +392,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WPF\UI\Controls\EditListView\EditListView.xaml">
+    <Page Include="WPF\Resources\VectorImages\ExportIcon.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="WPF\Resources\VectorImages\ImportIcon.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="WPF\UI\Controls\EditTreeView\EditTreeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

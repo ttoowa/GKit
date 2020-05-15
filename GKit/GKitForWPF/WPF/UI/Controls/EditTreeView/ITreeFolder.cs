@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace GKit.WPF.UI.Controls {
-	public interface IListFolder : IListItem {
+	public interface ITreeFolder : ITreeItem {
 		UIElementCollection ChildItemCollection {
 			get;
 		}

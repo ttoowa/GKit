@@ -113,6 +113,8 @@
     <Compile Include="System\OS\WinUtility.cs" />
     <Compile Include="System\ProcessCheker.cs" />
     <Compile Include="System\ProcessUtility.cs" />
+    <Compile Include="System\ReflectionUtility.cs" />
+    <Compile Include="System\Struct\AnchorPreset.cs" />
     <Compile Include="System\Struct\MotionValue.cs" />
     <Compile Include="System\Struct\Property.cs" />
     <Compile Include="System\Time\TimeFormat.cs" />

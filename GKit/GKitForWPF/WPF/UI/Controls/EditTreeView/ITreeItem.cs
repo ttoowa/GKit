@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 
 namespace GKit.WPF.UI.Controls {
-	public interface IListItem {
+	public interface ITreeItem {
 		string DisplayName {
 			get;
 		}
@@ -15,7 +15,7 @@ namespace GKit.WPF.UI.Controls {
 			get;
 		}
 
-		IListFolder ParentItem {
+		ITreeFolder ParentItem {
 			get; set;
 		}
 

@@ -1,4 +1,5 @@
 ﻿using GKit;
+using GKit.WPF.UI.Converters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,18 +17,19 @@ using System.Windows.Shapes;
 
 
 namespace GKit.WPF.UI.Controls {
-	public delegate void ListItemDelegate(IListItem item);
-	public delegate void ListItemLoopDelegate(IListItem item, ref bool breakFlag);
-	public delegate void ListItemMoveDelegate(IListItem item, IListFolder oldParent, IListFolder newParent, int index);
+	public delegate void ListItemDelegate(ITreeItem item);
+	public delegate void ListItemLoopDelegate(ITreeItem item, ref bool breakFlag);
+	public delegate void ListItemMoveDelegate(ITreeItem item, ITreeFolder oldParent, ITreeFolder newParent, int index);
 	public delegate void MessageDelegate(string message);
 
 	/// <summary>
 	/// EditTreeView.xaml에 대한 상호 작용 논리
 	/// </summary>
-	public partial class EditListView : UserControl, IListFolder {
-		public static readonly DependencyProperty DraggingCursorBrushProperty = DependencyProperty.RegisterAttached(nameof(DraggingCursorBrush), typeof(Brush), typeof(EditListView), new PropertyMetadata("4DFFEF".ToBrush()));
-		public static readonly DependencyProperty AutoApplyItemMoveProperty = DependencyProperty.RegisterAttached(nameof(AutoApplyItemMove), typeof(bool), typeof(EditListView), new PropertyMetadata(true));
-		public static readonly DependencyProperty CanMultiSelectProperty = DependencyProperty.RegisterAttached(nameof(CanMultiSelect), typeof(bool), typeof(EditListView), new PropertyMetadata(true));
+	public partial class EditTreeView : UserControl, ITreeFolder {
+		public static readonly DependencyProperty DraggingCursorBrushProperty = DependencyProperty.RegisterAttached(nameof(DraggingCursorBrush), typeof(Brush), typeof(EditTreeView), new PropertyMetadata("4DFFEF".ToBrush()));
+		public static readonly DependencyProperty AutoApplyItemMoveProperty = DependencyProperty.RegisterAttached(nameof(AutoApplyItemMove), typeof(bool), typeof(EditTreeView), new PropertyMetadata(true));
+		public static readonly DependencyProperty CanMultiSelectProperty = DependencyProperty.RegisterAttached(nameof(CanMultiSelect), typeof(bool), typeof(EditTreeView), new PropertyMetadata(true));
+		public static readonly DependencyProperty ItemShadowVisibleProperty = DependencyProperty.RegisterAttached(nameof(ItemShadowVisible), typeof(bool), typeof(EditTreeView), new PropertyMetadata(false));
 
 		private const float SideEventRatio = 0.25f;
 		private const float CenterEventRatio = 1f - SideEventRatio * 2f;
@@ -49,6 +51,14 @@ namespace GKit.WPF.UI.Controls {
 				SetValue(CanMultiSelectProperty, value);
 			}
 		}
+		public bool ItemShadowVisible {
+			get {
+				return (bool)GetValue(ItemShadowVisibleProperty);
+			}
+			set {
+				SetValue(ItemShadowVisibleProperty, value);
+			}
+		}
 
 		//Info
 		public string DisplayName => "Root";
@@ -64,7 +74,7 @@ namespace GKit.WPF.UI.Controls {
 
 		//Node
 		public bool HasParentItem => false;
-		public IListFolder ParentItem {
+		public ITreeFolder ParentItem {
 			get {
 				return null;
 			}
@@ -74,28 +84,29 @@ namespace GKit.WPF.UI.Controls {
 		}
 		public UIElementCollection ChildItemCollection => ChildItemStackPanel.Children;
 		public FrameworkElement ItemContext => throw new NotImplementedException("Root의 ItemContext는 사용할 수 없습니다.");
-		public IListFolder ManualRootFolder {
+		public ITreeFolder ManualRootFolder {
 			get; set;
 		}
-		public IListFolder RootFolder => ManualRootFolder == null ? this : ManualRootFolder;
+		public ITreeFolder RootFolder => ManualRootFolder == null ? this : ManualRootFolder;
 
 		//Drag
+		private bool isMousePressed;
 		private bool onDragging;
 		private bool onMouseCapture;
 		private float dragStartOffset;
 		private FrameworkElement draggingClone;
-		private IListItem pressedItem;
+		private ITreeItem pressedItem;
 
 		//Select
 		public SelectedListItemSet SelectedItemSet {
 			get; private set;
 		}
-		public IListFolder SelectedItemParent {
+		public ITreeFolder SelectedItemParent {
 			get {
 				if (SelectedItemSet.Count == 1) {
-					IListItem item = SelectedItemSet.First;
-					if (item is IListFolder) {
-						return item as IListFolder;
+					ITreeItem item = SelectedItemSet.First;
+					if (item is ITreeFolder) {
+						return item as ITreeFolder;
 					} else {
 						return item.ParentItem;
 					}
@@ -107,7 +118,7 @@ namespace GKit.WPF.UI.Controls {
 		public event ListItemMoveDelegate ItemMoved;
 		public event MessageDelegate MessageOccured;
 
-		public EditListView() {
+		public EditTreeView() {
 			InitializeComponent();
 
 			InitMembers();
@@ -120,6 +131,9 @@ namespace GKit.WPF.UI.Controls {
 			SelectedItemSet = new SelectedListItemSet();
 		}
 		private void InitBindings() {
+			BoolToVisibilityConverter boolToVisibilityConverter = new BoolToVisibilityConverter();
+
+			ItemShadow.SetBinding(VisibilityProperty, new Binding(nameof(ItemShadowVisible)) { Source = this, Mode = BindingMode.OneWay, Converter = boolToVisibilityConverter });
 			DraggingCursor.SetBinding(Border.BackgroundProperty, new Binding(nameof(DraggingCursorBrush)) { Source = this });
 		}
 
@@ -128,7 +142,9 @@ namespace GKit.WPF.UI.Controls {
 			if (e.ChangedButton != MouseButton.Left)
 				return;
 
-			IListItem item = null;
+			isMousePressed = true;
+
+			ITreeItem item = null;
 			if (e.OriginalSource is FrameworkElement) {
 				item = GetPressedItem((FrameworkElement)e.OriginalSource);
 			}
@@ -142,7 +158,8 @@ namespace GKit.WPF.UI.Controls {
 					} else {
 						SelectedItemSet.AddSelectedItem(item);
 					}
-					pressedItem = SelectedItemSet.Last;
+					
+					pressedItem = SelectedItemSet.Count > 0 ? SelectedItemSet.Last : null;
 				} else if (CanMultiSelect && pressedItem != null && (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))) {
 					//Shift select
 					//pressedItem(Exclusive) ~ Item(Inclusive) 까지 선택한다.
@@ -162,7 +179,7 @@ namespace GKit.WPF.UI.Controls {
 			}
 		}
 		private void ItemContext_MouseMove(object sender, MouseEventArgs e) {
-			if (e.LeftButton != MouseButtonState.Pressed) {
+			if (isMousePressed && e.LeftButton != MouseButtonState.Pressed) {
 				ItemContext_MouseUp(sender, null);
 				return;
 			}
@@ -203,6 +220,8 @@ namespace GKit.WPF.UI.Controls {
 		private void ItemContext_MouseUp(object sender, MouseButtonEventArgs e) {
 			if ((e != null && e.ChangedButton != MouseButton.Left) || !onMouseCapture)
 				return;
+
+			isMousePressed = false;
 			onMouseCapture = false;
 
 			Mouse.Capture(null);
@@ -230,14 +249,14 @@ namespace GKit.WPF.UI.Controls {
 		public void SetDisplaySelected(bool isSelected) {
 		}
 
-		private void ShiftSelectItems(IListItem startItem, IListItem endItem) {
+		private void ShiftSelectItems(ITreeItem startItem, ITreeItem endItem) {
 			//Unselect
 			SelectedItemSet.UnselectItems();
 
 			//Select
 			SelectedItemSet.AddSelectedItem(startItem);
 
-			IListItem[] items = CollectItems();
+			ITreeItem[] items = CollectItems();
 			int startIndex = Array.IndexOf(items, startItem);
 			int endIndex = Array.IndexOf(items, endItem);
 			if (startIndex > endIndex) {
@@ -246,7 +265,7 @@ namespace GKit.WPF.UI.Controls {
 				startIndex = tempValue;
 			}
 			for (int i = startIndex; i <= endIndex; ++i) {
-				IListItem targetItem = items[i];
+				ITreeItem targetItem = items[i];
 				if (targetItem != startItem) {
 					if (SelectedItemSet.Contains(targetItem)) {
 						SelectedItemSet.RemoveSelectedItem(targetItem);
@@ -261,14 +280,14 @@ namespace GKit.WPF.UI.Controls {
 		public void ForeachItems(ListItemLoopDelegate nodeItemDelegate) {
 			ForeachItemsRecursion(this);
 
-			bool ForeachItemsRecursion(IListFolder folder) {
+			bool ForeachItemsRecursion(ITreeFolder folder) {
 				bool breakFlag = false;
 
-				foreach (IListItem item in folder.ChildItemCollection) {
+				foreach (ITreeItem item in folder.ChildItemCollection) {
 					nodeItemDelegate(item, ref breakFlag);
 
-					if (item is IListFolder) {
-						if (!ForeachItemsRecursion(item as IListFolder)) {
+					if (item is ITreeFolder) {
+						if (!ForeachItemsRecursion(item as ITreeFolder)) {
 							return false;
 						}
 					}
@@ -285,10 +304,10 @@ namespace GKit.WPF.UI.Controls {
 
 			ForeachItemsRecursion(this);
 
-			bool ForeachItemsRecursion(IListFolder folder) {
+			bool ForeachItemsRecursion(ITreeFolder folder) {
 				bool breakFlag = false;
 
-				foreach (IListItem item in folder.ChildItemCollection) {
+				foreach (ITreeItem item in folder.ChildItemCollection) {
 					//화면 영역 밖에 벗어나면 스킵
 					FrameworkElement itemView = (FrameworkElement)item;
 					float itemTop = (float)item.TranslatePoint(new Point(), ChildItemScrollViewer).Y;
@@ -298,8 +317,8 @@ namespace GKit.WPF.UI.Controls {
 
 					nodeItemDelegate(item, ref breakFlag);
 
-					if (item is IListFolder) {
-						if (!ForeachItemsRecursion(item as IListFolder)) {
+					if (item is ITreeFolder) {
+						if (!ForeachItemsRecursion(item as ITreeFolder)) {
 							return false;
 						}
 					}
@@ -319,7 +338,8 @@ namespace GKit.WPF.UI.Controls {
 
 			draggingClone = (FrameworkElement)Activator.CreateInstance(pressedItem.GetType());
 			draggingClone.IsHitTestVisible = false;
-			((IListItem)draggingClone).SetDisplayName(((IListItem)refItem).DisplayName);
+			draggingClone.VerticalAlignment = VerticalAlignment.Top;
+			((ITreeItem)draggingClone).SetDisplayName(((ITreeItem)refItem).DisplayName);
 			ContentGrid.Children.Add(draggingClone);
 		}
 		private void RemoveDraggingClone() {
@@ -359,12 +379,12 @@ namespace GKit.WPF.UI.Controls {
 			if (target == null)
 				return false;
 
-			IListFolder[] selectedFolders = selectedItemSet
-				.Where(item => item is IListFolder)
-				.Select(item => item as IListFolder).ToArray();
+			ITreeFolder[] selectedFolders = selectedItemSet
+				.Where(item => item is ITreeFolder)
+				.Select(item => item as ITreeFolder).ToArray();
 
 			//자신 내부에 이동시도시 Reject
-			foreach (IListFolder folder in selectedFolders) {
+			foreach (ITreeFolder folder in selectedFolders) {
 				if (folder == target.node)
 					return false;
 
@@ -375,18 +395,18 @@ namespace GKit.WPF.UI.Controls {
 			}
 
 			//정렬
-			IListItem[] sortedSelectedItems = CollectSelectedItems();
+			ITreeItem[] sortedSelectedItems = CollectSelectedItems();
 
 			//이동
-			if (target.node is IListFolder && target.direction == NodeDirection.Bottom && ((IListFolder)target.node).ChildItemCollection.Count > 0) {
+			if (target.node is ITreeFolder && target.direction == NodeDirection.Bottom && ((ITreeFolder)target.node).ChildItemCollection.Count > 0) {
 				target.direction = NodeDirection.InnerTop;
 			}
 			if (target.direction == NodeDirection.Bottom || target.direction == NodeDirection.InnerTop) {
 				sortedSelectedItems = sortedSelectedItems.Reverse().ToArray();
 			}
-			foreach (IListItem item in sortedSelectedItems) {
-				IListFolder oldParent = item.ParentItem;
-				IListFolder newParent = null;
+			foreach (ITreeItem item in sortedSelectedItems) {
+				ITreeFolder oldParent = item.ParentItem;
+				ITreeFolder newParent = null;
 				int index = -1;
 
 				FrameworkElement uiItem = (FrameworkElement)item;
@@ -399,11 +419,11 @@ namespace GKit.WPF.UI.Controls {
 
 				if (target.direction == NodeDirection.InnerTop) {
 					//폴더 내부로
-					newParent = target.node as IListFolder;
+					newParent = target.node as ITreeFolder;
 					index = 0;
 				} else if (target.direction == NodeDirection.InnerBottom) {
 					//폴더 내부로
-					newParent = target.node as IListFolder;
+					newParent = target.node as ITreeFolder;
 					index = newParent.ChildItemCollection.Count;
 				} else {
 					//아이템 위아래로
@@ -423,54 +443,54 @@ namespace GKit.WPF.UI.Controls {
 		}
 
 		//Utility
-		private bool IsContainsChildRecursive(IListFolder folder, IListItem target) {
-			foreach (IListItem childItem in folder.ChildItemCollection) {
+		private bool IsContainsChildRecursive(ITreeFolder folder, ITreeItem target) {
+			foreach (ITreeItem childItem in folder.ChildItemCollection) {
 				if (childItem == target) {
 					return true;
-				} else if (childItem is IListFolder) {
+				} else if (childItem is ITreeFolder) {
 					//Recursion
-					if (IsContainsChildRecursive(childItem as IListFolder, target)) {
+					if (IsContainsChildRecursive(childItem as ITreeFolder, target)) {
 						return true;
 					}
 				}
 			}
 			return false;
 		}
-		private IListItem[] CollectSelectedItems() {
-			List<IListItem> resultList = new List<IListItem>();
+		private ITreeItem[] CollectSelectedItems() {
+			List<ITreeItem> resultList = new List<ITreeItem>();
 
 			CollectSelectedItemsRecursion(this);
 
 			return resultList.ToArray();
 
-			void CollectSelectedItemsRecursion(IListItem item) {
+			void CollectSelectedItemsRecursion(ITreeItem item) {
 				//Collect
 				if (SelectedItemSet.Contains(item)) {
 					resultList.Add(item);
 				}
 
 				//Recursion
-				if (item is IListFolder) {
-					foreach (IListItem childItem in ((IListFolder)item).ChildItemCollection) {
+				if (item is ITreeFolder) {
+					foreach (ITreeItem childItem in ((ITreeFolder)item).ChildItemCollection) {
 						CollectSelectedItemsRecursion(childItem);
 					}
 				}
 			}
 		}
-		private IListItem[] CollectItems() {
-			List<IListItem> resultList = new List<IListItem>();
+		private ITreeItem[] CollectItems() {
+			List<ITreeItem> resultList = new List<ITreeItem>();
 
 			CollectItemsRecursion(this);
 
 			return resultList.ToArray();
 
-			void CollectItemsRecursion(IListItem item) {
+			void CollectItemsRecursion(ITreeItem item) {
 				//Collect
 				resultList.Add(item);
 
 				//Recursion
-				if (item is IListFolder) {
-					foreach (IListItem childItem in ((IListFolder)item).ChildItemCollection) {
+				if (item is ITreeFolder) {
+					foreach (ITreeItem childItem in ((ITreeFolder)item).ChildItemCollection) {
 						CollectItemsRecursion(childItem);
 					}
 				}
@@ -493,7 +513,7 @@ namespace GKit.WPF.UI.Controls {
 
 			if (target == null) {
 				//성능을 위해 탐색하면서 SetDraggingCursorPosition을 같이 호출합니다.
-				ForeachItemsOptimize((IListItem item, ref bool breakFlag) => {
+				ForeachItemsOptimize((ITreeItem item, ref bool breakFlag) => {
 					if (item != pressedItem) {
 						float top = (float)item.TranslatePoint(new Point(0, 0), ChildItemScrollViewer).Y;
 						float diff = cursorPosY - top;
@@ -502,7 +522,7 @@ namespace GKit.WPF.UI.Controls {
 						if (diff > 0f && diff < itemHeight) {
 							target = new NodeTarget(item);
 
-							if (item is IListFolder) {
+							if (item is ITreeFolder) {
 								//Folder
 								float sideEventHeight = itemHeight * SideEventRatio;
 								float centerEventHeight = itemHeight * CenterEventRatio;
@@ -547,12 +567,12 @@ namespace GKit.WPF.UI.Controls {
 			return target;
 		}
 
-		private IListItem GetPressedItem(FrameworkElement pressedElement) {
+		private ITreeItem GetPressedItem(FrameworkElement pressedElement) {
 			//부모 트리로 Item이 나올 때까지 탐색하는 함수이다.
 			DependencyObject parent = pressedElement.Parent;
 
-			if (pressedElement is IListItem) {
-				return pressedElement as IListItem;
+			if (pressedElement is ITreeItem) {
+				return pressedElement as ITreeItem;
 			} else if (parent != null && !(parent is Window) && parent is FrameworkElement) {
 				return GetPressedItem((FrameworkElement)parent);
 			} else {

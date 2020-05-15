@@ -19,6 +19,16 @@ namespace GKit.WPF {
 	public static class UIExtension {
 		private const float DefaultCoverValue = 0.1f;
 
+		public static void RegisterClickEvent(this Button button, Action action) {
+			button.Click += (object sender, RoutedEventArgs e) => { action?.Invoke(); };
+		}
+		public static void RegisterClickEvent(this Button button, ActionEvent actionEvent) {
+			button.Click += (object sender, RoutedEventArgs e) => { actionEvent?.Invoke(); };
+		}
+		public static void RegisterClickEvent(this Button button, RoutedEventHandler handler) {
+			button.Click += (object sender, RoutedEventArgs e) => { handler.Invoke(sender, e); };
+		}
+
 		public static void SetOnClick(this FrameworkElement control, Action action) {
 			control.MouseLeftButtonDown += (object sender, MouseButtonEventArgs e) => {
 				MouseInput.Left.OnUpOnce += () => {

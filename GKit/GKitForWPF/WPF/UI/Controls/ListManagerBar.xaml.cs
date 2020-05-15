@@ -58,28 +58,33 @@ namespace GKit.WPF.UI.Controls {
 			}
 		}
 
-		public event RoutedEventHandler CreateItemButtonClick;
-		public event RoutedEventHandler CreateFolderButtonClick;
-		public event RoutedEventHandler CopyItemButtonClick;
-		public event RoutedEventHandler RemoveItemButtonClick;
+		public ActionEvent CreateItemButtonClick = new ActionEvent();
+		public ActionEvent CreateFolderButtonClick = new ActionEvent();
+		public ActionEvent CopyItemButtonClick = new ActionEvent();
+		public ActionEvent RemoveItemButtonClick = new ActionEvent();
 
 		public ListManagerBar() {
 			InitializeComponent();
+
+			if (this.IsDesignMode())
+				return;
 
 			InitBindings();
 			RegisterEvents();
 		}
 		private void InitBindings() {
-			CreateItemButton.SetBinding(Button.VisibilityProperty, new Binding(nameof(CreateItemButtonVisible)) { Source = this, Mode = BindingMode.OneWay, Converter = new BoolToVisibilityConverter() });
-			CreateFolderButton.SetBinding(Button.VisibilityProperty, new Binding(nameof(CreateFolderButtonVisible)) {  Source = this, Mode = BindingMode.OneWay, Converter = new BoolToVisibilityConverter() });
-			CopyItemButton.SetBinding(Button.VisibilityProperty, new Binding(nameof(CopyItemButtonVisible)) {  Source = this, Mode = BindingMode.OneWay, Converter = new BoolToVisibilityConverter() });
-			RemoveItemButton.SetBinding(Button.VisibilityProperty, new Binding(nameof(RemoveItemButtonVisible)) {  Source = this, Mode = BindingMode.OneWay, Converter = new BoolToVisibilityConverter() });
+			BoolToVisibilityConverter boolToVisibilityConverter = new BoolToVisibilityConverter();
+
+			CreateItemButton.SetBinding(Button.VisibilityProperty, new Binding(nameof(CreateItemButtonVisible)) { Source = this, Mode = BindingMode.OneWay, Converter = boolToVisibilityConverter });
+			CreateFolderButton.SetBinding(Button.VisibilityProperty, new Binding(nameof(CreateFolderButtonVisible)) {  Source = this, Mode = BindingMode.OneWay, Converter = boolToVisibilityConverter });
+			CopyItemButton.SetBinding(Button.VisibilityProperty, new Binding(nameof(CopyItemButtonVisible)) {  Source = this, Mode = BindingMode.OneWay, Converter = boolToVisibilityConverter });
+			RemoveItemButton.SetBinding(Button.VisibilityProperty, new Binding(nameof(RemoveItemButtonVisible)) {  Source = this, Mode = BindingMode.OneWay, Converter = boolToVisibilityConverter });
 		}
 		private void RegisterEvents() {
-			CreateItemButton.Click += (object sender, RoutedEventArgs e) => { CreateItemButtonClick(sender, e); };
-			CreateFolderButton.Click += (object sender, RoutedEventArgs e) => { CreateFolderButtonClick(sender, e); };
-			CopyItemButton.Click += (object sender, RoutedEventArgs e) => { CopyItemButtonClick(sender, e); };
-			RemoveItemButton.Click += (object sender, RoutedEventArgs e) => { RemoveItemButtonClick(sender, e); };
+			CreateItemButton.RegisterClickEvent(CreateItemButtonClick);
+			CreateFolderButton.RegisterClickEvent(CreateFolderButtonClick);
+			CopyItemButton.RegisterClickEvent(CopyItemButtonClick);
+			RemoveItemButton.RegisterClickEvent(RemoveItemButtonClick);
 		}
 	}
 }

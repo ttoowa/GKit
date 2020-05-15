@@ -9,7 +9,7 @@ namespace GKit.WPF.Resources {
 	public static class StyleResource {
 		internal const string ThemePath = "pack://application:,,,/GKitForWPF;component/WPF/Resources/Themes/";
 		public const string FlatTheme = ThemePath + "FlatTheme.xaml";
-
+		
 		public static void Apply(ResourceDictionary appResource, ThemeType themeType) {
 			string themeUri;
 			switch(themeType) {

@@ -83,7 +83,9 @@ namespace GKit {
 		public bool registerInput = true;
 		public bool autoStart = true;
 #else
-		private Task mainLoopTask;
+		public Task MainLoopTask {
+			get; private set;
+		}
 		private int fps = 60;
 
 		public GLoopEngine(int FPS = 60, bool registInput = true)
@@ -214,7 +216,7 @@ namespace GKit {
 				return;
 
 			IsRunning = true;
-			mainLoopTask = LoopInvokeRoutine();
+			MainLoopTask = LoopInvokeRoutine();
 		}
 		public async void StopLoop(bool clearTask = false) {
 			if (!IsRunning)
@@ -222,8 +224,8 @@ namespace GKit {
 
 			IsRunning = false;
 
-			if (mainLoopTask != null) {
-				await mainLoopTask;
+			if (MainLoopTask != null) {
+				await MainLoopTask;
 			}
 			if (clearTask) {
 				ClearTask();

@@ -277,6 +277,9 @@
     <Compile Include="..\GKit\System\Startup.cs">
       <Link>System\Startup.cs</Link>
     </Compile>
+    <Compile Include="..\GKit\System\Struct\AnchorPreset.cs">
+      <Link>System\Struct\AnchorPreset.cs</Link>
+    </Compile>
     <Compile Include="..\GKit\System\Struct\MotionValue.cs">
       <Link>System\Struct\MotionValue.cs</Link>
     </Compile>
@@ -300,6 +303,9 @@
     </Compile>
     <Compile Include="..\GKit\System\TrayIcon.cs">
       <Link>System\TrayIcon.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\System\ReflectionUtility.cs">
+      <Link>System\ReflectionUtility.cs</Link>
     </Compile>
     <Compile Include="..\GKit\Utility\BMath.cs">
       <Link>Utility\BMath.cs</Link>
@@ -329,6 +335,7 @@
     <Compile Include="Unity\Debug\FpsDisplayer.cs" />
     <Compile Include="Unity\FpsInitializer.cs" />
     <Compile Include="Unity\GameObjectDisabler.cs" />
+    <Compile Include="Unity\Transform\AnchorPresets.cs" />
     <Compile Include="Unity\Transform\TransformUtility.cs" />
     <Compile Include="Unity\Transform\Alignment.cs" />
     <Compile Include="Unity\Transform\UiTransform.cs" />

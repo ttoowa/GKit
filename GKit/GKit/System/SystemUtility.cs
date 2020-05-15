@@ -64,5 +64,9 @@ namespace GKit {
 		public static T Cast<T> (this object obj) {
 			return (T)obj;
 		}
+
+		public static bool HasTrueValue(this bool? value) {
+			return value.HasValue && value.Value;
+		}
 	}
 }
