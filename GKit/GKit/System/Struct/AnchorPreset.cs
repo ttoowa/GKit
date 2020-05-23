@@ -1,5 +1,5 @@
 ﻿namespace GKit {
-	public enum AnchorPresets {
+	public enum AnchorPreset {
 		TopLeft,
 		TopMid,
 		TopRight,

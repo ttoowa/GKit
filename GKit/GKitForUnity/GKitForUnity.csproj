@@ -335,7 +335,6 @@
     <Compile Include="Unity\Debug\FpsDisplayer.cs" />
     <Compile Include="Unity\FpsInitializer.cs" />
     <Compile Include="Unity\GameObjectDisabler.cs" />
-    <Compile Include="Unity\Transform\AnchorPresets.cs" />
     <Compile Include="Unity\Transform\TransformUtility.cs" />
     <Compile Include="Unity\Transform\Alignment.cs" />
     <Compile Include="Unity\Transform\UiTransform.cs" />

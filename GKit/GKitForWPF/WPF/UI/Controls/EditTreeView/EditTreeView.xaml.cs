@@ -244,6 +244,10 @@ namespace GKit.WPF.UI.Controls {
 
 		}
 
+		private void Background_MouseDown(object sender, MouseButtonEventArgs e) {
+			SelectedItemSet.UnselectItems();
+		}
+
 		public void SetDisplayName(string name) {
 		}
 		public void SetDisplaySelected(bool isSelected) {
@@ -360,20 +364,6 @@ namespace GKit.WPF.UI.Controls {
 			DraggingCursor.Margin = new Thickness(0d, top, 0d, 0d);
 			DraggingCursor.Height = height;
 		}
-
-		//Node
-		//private void AddItemToSelectedPosition(IListItem item) {
-		//	IListFolder selectedItemParent = SelectedItemParent;
-
-		//	selectedItemParent.ChildItemCollection.Add(item as UIElement);
-		//	item.ParentItem = selectedItemParent;
-		//}
-		//private void AddFolderToSelectedPosition(IListFolder folder) {
-		//	IListFolder selectedItemParent = SelectedItemParent;
-
-		//	selectedItemParent.ChildItemCollection.Add(folder as UIElement);
-		//	folder.ParentItem = selectedItemParent;
-		//}
 
 		private bool MoveSelectedItems(SelectedListItemSet selectedItemSet, NodeTarget target) {
 			if (target == null)

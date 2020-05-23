@@ -333,6 +333,12 @@
     <Compile Include="WPF\Resources\VectorImages\ImportIcon.xaml.cs">
       <DependentUpon>ImportIcon.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WPF\UI\Behaviors\SmoothScrollBehavior.cs" />
+    <Compile Include="WPF\UI\Controls\ItemShadow.xaml.cs">
+      <DependentUpon>ItemShadow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WPF\UI\Converters\DoubleToHalfRadiusConverter.cs" />
+    <Compile Include="WPF\UI\Converters\HalfConverter.cs" />
     <Compile Include="WPF\UI\Converters\BoolInvertConverter.cs" />
     <Compile Include="WPF\UI\Converters\GraphicConverters.cs" />
     <Compile Include="WPF\Resources\Styles\StyleResources.cs" />
@@ -378,7 +384,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WPF\UI\Converters\BoolToVisibilityConverter.cs" />
-    <Compile Include="WPF\Utility\ControlFindUtility.cs" />
+    <Compile Include="WPF\Utility\FindControlUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="GLoopEngine\Scheduler\" />
@@ -411,6 +417,10 @@
     <Page Include="WPF\UI\Controls\FileManagerBar.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="WPF\UI\Controls\ItemShadow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WPF\UI\Controls\ListManagerBar.xaml">
       <Generator>MSBuild:Compile</Generator>

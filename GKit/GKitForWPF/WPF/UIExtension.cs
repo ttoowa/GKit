@@ -29,7 +29,7 @@ namespace GKit.WPF {
 			button.Click += (object sender, RoutedEventArgs e) => { handler.Invoke(sender, e); };
 		}
 
-		public static void SetOnClick(this FrameworkElement control, Action action) {
+		public static void RegisterOnClick(this FrameworkElement control, Action action) {
 			control.MouseLeftButtonDown += (object sender, MouseButtonEventArgs e) => {
 				MouseInput.Left.OnUpOnce += () => {
 					if (control.IsMouseOver) {
@@ -38,7 +38,7 @@ namespace GKit.WPF {
 				};
 			};
 		}
-		public static void SetOnRightClick(this FrameworkElement control, Action action) {
+		public static void RegisterOnRightClick(this FrameworkElement control, Action action) {
 			control.MouseRightButtonDown += (object sender, MouseButtonEventArgs e) => {
 				MouseInput.Right.OnUpOnce += () => {
 					if (control.IsMouseOver) {
@@ -47,7 +47,7 @@ namespace GKit.WPF {
 				};
 			};
 		}
-		public static void SetDoubleClickEvent(this FrameworkElement control, Action action) {
+		public static void RegisterDoubleClickEvent(this FrameworkElement control, Action action) {
 			control.MouseLeftButtonDown += (object sender, MouseButtonEventArgs e) => {
 				if (e.ClickCount == 2) {
 					action?.Invoke();
@@ -55,32 +55,32 @@ namespace GKit.WPF {
 			};
 		}
 
-		public static void SetButtonReaction(this Shape control, float value = DefaultCoverValue) {
-			control.SetButtonReaction(
+		public static void RegisterButtonReaction(this Shape control, float value = DefaultCoverValue) {
+			control.RegisterButtonReaction(
 			GetCoverColor(0f).ToBrush(),
 			GetCoverColor(value).ToBrush(),
 			GetCoverColor(-value).ToBrush());
 		}
-		public static void SetButtonReaction(this Border control, float value = DefaultCoverValue) {
-			control.SetButtonReaction(
+		public static void RegisterButtonReaction(this Border control, float value = DefaultCoverValue) {
+			control.RegisterButtonReaction(
 			GetCoverColor(0f).ToBrush(),
 			GetCoverColor(value).ToBrush(),
 			GetCoverColor(-value).ToBrush());
 		}
-		public static void SetButtonReaction(this Panel control, float value = DefaultCoverValue) {
-			control.SetButtonReaction(
+		public static void RegisterButtonReaction(this Panel control, float value = DefaultCoverValue) {
+			control.RegisterButtonReaction(
 			GetCoverColor(0f).ToBrush(),
 			GetCoverColor(value).ToBrush(),
 			GetCoverColor(-value).ToBrush());
 		}
-		public static void SetButtonReaction(this Control control, float value = DefaultCoverValue) {
-			control.SetButtonReaction(
+		public static void RegisterButtonReaction(this Control control, float value = DefaultCoverValue) {
+			control.RegisterButtonReaction(
 			GetCoverColor(0f).ToBrush(),
 			GetCoverColor(value).ToBrush(),
 			GetCoverColor(-value).ToBrush());
 		}
-		public static void SetButtonReaction(this Control control, Shape transparentCover, float value = DefaultCoverValue) {
-			control.SetButtonReaction(() => {
+		public static void RegisterButtonReaction(this Control control, Shape transparentCover, float value = DefaultCoverValue) {
+			control.RegisterButtonReaction(() => {
 				transparentCover.Fill = GetCoverColor(0f).ToBrush();
 			}, () => {
 				transparentCover.Fill = GetCoverColor(value).ToBrush();
@@ -88,8 +88,8 @@ namespace GKit.WPF {
 				transparentCover.Fill = GetCoverColor(-value).ToBrush();
 			});
 		}
-		public static void SetButtonReaction(this Control control, Border transparentCover, float value = DefaultCoverValue) {
-			control.SetButtonReaction(() => {
+		public static void RegisterButtonReaction(this Control control, Border transparentCover, float value = DefaultCoverValue) {
+			control.RegisterButtonReaction(() => {
 				transparentCover.Background = GetCoverColor(0f).ToBrush();
 			}, () => {
 				transparentCover.Background = GetCoverColor(value).ToBrush();
@@ -97,8 +97,8 @@ namespace GKit.WPF {
 				transparentCover.Background = GetCoverColor(-value).ToBrush();
 			});
 		}
-		public static void SetButtonReaction(this Control control, Panel transparentCover, float value = DefaultCoverValue) {
-			control.SetButtonReaction(() => {
+		public static void RegisterButtonReaction(this Control control, Panel transparentCover, float value = DefaultCoverValue) {
+			control.RegisterButtonReaction(() => {
 				transparentCover.Background = GetCoverColor(0f).ToBrush();
 			}, () => {
 				transparentCover.Background = GetCoverColor(value).ToBrush();
@@ -106,8 +106,8 @@ namespace GKit.WPF {
 				transparentCover.Background = GetCoverColor(-value).ToBrush();
 			});
 		}
-		public static void SetButtonReaction(this Control control, Control transparentCover, float value = DefaultCoverValue) {
-			control.SetButtonReaction(() => {
+		public static void RegisterButtonReaction(this Control control, Control transparentCover, float value = DefaultCoverValue) {
+			control.RegisterButtonReaction(() => {
 				transparentCover.Background = GetCoverColor(0f).ToBrush();
 			}, () => {
 				transparentCover.Background = GetCoverColor(value).ToBrush();
@@ -115,8 +115,8 @@ namespace GKit.WPF {
 				transparentCover.Background = GetCoverColor(-value).ToBrush();
 			});
 		}
-		public static void SetButtonReaction(this Panel control, Shape transparentCover, float value = DefaultCoverValue) {
-			control.SetButtonReaction(() => {
+		public static void RegisterButtonReaction(this Panel control, Shape transparentCover, float value = DefaultCoverValue) {
+			control.RegisterButtonReaction(() => {
 				transparentCover.Fill = GetCoverColor(0f).ToBrush();
 			}, () => {
 				transparentCover.Fill = GetCoverColor(value).ToBrush();
@@ -124,8 +124,8 @@ namespace GKit.WPF {
 				transparentCover.Fill = GetCoverColor(-value).ToBrush();
 			});
 		}
-		public static void SetButtonReaction(this Panel control, Border transparentCover, float value = DefaultCoverValue) {
-			control.SetButtonReaction(() => {
+		public static void RegisterButtonReaction(this Panel control, Border transparentCover, float value = DefaultCoverValue) {
+			control.RegisterButtonReaction(() => {
 				transparentCover.Background = GetCoverColor(0f).ToBrush();
 			}, () => {
 				transparentCover.Background = GetCoverColor(value).ToBrush();
@@ -133,8 +133,8 @@ namespace GKit.WPF {
 				transparentCover.Background = GetCoverColor(-value).ToBrush();
 			});
 		}
-		public static void SetButtonReaction(this Panel control, Panel transparentCover, float value = DefaultCoverValue) {
-			control.SetButtonReaction(() => {
+		public static void RegisterButtonReaction(this Panel control, Panel transparentCover, float value = DefaultCoverValue) {
+			control.RegisterButtonReaction(() => {
 				transparentCover.Background = GetCoverColor(0f).ToBrush();
 			}, () => {
 				transparentCover.Background = GetCoverColor(value).ToBrush();
@@ -142,8 +142,8 @@ namespace GKit.WPF {
 				transparentCover.Background = GetCoverColor(-value).ToBrush();
 			});
 		}
-		public static void SetButtonReaction(this Panel control, Control transparentCover, float value = DefaultCoverValue) {
-			control.SetButtonReaction(() => {
+		public static void RegisterButtonReaction(this Panel control, Control transparentCover, float value = DefaultCoverValue) {
+			control.RegisterButtonReaction(() => {
 				transparentCover.Background = GetCoverColor(0f).ToBrush();
 			}, () => {
 				transparentCover.Background = GetCoverColor(value).ToBrush();
@@ -151,8 +151,8 @@ namespace GKit.WPF {
 				transparentCover.Background = GetCoverColor(-value).ToBrush();
 			});
 		}
-		public static void SetButtonReaction(this Shape control, Shape transparentCover, float value = DefaultCoverValue) {
-			control.SetButtonReaction(() => {
+		public static void RegisterButtonReaction(this Shape control, Shape transparentCover, float value = DefaultCoverValue) {
+			control.RegisterButtonReaction(() => {
 				transparentCover.Fill = GetCoverColor(0f).ToBrush();
 			}, () => {
 				transparentCover.Fill = GetCoverColor(value).ToBrush();
@@ -160,8 +160,8 @@ namespace GKit.WPF {
 				transparentCover.Fill = GetCoverColor(-value).ToBrush();
 			});
 		}
-		public static void SetButtonReaction(this Shape control, Border transparentCover, float value = DefaultCoverValue) {
-			control.SetButtonReaction(() => {
+		public static void RegisterButtonReaction(this Shape control, Border transparentCover, float value = DefaultCoverValue) {
+			control.RegisterButtonReaction(() => {
 				transparentCover.Background = GetCoverColor(0f).ToBrush();
 			}, () => {
 				transparentCover.Background = GetCoverColor(value).ToBrush();
@@ -169,8 +169,8 @@ namespace GKit.WPF {
 				transparentCover.Background = GetCoverColor(-value).ToBrush();
 			});
 		}
-		public static void SetButtonReaction(this Shape control, Panel transparentCover, float value = DefaultCoverValue) {
-			control.SetButtonReaction(() => {
+		public static void RegisterButtonReaction(this Shape control, Panel transparentCover, float value = DefaultCoverValue) {
+			control.RegisterButtonReaction(() => {
 				transparentCover.Background = GetCoverColor(0f).ToBrush();
 			}, () => {
 				transparentCover.Background = GetCoverColor(value).ToBrush();
@@ -178,8 +178,8 @@ namespace GKit.WPF {
 				transparentCover.Background = GetCoverColor(-value).ToBrush();
 			});
 		}
-		public static void SetButtonReaction(this Shape control, Control transparentCover, float value = DefaultCoverValue) {
-			control.SetButtonReaction(() => {
+		public static void RegisterButtonReaction(this Shape control, Control transparentCover, float value = DefaultCoverValue) {
+			control.RegisterButtonReaction(() => {
 				transparentCover.Background = GetCoverColor(0f).ToBrush();
 			}, () => {
 				transparentCover.Background = GetCoverColor(value).ToBrush();
@@ -187,8 +187,8 @@ namespace GKit.WPF {
 				transparentCover.Background = GetCoverColor(-value).ToBrush();
 			});
 		}
-		public static void SetButtonReaction(this Border control, Shape transparentCover, float value = DefaultCoverValue) {
-			control.SetButtonReaction(() => {
+		public static void RegisterButtonReaction(this Border control, Shape transparentCover, float value = DefaultCoverValue) {
+			control.RegisterButtonReaction(() => {
 				transparentCover.Fill = GetCoverColor(0f).ToBrush();
 			}, () => {
 				transparentCover.Fill = GetCoverColor(value).ToBrush();
@@ -196,8 +196,8 @@ namespace GKit.WPF {
 				transparentCover.Fill = GetCoverColor(-value).ToBrush();
 			});
 		}
-		public static void SetButtonReaction(this Border control, Border transparentCover, float value = DefaultCoverValue) {
-			control.SetButtonReaction(() => {
+		public static void RegisterButtonReaction(this Border control, Border transparentCover, float value = DefaultCoverValue) {
+			control.RegisterButtonReaction(() => {
 				transparentCover.Background = GetCoverColor(0f).ToBrush();
 			}, () => {
 				transparentCover.Background = GetCoverColor(value).ToBrush();
@@ -205,8 +205,8 @@ namespace GKit.WPF {
 				transparentCover.Background = GetCoverColor(-value).ToBrush();
 			});
 		}
-		public static void SetButtonReaction(this Border control, Panel transparentCover, float value = DefaultCoverValue) {
-			control.SetButtonReaction(() => {
+		public static void RegisterButtonReaction(this Border control, Panel transparentCover, float value = DefaultCoverValue) {
+			control.RegisterButtonReaction(() => {
 				transparentCover.Background = GetCoverColor(0f).ToBrush();
 			}, () => {
 				transparentCover.Background = GetCoverColor(value).ToBrush();
@@ -214,8 +214,8 @@ namespace GKit.WPF {
 				transparentCover.Background = GetCoverColor(-value).ToBrush();
 			});
 		}
-		public static void SetButtonReaction(this Border control, Control transparentCover, float value = DefaultCoverValue) {
-			control.SetButtonReaction(() => {
+		public static void RegisterButtonReaction(this Border control, Control transparentCover, float value = DefaultCoverValue) {
+			control.RegisterButtonReaction(() => {
 				transparentCover.Background = GetCoverColor(0f).ToBrush();
 			}, () => {
 				transparentCover.Background = GetCoverColor(value).ToBrush();
@@ -223,7 +223,7 @@ namespace GKit.WPF {
 				transparentCover.Background = GetCoverColor(-value).ToBrush();
 			});
 		}
-		public static void SetButtonReaction(this Shape control, Action on, Action over, Action down) {
+		public static void RegisterButtonReaction(this Shape control, Action on, Action over, Action down) {
 			control.MouseLeftButtonUp += (object sender, MouseButtonEventArgs e) => {
 				if (control.IsMouseOver) {
 					over.TryInvoke();
@@ -247,13 +247,13 @@ namespace GKit.WPF {
 				control.CaptureMouse();
 			};
 		}
-		public static void SetButtonReaction(this Shape control, Color on, Color over, Color down) {
+		public static void RegisterButtonReaction(this Shape control, Color on, Color over, Color down) {
 			SolidColorBrush onBrush = new SolidColorBrush(on);
 			SolidColorBrush overBrush = new SolidColorBrush(over);
 			SolidColorBrush downBrush = new SolidColorBrush(down);
-			SetButtonReaction(control, onBrush, overBrush, downBrush);
+			RegisterButtonReaction(control, onBrush, overBrush, downBrush);
 		}
-		public static void SetButtonReaction(this Shape control, SolidColorBrush on, SolidColorBrush over, SolidColorBrush down) {
+		public static void RegisterButtonReaction(this Shape control, SolidColorBrush on, SolidColorBrush over, SolidColorBrush down) {
 			control.MouseLeftButtonUp += (object sender, MouseButtonEventArgs e) => {
 				if (control.IsMouseOver) {
 					control.Fill = over;
@@ -277,7 +277,7 @@ namespace GKit.WPF {
 				control.CaptureMouse();
 			};
 		}
-		public static void SetButtonReaction(this Border control, Action on, Action over, Action down) {
+		public static void RegisterButtonReaction(this Border control, Action on, Action over, Action down) {
 			control.MouseLeftButtonUp += (object sender, MouseButtonEventArgs e) => {
 				if (control.IsMouseOver) {
 					over.TryInvoke();
@@ -299,13 +299,13 @@ namespace GKit.WPF {
 				control.CaptureMouse();
 			};
 		}
-		public static void SetButtonReaction(this Border control, Color on, Color over, Color down) {
+		public static void RegisterButtonReaction(this Border control, Color on, Color over, Color down) {
 			SolidColorBrush onBrush = new SolidColorBrush(on);
 			SolidColorBrush overBrush = new SolidColorBrush(over);
 			SolidColorBrush downBrush = new SolidColorBrush(down);
-			SetButtonReaction(control, onBrush, overBrush, downBrush);
+			RegisterButtonReaction(control, onBrush, overBrush, downBrush);
 		}
-		public static void SetButtonReaction(this Border control, SolidColorBrush on, SolidColorBrush over, SolidColorBrush down) {
+		public static void RegisterButtonReaction(this Border control, SolidColorBrush on, SolidColorBrush over, SolidColorBrush down) {
 			control.MouseLeftButtonUp += (object sender, MouseButtonEventArgs e) => {
 				if (control.IsMouseOver) {
 					control.Background = over;
@@ -327,7 +327,7 @@ namespace GKit.WPF {
 				control.CaptureMouse();
 			};
 		}
-		public static void SetButtonReaction(this Panel control, Action on, Action over, Action down) {
+		public static void RegisterButtonReaction(this Panel control, Action on, Action over, Action down) {
 			control.MouseLeftButtonUp += (object sender, MouseButtonEventArgs e) => {
 				if (control.IsMouseOver) {
 					over.TryInvoke();
@@ -349,13 +349,13 @@ namespace GKit.WPF {
 				control.CaptureMouse();
 			};
 		}
-		public static void SetButtonReaction(this Panel control, Color on, Color over, Color down) {
+		public static void RegisterButtonReaction(this Panel control, Color on, Color over, Color down) {
 			SolidColorBrush onBrush = new SolidColorBrush(on);
 			SolidColorBrush overBrush = new SolidColorBrush(over);
 			SolidColorBrush downBrush = new SolidColorBrush(down);
-			SetButtonReaction(control, onBrush, overBrush, downBrush);
+			RegisterButtonReaction(control, onBrush, overBrush, downBrush);
 		}
-		public static void SetButtonReaction(this Panel control, SolidColorBrush on, SolidColorBrush over, SolidColorBrush down) {
+		public static void RegisterButtonReaction(this Panel control, SolidColorBrush on, SolidColorBrush over, SolidColorBrush down) {
 			control.MouseLeftButtonUp += (object sender, MouseButtonEventArgs e) => {
 				if (control.IsMouseOver) {
 					control.Background = over;
@@ -377,7 +377,7 @@ namespace GKit.WPF {
 				control.CaptureMouse();
 			};
 		}
-		public static void SetButtonReaction(this Control control, Action on, Action over, Action down) {
+		public static void RegisterButtonReaction(this Control control, Action on, Action over, Action down) {
 			control.MouseLeftButtonUp += (object sender, MouseButtonEventArgs e) => {
 				if (control.IsMouseOver) {
 					over.TryInvoke();
@@ -399,13 +399,13 @@ namespace GKit.WPF {
 				control.CaptureMouse();
 			};
 		}
-		public static void SetButtonReaction(this Control control, Color on, Color over, Color down) {
+		public static void RegisterButtonReaction(this Control control, Color on, Color over, Color down) {
 			SolidColorBrush onBrush = new SolidColorBrush(on);
 			SolidColorBrush overBrush = new SolidColorBrush(over);
 			SolidColorBrush downBrush = new SolidColorBrush(down);
-			SetButtonReaction(control, onBrush, overBrush, downBrush);
+			RegisterButtonReaction(control, onBrush, overBrush, downBrush);
 		}
-		public static void SetButtonReaction(this Control control, SolidColorBrush on, SolidColorBrush over, SolidColorBrush down) {
+		public static void RegisterButtonReaction(this Control control, SolidColorBrush on, SolidColorBrush over, SolidColorBrush down) {
 			control.MouseLeftButtonUp += (object sender, MouseButtonEventArgs e) => {
 				if (control.IsMouseOver) {
 					control.Background = over;
@@ -486,25 +486,30 @@ namespace GKit.WPF {
 			parent.Children.Add(element);
 		}
 
-		public delegate void IndexChangedDelegate(int beforeIndex, int newIndex);
-		public static void SetIndexChangeable(this Control control, StackPanel parent, GLoopEngine core, IndexChangedDelegate OnIndexChanged = null) {
+		public delegate void IndexChangedDelegate(int oldIndex, int newIndex);
+		public static void SetIndexChangeable(this Control control, StackPanel parentStackPanel, IndexChangedDelegate OnIndexChanged = null) {
 			Control grabbedItem = null;
 			int grabbedIndex = 0;
-			bool cancelFlag = false;
+			bool onDragging = false;
+			control.MouseDown += (object sender, MouseButtonEventArgs e) => {
+				if(e.ChangedButton == MouseButton.Left) {
+					onDragging = true;
+					Mouse.Capture(control);
 
-			Action OnItemGrabDrag = () => {
-				if(!MouseInput.Left.Hold) {
-					cancelFlag = true;
-				}
-				if (cancelFlag)
+					grabbedItem = control;
+					grabbedIndex = parentStackPanel.Children.IndexOf(control);
+				}	
+			};
+			control.MouseMove += (object sender, MouseEventArgs e) => {
+				if (!onDragging)
 					return;
 
 				//Find Cursor Index
 				int newIndex = -1;
 				Control item;
-				int count = parent.Children.Count;
+				int count = parentStackPanel.Children.Count;
 				for (int i = 0; i < count; ++i) {
-					item = (Control)parent.Children[i];
+					item = (Control)parentStackPanel.Children[i];
 					float itemHalfHeight = (float)(item.ActualHeight * 0.5f);
 
 					if (MouseInput.AbsolutePosition.y < item.GetAbsolutePosition(new Vector2(0, itemHalfHeight)).y) {
@@ -520,21 +525,18 @@ namespace GKit.WPF {
 						--newIndex;
 					}
 
-					parent.Children.Remove(grabbedItem);
-					parent.Children.Insert(newIndex, grabbedItem);
+					parentStackPanel.Children.Remove(grabbedItem);
+					parentStackPanel.Children.Insert(newIndex, grabbedItem);
 
 					OnIndexChanged?.Invoke(grabbedIndex, newIndex);
 					grabbedIndex = newIndex;
 				}
 			};
-			Action OnItemGrabStart = () => {
-				grabbedItem = control;
-				grabbedIndex = parent.Children.IndexOf(control);
-				core.AddLoopAction(OnItemGrabDrag, GLoopCycle.EveryFrame, GWhen.MouseUpRemove);
-			};
-
-			control.MouseLeftButtonDown += (object sender, MouseButtonEventArgs e) => {
-				OnItemGrabStart();
+			control.MouseUp += (object sender, MouseButtonEventArgs e) => {
+				if (e.ChangedButton == MouseButton.Left) {
+					onDragging = false;
+					Mouse.Capture(null);
+				}
 			};
 		}
 	}
