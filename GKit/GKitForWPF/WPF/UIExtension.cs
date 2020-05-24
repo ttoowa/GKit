@@ -19,6 +19,19 @@ namespace GKit.WPF {
 	public static class UIExtension {
 		private const float DefaultCoverValue = 0.1f;
 
+		public static void RegisterLoaded(this FrameworkElement element, RoutedEventHandler handler) {
+			RoutedEventHandler unregisterEvent = null;
+			unregisterEvent = UnregisterEvent;
+
+			element.Loaded += handler;
+			element.Loaded += unregisterEvent;
+
+			void UnregisterEvent(object sender, RoutedEventArgs e) {
+				element.Loaded -= handler;
+				element.Loaded -= unregisterEvent;
+			}
+		}
+
 		public static void RegisterClickEvent(this Button button, Action action) {
 			button.Click += (object sender, RoutedEventArgs e) => { action?.Invoke(); };
 		}
@@ -539,6 +552,8 @@ namespace GKit.WPF {
 				}
 			};
 		}
+
+
 	}
 }
 #endif
