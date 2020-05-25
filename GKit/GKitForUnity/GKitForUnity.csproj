@@ -232,6 +232,9 @@
     <Compile Include="..\GKit\System\ClipBoard.cs">
       <Link>System\ClipBoard.cs</Link>
     </Compile>
+    <Compile Include="..\GKit\System\Collections\TwoWayDictionary.cs">
+      <Link>System\Collections\TwoWayDictionary.cs</Link>
+    </Compile>
     <Compile Include="..\GKit\System\Cursor\CursorInfo.cs">
       <Link>System\Cursor\CursorInfo.cs</Link>
     </Compile>

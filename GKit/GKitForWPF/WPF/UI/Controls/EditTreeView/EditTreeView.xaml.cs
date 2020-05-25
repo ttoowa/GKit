@@ -280,6 +280,11 @@ namespace GKit.WPF.UI.Controls {
 			}
 		}
 
+		//Notify
+		public void NotifyItemRemoved(ITreeItem item) {
+			SelectedItemSet.RemoveSelectedItem(item);
+		}
+
 		//TreeSearch
 		public void ForeachItems(ListItemLoopDelegate nodeItemDelegate) {
 			ForeachItemsRecursion(this);

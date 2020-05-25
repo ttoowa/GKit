@@ -102,6 +102,7 @@
     <Compile Include="Security\SafeProperty.cs" />
     <Compile Include="Security\SecurityEvent.cs" />
     <Compile Include="System\AssemblyInfo.cs" />
+    <Compile Include="System\Collections\TwoWayDictionary.cs" />
     <Compile Include="System\EnumHelper.cs" />
     <Compile Include="System\Event\ActionEvent.cs" />
     <Compile Include="System\Event\GRoutineEvent.cs" />
