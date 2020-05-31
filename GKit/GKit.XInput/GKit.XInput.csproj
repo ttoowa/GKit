@@ -59,6 +59,7 @@
     <Content Include="Plugins\x86_64\XInputInterface.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Plugins\XInputDotNetPure.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
