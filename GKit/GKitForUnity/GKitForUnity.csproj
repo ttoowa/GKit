@@ -79,6 +79,6 @@
     <Content Include="Dependency\UnityEngine.dll" />
     <Content Include="Dependency\UnityEngine.UI.dll" />
   </ItemGroup>
-  <Import Project="$(SolutionDir)GKit\Base.targets" />
+  <Import Project="$(ProjectDir)..\GKit\Base.targets" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

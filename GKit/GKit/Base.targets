@@ -1,6 +1,6 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <ItemGroup>
-      <Compile Include="$(SolutionDir)GKit\Base\**\*.*">
+      <Compile Include="$(ProjectDir)..\GKit\Base\**\*.*">
         <Link>%(RecursiveDir)%(FileName)%(Extension)</Link>
       </Compile>
     </ItemGroup>
