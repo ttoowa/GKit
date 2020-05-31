@@ -52,12 +52,11 @@
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependency\UnityEngine.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>Dependency\UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\..\..\Library\UnityEngine\UnityEngine.UI.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dependency\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -346,5 +345,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Content Include="Dependency\netstandard.dll" />
+    <Content Include="Dependency\Unity.ugui.dll" />
+    <Content Include="Dependency\UnityEditor.dll" />
+    <Content Include="Dependency\UnityEngine.CoreModule.dll" />
+    <Content Include="Dependency\UnityEngine.dll" />
+    <Content Include="Dependency\UnityEngine.UI.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
