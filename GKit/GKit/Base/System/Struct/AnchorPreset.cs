@@ -22,5 +22,14 @@
 
 		StretchAll,
 	}
+
+	public enum AxisAnchor {
+		Min,
+		Mid,
+		Max,
+		Stretch,
+	}
+
+
 }
 
