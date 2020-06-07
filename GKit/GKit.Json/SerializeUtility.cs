@@ -8,11 +8,10 @@ using System.Threading.Tasks;
 
 namespace GKit.Json {
 	public static class SerializeUtility {
-		public static void AddAttrFields<Model, Attr>(this JObject jObject, Model model)
-			where Attr : Attribute
-			where Model : class {
+		public static void AddAttrFields<Attr>(this JObject jObject, object model)
+			where Attr : Attribute {
 
-			FieldInfo[] fields = typeof(Model).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+			FieldInfo[] fields = model.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
 			foreach (FieldInfo field in fields) {
 				Attr editorAttribute = field.GetCustomAttribute(typeof(Attr)) as Attr;
@@ -33,11 +32,10 @@ namespace GKit.Json {
 			}
 		}
 
-		public static void LoadAttrFields<Model, Attr>(this Model model, JObject jObject)
-			where Attr : Attribute	
-			where Model : class {
+		public static void LoadAttrFields<Attr>(this object model, JObject jObject)
+			where Attr : Attribute {
 
-			FieldInfo[] fields = typeof(Model).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+			FieldInfo[] fields = model.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
 			foreach (FieldInfo field in fields) {
 				Attr editorAttribute = field.GetCustomAttribute(typeof(Attr)) as Attr;
