@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace GKit.Json {
-	public static class JsonUtility {
+	public static class ParseUtility {
 		public static T GetValue<T>(this JObject jObject, string propertyName) {
 			T value;
 			JToken token = jObject[propertyName];

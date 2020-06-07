@@ -187,5 +187,18 @@ namespace GKit {
 		public static bool ComparePath(string path1, string path2) {
 			return NormalizePath(path1) == NormalizePath(path2);
 		}
+
+		public static string GetRelativePath(string frontPath, string filename) {
+			frontPath = NormalizePath(frontPath);
+			filename = NormalizePath(filename);
+
+			if (frontPath.Last() != '\\') {
+				frontPath += "\\";
+			}
+			if (filename.StartsWith(frontPath)) {
+				filename = filename.Substring(frontPath.Length);
+			}
+			return filename;
+		}
 	}
 }

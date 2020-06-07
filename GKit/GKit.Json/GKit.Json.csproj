@@ -7,8 +7,8 @@
     <ProjectGuid>{0C330C44-8224-463A-A572-A962BD01ADBF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GKit.IOPlus.Json</RootNamespace>
-    <AssemblyName>GKit.IOPlus.Json</AssemblyName>
+    <RootNamespace>GKit.JsonPlus</RootNamespace>
+    <AssemblyName>GKit.JsonPlus</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -35,7 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -47,8 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="JsonUtility.cs" />
+    <Compile Include="ParseUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SerializeUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
