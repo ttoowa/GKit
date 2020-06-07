@@ -8,11 +8,14 @@ using System.Threading.Tasks;
 
 namespace GKit.Json {
 	public static class SerializeUtility {
-		public static void AddAttributes<ModelType, AttrType>(this JObject jObject, ModelType model) where AttrType : Attribute {
-			FieldInfo[] fields = typeof(ModelType).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+		public static void AddAttrFields<Model, Attr>(this JObject jObject, Model model)
+			where Attr : Attribute
+			where Model : class {
+
+			FieldInfo[] fields = typeof(Model).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
 			foreach (FieldInfo field in fields) {
-				AttrType editorAttribute = field.GetCustomAttribute(typeof(AttrType)) as AttrType;
+				Attr editorAttribute = field.GetCustomAttribute(typeof(Attr)) as Attr;
 
 				if (editorAttribute == null)
 					continue;
@@ -27,6 +30,27 @@ namespace GKit.Json {
 				}
 
 				jObject.Add(field.Name, stringValue);
+			}
+		}
+
+		public static void LoadAttrFields<Model, Attr>(this Model model, JObject jObject)
+			where Attr : Attribute	
+			where Model : class {
+
+			FieldInfo[] fields = typeof(Model).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+			foreach (FieldInfo field in fields) {
+				Attr editorAttribute = field.GetCustomAttribute(typeof(Attr)) as Attr;
+
+				if (editorAttribute == null)
+					continue;
+
+				if (!jObject.ContainsKey(field.Name))
+					continue;
+
+				string stringValue = jObject.GetValue<string>(field.Name);
+				
+				field.SetValue(model, Convert.ChangeType(stringValue, field.FieldType));
 			}
 		}
 	}
