@@ -11,6 +11,6 @@ namespace GKit {
 		gif,
 		tiff,
 		png,
-		unknown
+		Unknown
 	}
 }

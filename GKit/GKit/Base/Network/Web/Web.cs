@@ -52,7 +52,7 @@ namespace GKit.Network {
 					using(MemoryStream stream = new MemoryStream(data)) {
 						ImageFileFormat format = IOUtility.GetImageFormat(stream);
 
-						if(format != ImageFileFormat.unknown) {
+						if(format != ImageFileFormat.Unknown) {
 							extension = "." + format.ToString();
 							filePath += extension;
 						} else {
@@ -119,7 +119,7 @@ namespace GKit.Network {
 				using (MemoryStream stream = new MemoryStream(data)) {
 					ImageFileFormat format = IOUtility.GetImageFormat(stream);
 
-					if (format != ImageFileFormat.unknown) {
+					if (format != ImageFileFormat.Unknown) {
 						extension = "." + format.ToString();
 						filePath += extension;
 					}

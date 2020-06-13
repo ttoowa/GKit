@@ -104,6 +104,11 @@ namespace GKit {
 		}
 
 		public static ImageFileFormat GetImageFormat(Stream stream) {
+			const int BufferSize = 4;	
+
+			if (stream.Length < BufferSize)
+				return ImageFileFormat.Unknown;
+
 			var bmp = Encoding.ASCII.GetBytes("BM");     // BMP
 			var gif = Encoding.ASCII.GetBytes("GIF");    // GIF
 			var png = new byte[] { 137, 80, 78, 71 };    // PNG
@@ -112,7 +117,8 @@ namespace GKit {
 			var jpeg = new byte[] { 255, 216, 255, 224 }; // jpeg
 			var jpeg2 = new byte[] { 255, 216, 255, 225 }; // jpeg canon
 
-			var buffer = new byte[4];
+			var buffer = new byte[BufferSize];
+
 			stream.Read(buffer, 0, buffer.Length);
 
 			if (bmp.SequenceEqual(buffer.Take(bmp.Length)))
@@ -136,7 +142,7 @@ namespace GKit {
 			if (jpeg2.SequenceEqual(buffer.Take(jpeg2.Length)))
 				return ImageFileFormat.jpg;
 
-			return ImageFileFormat.unknown;
+			return ImageFileFormat.Unknown;
 		}
 
 		public static void SaveText(this string text, string filename) {
@@ -180,7 +186,7 @@ namespace GKit {
 		}
 
 		public static string NormalizePath(string path) {
-			return Path.GetFullPath(new Uri(path).LocalPath)
+			return path.Replace('/', '\\')
 					   .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
 					   .ToLowerInvariant();
 		}
@@ -189,6 +195,8 @@ namespace GKit {
 		}
 
 		public static string GetRelativePath(string frontPath, string filename) {
+			string onlyFilename = Path.GetFileName(filename);
+
 			frontPath = NormalizePath(frontPath);
 			filename = NormalizePath(filename);
 
@@ -198,13 +206,28 @@ namespace GKit {
 			if (filename.StartsWith(frontPath)) {
 				filename = filename.Substring(frontPath.Length);
 			}
-			return filename;
+
+			return Path.Combine(Path.GetDirectoryName(filename), onlyFilename);
 		}
 
 		public static bool IsDirectory(string path) {
 			FileAttributes attr = File.GetAttributes(path);
 
 			return (attr & FileAttributes.Directory) == FileAttributes.Directory;
+		}
+
+		public static string GetMetadataHash(string filename) {
+			FileInfo fileInfo = new FileInfo(filename);
+
+			long createdTimeLong = DateTimeToLong(fileInfo.CreationTimeUtc);
+			long writedTimeLong = DateTimeToLong(fileInfo.LastWriteTimeUtc);
+
+			return Security.Encrypt.SimplexHash.ComputeMD5((createdTimeLong ^ writedTimeLong ^ fileInfo.Length).ToString());
+		}
+
+		private static long DateTimeToLong(DateTime time) {
+			byte[] writeTimeBytes = BitConverter.GetBytes(time.ToOADate());
+			return BitConverter.ToInt64(writeTimeBytes, 0);
 		}
 	}
 }
