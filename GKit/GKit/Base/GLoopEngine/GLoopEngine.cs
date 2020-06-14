@@ -406,8 +406,8 @@ namespace GKit {
 						}
 					}
 				}
-				
-				if(hasNewTask) {
+
+				if (hasNewTask) {
 					goto Execute;
 				}
 			} catch (Exception ex) {

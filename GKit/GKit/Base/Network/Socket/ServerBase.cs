@@ -32,8 +32,8 @@ namespace GKit.Network {
 		}
 		public int ClientCount {
 			get {
-				lock (clientSet) {
-					return clientSet.Count;
+				lock (ClientSet) {
+					return ClientSet.Count;
 				}
 			}
 		}
@@ -58,7 +58,9 @@ namespace GKit.Network {
 		private int lingerTime;
 		private Socket socket;
 		private Thread acceptThread;
-		private HashSet<Socket> clientSet;
+		public HashSet<Socket> ClientSet {
+			get; private set;
+		}
 		private Dictionary<Socket, ClientData> clientDataDict;
 		
 		protected abstract void OnStarted();
@@ -94,7 +96,7 @@ namespace GKit.Network {
 			Init();
 		}
 		private void Init() {
-			clientSet = new HashSet<Socket>();
+			ClientSet = new HashSet<Socket>();
 			clientDataDict = new Dictionary<Socket, ClientData>();
 
 			acceptConnection = true;
@@ -169,13 +171,14 @@ namespace GKit.Network {
 		}
 
 		public void SendAll(byte[] packet) {
-			foreach (var client in clientSet) {
+			Socket[] sockets = ClientSet.ToArray();
+			foreach (var client in sockets) {
 				SendTo(client, packet);
 			}
 		}
 		public void SendTo(Socket client, byte[] data) {
 			ClientData clientData;
-			lock (clientSet) {
+			lock (ClientSet) {
 				clientData = clientDataDict[client];
 			}
 			byte[] packet = protocol.Header2Bytes(data.Length).Concat(
@@ -215,12 +218,12 @@ namespace GKit.Network {
 
 			int nClientNum;
 
-			lock (clientSet)
-				nClientNum = clientSet.Count;
+			lock (ClientSet)
+				nClientNum = ClientSet.Count;
 
 			lock (globalLock) {
-				lock (clientSet) {
-					foreach (var sClient in clientSet) {
+				lock (ClientSet) {
+					foreach (var sClient in ClientSet) {
 						try {
 							sClient.Shutdown(SocketShutdown.Both);
 						} finally {
@@ -228,7 +231,7 @@ namespace GKit.Network {
 						}
 					}
 
-					clientSet.Clear();
+					ClientSet.Clear();
 					clientDataDict.Clear();
 				}
 
@@ -261,8 +264,8 @@ namespace GKit.Network {
 					return false;
 				}
 
-			lock (clientSet) {
-				clientSet.Remove(client);
+			lock (ClientSet) {
+				ClientSet.Remove(client);
 				clientDataDict.Remove(client);
 			}
 
@@ -303,9 +306,9 @@ namespace GKit.Network {
 
 					//클라이언트 데이터 생성
 					ClientData data;
-					lock (clientSet) {
+					lock (ClientSet) {
 						data = new ClientData(client, protocol.HeaderSize);
-						clientSet.Add(client);
+						ClientSet.Add(client);
 						clientDataDict.Add(client, data);
 					}
 
@@ -360,7 +363,7 @@ namespace GKit.Network {
 			if(CheckAvailable(client, e, client.SendAsync, OnSendPacket)) {
 				ClientData data;
 
-				lock (clientSet) {
+				lock (ClientSet) {
 					if (!clientDataDict.TryGetValue(client, out data)) {
 						return;
 					}
@@ -425,7 +428,7 @@ namespace GKit.Network {
 			if(CheckAvailable(client, e, client.ReceiveAsync, OnPacketReceived)) {
 				ClientData data;
 
-				lock (clientSet)
+				lock (ClientSet)
 					if (!clientDataDict.TryGetValue(client, out data))
 						return;
 
