@@ -1,19 +1,13 @@
-﻿using GKitForWPF;
+﻿using GKitForWPF.Graphics;
 using GKitForWPF.UI.Converters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 
 namespace GKitForWPF.UI.Controls {
@@ -158,7 +152,7 @@ namespace GKitForWPF.UI.Controls {
 					} else {
 						SelectedItemSet.AddSelectedItem(item);
 					}
-					
+
 					pressedItem = SelectedItemSet.Count > 0 ? SelectedItemSet.Last : null;
 				} else if (CanMultiSelect && pressedItem != null && (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))) {
 					//Shift select

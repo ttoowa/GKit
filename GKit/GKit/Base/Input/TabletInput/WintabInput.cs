@@ -1,12 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using WintabDN;
 using System.Windows.Forms;
 #if OnUnity
@@ -109,14 +103,14 @@ namespace GKit
 				systemRect = new BRect(context.SysOrgX, context.SysOrgY, context.SysExtX, context.SysExtY);
 			}
 		}
-		
+
 		public void CaptureStart(WContextMode mode) {
 			if (IsRunning)
 				return;
 
 			try {
 				bool result;
-				switch(mode) {
+				switch (mode) {
 					default:
 					case WContextMode.Digital:
 						result = InitDigitalContextCapture();
@@ -143,12 +137,12 @@ namespace GKit
 					context.Close();
 				}
 				IsRunning = false;
-				for(int i=0; i<taskList.Count; ++i) {
+				for (int i = 0; i < taskList.Count; ++i) {
 					taskList[i].Stop();
 				}
 				taskList.Clear();
-			} catch(Exception ex) {
-			
+			} catch (Exception ex) {
+
 			}
 			context = null;
 			data = null;
@@ -168,7 +162,7 @@ namespace GKit
 		private bool InitSystemContextCapture(bool ctrlSysCursor = true) {
 			context = OpenSystemContext(ctrlSysCursor);
 
-			if(context == null)
+			if (context == null)
 				return false;
 
 			data = new WData(context);
@@ -184,7 +178,7 @@ namespace GKit
 			}
 
 			context.Options |= (uint)ECTXOptionValues.CXO_MESSAGES;
-			if(ctrlSysCursor) {
+			if (ctrlSysCursor) {
 				context.Options |= (uint)ECTXOptionValues.CXO_SYSTEM;
 			}
 			context.Name = "BgoonLibrary Tablet Context";

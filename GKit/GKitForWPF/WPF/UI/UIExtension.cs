@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using GKitForWPF.Graphics;
+using System;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Controls;
 using System.Windows.Shapes;
 
 namespace GKitForWPF {
@@ -449,7 +446,7 @@ namespace GKitForWPF {
 		}
 		public static Color GetCoverColor(float value) {
 			Color color = new Color();
-			if(value < 0f) {
+			if (value < 0f) {
 				color.R = color.G = color.B = 0;
 			} else {
 				color.R = color.G = color.B = 255;
@@ -490,7 +487,7 @@ namespace GKitForWPF {
 		}
 
 		public static void DetachParent(this FrameworkElement element) {
-			if(element.Parent != null) {
+			if (element.Parent != null) {
 				element.Parent.Cast<Panel>().Children.Remove(element);
 			}
 		}
@@ -504,13 +501,13 @@ namespace GKitForWPF {
 			int grabbedIndex = 0;
 			bool onDragging = false;
 			control.MouseDown += (object sender, MouseButtonEventArgs e) => {
-				if(e.ChangedButton == MouseButton.Left) {
+				if (e.ChangedButton == MouseButton.Left) {
 					onDragging = true;
 					Mouse.Capture(control);
 
 					grabbedItem = control;
 					grabbedIndex = parentStackPanel.Children.IndexOf(control);
-				}	
+				}
 			};
 			control.MouseMove += (object sender, MouseEventArgs e) => {
 				if (!onDragging)

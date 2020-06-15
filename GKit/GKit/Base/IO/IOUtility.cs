@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 #if OnUnity
 namespace GKitForUnity
@@ -13,7 +11,7 @@ namespace GKitForWPF
 #else
 namespace GKit
 #endif
-{
+.IO {
 	public static class IOUtility {
 		public static FileInfo AppFileInfo {
 			get {
@@ -67,7 +65,7 @@ namespace GKit
 							File.Delete(newFilePath);
 						}
 						fileInfo.MoveTo(newFilePath);
-					} catch(Exception ex) {
+					} catch (Exception ex) {
 						GDebug.Log(ex.ToString());
 					}
 				}
@@ -75,7 +73,7 @@ namespace GKit
 					DirectoryInfo nextDestDir = destInfo.CreateSubdirectory(subDirectory.Name);
 					MoveAllFiles(subDirectory, nextDestDir);
 				}
-			} catch(Exception ex) {
+			} catch (Exception ex) {
 				GDebug.Log(ex.ToString());
 			}
 		}
@@ -111,7 +109,7 @@ namespace GKit
 		}
 
 		public static ImageFileFormat GetImageFormat(Stream stream) {
-			const int BufferSize = 4;	
+			const int BufferSize = 4;
 
 			if (stream.Length < BufferSize)
 				return ImageFileFormat.Unknown;

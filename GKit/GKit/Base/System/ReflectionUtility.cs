@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 #if OnUnity
 namespace GKitForUnity
@@ -14,7 +12,7 @@ namespace GKit
 #endif
 {
 	public static class ReflectionUtility {
-		public static IEnumerable<T> GetEnumerableOfType<T>(params object[] constructorArgs) where T : class, IComparable{
+		public static IEnumerable<T> GetEnumerableOfType<T>(params object[] constructorArgs) where T : class, IComparable {
 			List<T> objects = new List<T>();
 			foreach (Type type in
 				Assembly.GetAssembly(typeof(T)).GetTypes()

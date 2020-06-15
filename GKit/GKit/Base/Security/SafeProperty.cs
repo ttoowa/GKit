@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 #if OnUnity
 namespace GKitForUnity
@@ -52,7 +48,7 @@ namespace GKit
 			hashBuffer = GetChecksum();
 		}
 		private int GetChecksum() {
-			if(value == null) {
+			if (value == null) {
 				return 0;
 			} else {
 				return value.GetHashCode();

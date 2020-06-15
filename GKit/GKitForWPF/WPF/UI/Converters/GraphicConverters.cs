@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using GKitForWPF;
 
 namespace GKitForWPF.UI.Converters {
 	public class ColorToLightConverter : IValueConverter {
@@ -15,12 +9,12 @@ namespace GKitForWPF.UI.Converters {
 			if (value == null)
 				return null;
 
-			if(value is SolidColorBrush) {
+			if (value is SolidColorBrush) {
 				Color color = ((SolidColorBrush)value).Color;
 				color = color.Light(15);
 
 				return new SolidColorBrush(color);
-			} else if(value is Brush) {
+			} else if (value is Brush) {
 				return value;
 			}
 			throw new InvalidOperationException($"Unsupported type '{value.GetType().Name}'");

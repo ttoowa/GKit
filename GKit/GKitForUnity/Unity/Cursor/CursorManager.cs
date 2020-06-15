@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace GKitForUnity {
 	/// <summary>
@@ -13,7 +8,7 @@ namespace GKitForUnity {
 		public static void SetCursor(CursorInfo cursor) {
 			Texture2D image = null;
 			Vector2 hotspot = Vector2.zero;
-			if(cursor != null) {
+			if (cursor != null) {
 				image = cursor.image;
 				hotspot = new Vector2(image.width * hotspot.x, image.height * hotspot.y);
 			}

@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 #if OnUnity
 namespace GKitForUnity
@@ -28,7 +23,7 @@ namespace GKit
 		private int delayTime;
 		private GWhen taskEvent;
 		internal int currentFrame;
-		
+
 		internal GLoopAction(GLoopEngine ownerCore, Action action, int delayTime, GWhen taskEvent) {
 			this.ownerCore = ownerCore;
 			this.action = action;

@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 
 #if OnUnity
 namespace GKitForUnity
@@ -216,7 +212,7 @@ namespace GKit
 					if (disposeFlag) {
 						return;
 					}
-					for(; ;) {
+					for (; ; ) {
 						try {
 							lock (this) {
 								if (jobQueue.Count > 0) {

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 using System.Text;
-using System.Threading.Tasks;
 #if OnUnity
 using UnityEngine;
 #endif
@@ -25,15 +21,15 @@ namespace GKit
 
 
 		public static float Diagonal(float x, float y) {
-            return Mathf.Sqrt(DiagonalPow(x, y));
-        }
-        public static float DiagonalPow(float x, float y) {
-            return x * x + y * y;
-        }
+			return Mathf.Sqrt(DiagonalPow(x, y));
+		}
+		public static float DiagonalPow(float x, float y) {
+			return x * x + y * y;
+		}
 		public static double Clamp(double value, double min, double max) {
-			if(value < min) {
+			if (value < min) {
 				return min;
-			} else if(value > max) {
+			} else if (value > max) {
 				return max;
 			} else {
 				return value;
@@ -114,7 +110,7 @@ namespace GKit
 			string[] nums = text.Split(',');
 
 			return new Vector2(
-				float.Parse(nums[0], CultureInfo.InvariantCulture), 
+				float.Parse(nums[0], CultureInfo.InvariantCulture),
 				float.Parse(nums[1], CultureInfo.InvariantCulture));
 		}
 		public static Vector3 ToVector3(this string text) {
@@ -122,7 +118,7 @@ namespace GKit
 			string[] nums = text.Split(',');
 
 			return new Vector3(
-				float.Parse(nums[0], CultureInfo.InvariantCulture), 
+				float.Parse(nums[0], CultureInfo.InvariantCulture),
 				float.Parse(nums[1], CultureInfo.InvariantCulture),
 				float.Parse(nums[2], CultureInfo.InvariantCulture));
 		}

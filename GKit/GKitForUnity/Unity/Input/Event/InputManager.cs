@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using GKitForUnity.Core;
 
 namespace GKitForUnity {
 	/// <summary>
@@ -29,7 +25,7 @@ namespace GKitForUnity {
 			InputMask.Clear();
 
 			int setCount = layerList.Count;
-			for (int setIndex=0; setIndex<setCount; ++setIndex) {
+			for (int setIndex = 0; setIndex < setCount; ++setIndex) {
 				InputLayer layer = layerList[setIndex];
 
 				Camera cam = layer.camera;
@@ -76,8 +72,8 @@ namespace GKitForUnity {
 
 				layer.EndUpdate();
 			}
-			
+
 		}
 	}
-	
+
 }

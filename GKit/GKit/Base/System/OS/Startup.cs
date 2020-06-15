@@ -1,10 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using Microsoft.Win32;
+#if OnUnity
+using GKitForUnity.IO;
+#elif OnWPF
+using GKitForWPF.IO;
+#else
+using GKit.IO;
+#endif
 
 #if OnUnity
 namespace GKitForUnity
@@ -23,7 +25,7 @@ namespace GKit
 				if (enable) {
 					Set(KeyName, false);
 					string value = "\"" + IOUtility.AppFileInfo.FullName.Replace('/', '\\') + "\" ";
-					if(!string.IsNullOrEmpty(arg)) {
+					if (!string.IsNullOrEmpty(arg)) {
 						value += arg;
 					}
 					startupKey.SetValue(KeyName, value);
@@ -32,7 +34,7 @@ namespace GKit
 					startupKey.DeleteValue(KeyName, false);
 					startupKey.Close();
 				}
-			} catch(Exception ex) {
+			} catch (Exception ex) {
 				GDebug.Log(ex.ToString(), GLogLevel.Warnning);
 			}
 		}

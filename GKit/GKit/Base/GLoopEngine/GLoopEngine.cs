@@ -99,8 +99,7 @@ namespace GKit
 		}
 		private int fps = 60;
 
-		public GLoopEngine(int FPS = 60, bool registInput = true)
-		{
+		public GLoopEngine(int FPS = 60, bool registInput = true) {
 			this.fps = FPS;
 
 			Init(registInput);
@@ -108,17 +107,14 @@ namespace GKit
 		public void Dispose() {
 			StopLoop();
 		}
-		private void Init(bool registInput)
-		{
+		private void Init(bool registInput) {
 			jobManager = new GJobManager();
 			AddLoopAction(jobManager.ExecuteJob);
 
-			for (int i = 0; i < GLoopGroups.Length; i++)
-			{
+			for (int i = 0; i < GLoopGroups.Length; i++) {
 				GLoopGroups[i] = new GLoopGroup(this, (GWhen)i);
 			}
-			if (registInput)
-			{
+			if (registInput) {
 				RegistInput();
 			}
 		}
@@ -126,28 +122,22 @@ namespace GKit
 
 		//Add tasks
 #if OnUnity
-		private void Awake()
-		{
+		private void Awake() {
 			Init();
 		}
-		private void Start()
-		{
-			if (registerInput)
-			{
+		private void Start() {
+			if (registerInput) {
 				RegistInput();
 			}
-			if (autoStart)
-			{
+			if (autoStart) {
 				StartLoop();
 			}
 		}
-		private void Init()
-		{
+		private void Init() {
 			jobManager = new GJobManager();
 			AddLoopAction(jobManager.ExecuteJob);
 
-			for (int i = 0; i < GLoopGroups.Length; i++)
-			{
+			for (int i = 0; i < GLoopGroups.Length; i++) {
 				GLoopGroups[i] = new GLoopGroup(this, (GWhen)i);
 			}
 
@@ -281,8 +271,7 @@ namespace GKit
 			sleepWatch.Restart();
 		}
 #else
-		private async Task LoopInvokeRoutine()
-		{
+		private async Task LoopInvokeRoutine() {
 			for (; ; )
 			{
 				UpdateTimeInfo();
@@ -304,9 +293,9 @@ namespace GKit
 			tickMs = Mathf.Max(0.001f, 1000f / fps);
 #endif
 		}
-		#if !OnUnity
+#if !OnUnity
 		private int GetLoopCount(float leftOverTime, float globalLoopMs, float sleepMs) {
-			overTime = Mathf.Max(0f, leftOverTime +  globalLoopMs + sleepMs - tickMs);
+			overTime = Mathf.Max(0f, leftOverTime + globalLoopMs + sleepMs - tickMs);
 			int loopCount;
 			if (overTime > tickMs) {
 				loopCount = Mathf.Min(1 + (int)(overTime / tickMs), MaxOverlapFrame);
@@ -316,7 +305,7 @@ namespace GKit
 			}
 			return loopCount;
 		}
-		#endif
+#endif
 		private void ExecLoops(int loopCount) {
 			globalLoopWatch.Restart();
 			if (IsRunning) {
@@ -384,7 +373,7 @@ namespace GKit
 					}
 				}
 				void ExecWriteTask() {
-					
+
 					int loopCount;
 					lock (GRoutineWriteLock) {
 						hasNewTask = GRoutineAddQueue.Count > 0;

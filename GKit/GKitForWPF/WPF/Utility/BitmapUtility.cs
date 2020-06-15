@@ -1,14 +1,10 @@
 ﻿#if OnWPF
+using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Microsoft.Win32;
 using SRect = System.Windows.Rect;
 
 
@@ -55,7 +51,7 @@ namespace GKitForWPF {
 			return source.Resize(width, height, PixelFormats.Default, dpi);
 		}
 		public static BitmapSource Resize(this ImageSource source, int width, int height, PixelFormat format, int dpi = 96) {
-			if(source.Width == width && source.Height == height) {
+			if (source.Width == width && source.Height == height) {
 				return source as BitmapSource;
 			}
 

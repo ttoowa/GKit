@@ -1,10 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Animation;
 using System.Windows.Input;
-using GKitForWPF;
-using System.Collections.Generic;
+using System.Windows.Media.Animation;
 
 namespace GKitForWPF.UI.Behaviors {
 	public class ScrollData {
@@ -90,7 +89,7 @@ namespace GKitForWPF.UI.Behaviors {
 			ScrollData scrollData = GetOrCreateScrollData(scrollViewer);
 
 
-			if(scrollData.OnPlayingVerticalAnim) {
+			if (scrollData.OnPlayingVerticalAnim) {
 				//Stop animation
 				scrollViewer.BeginAnimation(VerticalOffsetProperty, null);
 			}
@@ -105,11 +104,11 @@ namespace GKitForWPF.UI.Behaviors {
 			};
 			scrollData.VerticalScrollAnim = scrollAnim;
 			scrollAnim.Completed += ScrollAnim_Completed;
-			
+
 			scrollViewer.BeginAnimation(VerticalOffsetProperty, scrollData.VerticalScrollAnim);
 
 			void ScrollAnim_Completed(object sender, EventArgs e) {
-				if(scrollData.VerticalScrollAnim == scrollAnim) {
+				if (scrollData.VerticalScrollAnim == scrollAnim) {
 					scrollData.VerticalScrollAnim = null;
 				}
 				scrollDataDict.Remove(scrollViewer);
@@ -117,7 +116,7 @@ namespace GKitForWPF.UI.Behaviors {
 		}
 
 		private static ScrollData GetOrCreateScrollData(ScrollViewer scrollViewer) {
-			if(scrollDataDict.ContainsKey(scrollViewer)) {
+			if (scrollDataDict.ContainsKey(scrollViewer)) {
 				return scrollDataDict[scrollViewer];
 			} else {
 				ScrollData scrollData = new ScrollData(scrollViewer);
@@ -179,7 +178,7 @@ namespace GKitForWPF.UI.Behaviors {
 			if (!scrollData.OnPlayingVerticalAnim && Mathf.Abs((float)e.VerticalChange) > 0d) {
 				scrollData.targetVerticalOffset = scrollData.VerticalOffset;
 			}
-			if(Mathf.Abs((float)e.HorizontalChange) > 0d) {
+			if (Mathf.Abs((float)e.HorizontalChange) > 0d) {
 				scrollData.targetHorizontalOffset = scrollData.HorizontalOffset;
 			}
 		}
@@ -187,7 +186,7 @@ namespace GKitForWPF.UI.Behaviors {
 		private static void OnIsEnabledChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
 			var target = sender;
 
-			if(target != null) {
+			if (target != null) {
 				FrameworkElement element = null;
 
 				if (target is ScrollViewer) {

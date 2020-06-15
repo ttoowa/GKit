@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Windows;
 #if OnUnity
 using UnityEngine;
@@ -43,7 +41,7 @@ namespace GKit
 		public event Action OnSizeChanged;
 
 		private Camera camera;
-		
+
 		public ScreenInfo(GLoopEngine loopEngine, Camera camera) {
 			this.camera = camera;
 
@@ -72,8 +70,8 @@ namespace GKit
 				float width = height * camera.aspect;
 				ScreenUnitSize = new Vector2(
 					width, height);
-				Pixel2Unit = ((width) / (ScreenPixelSize.x+ SampleOffset));
-				Unit2Pixel = ((ScreenPixelSize.x+ SampleOffset) / (width));
+				Pixel2Unit = ((width) / (ScreenPixelSize.x + SampleOffset));
+				Unit2Pixel = ((ScreenPixelSize.x + SampleOffset) / (width));
 
 				OnSizeChanged?.Invoke();
 			}
@@ -87,7 +85,7 @@ namespace GKit
 		public static Vector2 CurrentSize {
 			get {
 				return new Vector2(
-					(float)SystemParameters.PrimaryScreenWidth, 
+					(float)SystemParameters.PrimaryScreenWidth,
 					(float)SystemParameters.PrimaryScreenHeight);
 			}
 		}

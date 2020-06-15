@@ -153,12 +153,12 @@ namespace GKit
 
 				bool onHold = GetAsyncKeyStateHoldWinKey(key);
 				if (keyHoldList.Contains(key)) {
-					if(!onHold) {
+					if (!onHold) {
 						keyUpStack.Push(key);
-						keyHoldList.RemoveAll(x=>x == key);
+						keyHoldList.RemoveAll(x => x == key);
 					}
 				} else {
-					if(onHold) {
+					if (onHold) {
 						keyDownStack.Push(key);
 						keyHoldList.Add(key);
 					}

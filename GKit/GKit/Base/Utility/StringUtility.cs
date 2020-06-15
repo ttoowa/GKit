@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-#if OnUnity
+﻿#if OnUnity
 namespace GKitForUnity
 #elif OnWPF
 namespace GKitForWPF
@@ -22,7 +16,7 @@ namespace GKit
 			bool foundStart = false;
 			bool foundEnd = false;
 
-			for (int i=0; i< text.Length; ++i) {
+			for (int i = 0; i < text.Length; ++i) {
 				if (!foundStart) {
 					if (text.Length >= i + startSymbol.Length) {
 						if (text.Substring(i, startSymbol.Length) == startSymbol) {
@@ -33,7 +27,7 @@ namespace GKit
 				} else {
 					if (text.Length >= i + endSymbol.Length) {
 						if (text.Substring(i, endSymbol.Length) == endSymbol) {
-							range.max = i+1;
+							range.max = i + 1;
 							foundEnd = true;
 							break;
 						}
@@ -41,10 +35,10 @@ namespace GKit
 				}
 			}
 
-			if(!includeSymbol) {
-				if(foundStart) {
+			if (!includeSymbol) {
+				if (foundStart) {
 					range.min += startSymbol.Length;
-					if(foundEnd) {
+					if (foundEnd) {
 						range.max -= endSymbol.Length;
 					}
 				}

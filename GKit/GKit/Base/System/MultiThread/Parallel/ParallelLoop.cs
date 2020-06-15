@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 #if OnUnity
@@ -47,7 +45,7 @@ namespace GKit
 		private LoopDelegate func;
 		private SingleTask[] singleTasks;
 		private Task[] taskArray;
-		
+
 		static ParallelLoop() {
 			int coreCount = Environment.ProcessorCount;
 
@@ -109,12 +107,12 @@ namespace GKit
 			Init();
 		}
 		private void Init() {
-			if(LoopRange < ThreadCount) {
+			if (LoopRange < ThreadCount) {
 				ThreadCount = LoopRange;
 			}
 
 			singleTasks = new SingleTask[ThreadCount];
-			for(int i=0; i<ThreadCount; i++) {
+			for (int i = 0; i < ThreadCount; i++) {
 				singleTasks[i] = new SingleTask(i, this, func);
 			}
 		}
@@ -203,7 +201,7 @@ namespace GKit
 					EndIndex = singleLoopRange * (ThreadIndex + 1) + Owner.StartIndex;
 				} else {
 					int singleLoopRangePlus = singleLoopRange + 1;
-					if(ThreadIndex < remainLoopRange) {
+					if (ThreadIndex < remainLoopRange) {
 						StartIndex = singleLoopRangePlus * ThreadIndex + Owner.StartIndex;
 						EndIndex = singleLoopRangePlus * (ThreadIndex + 1) + Owner.StartIndex;
 					} else {
@@ -211,9 +209,9 @@ namespace GKit
 						EndIndex = singleLoopRange * (ThreadIndex + 1) + Owner.StartIndex + remainLoopRange;
 					}
 				}// else {
-				//	//Job이 스레드의 2배 초과일 때
-				//	StartIndex = (singleLoopRange + 1) * ThreadIndex + Owner.StartIndex;
-				//	EndIndex = (singleLoopRange + 1) * (ThreadIndex + 1) + Owner.StartIndex;
+				 //	//Job이 스레드의 2배 초과일 때
+				 //	StartIndex = (singleLoopRange + 1) * ThreadIndex + Owner.StartIndex;
+				 //	EndIndex = (singleLoopRange + 1) * (ThreadIndex + 1) + Owner.StartIndex;
 
 				//	if (StartIndex >= globalEndIndex) {
 				//		StartIndex = EndIndex = 0;

@@ -1,19 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GKitForWPF.UI.Converters;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using GKitForWPF;
-using GKitForWPF.UI.Converters;
 
 namespace GKitForWPF.UI.Controls {
 	/// <summary>
@@ -23,7 +11,7 @@ namespace GKitForWPF.UI.Controls {
 		public static readonly DependencyProperty CreateFileButtonVisibleProperty = DependencyProperty.RegisterAttached(nameof(CreateFileButtonVisible), typeof(bool), typeof(FileManagerBar), new PropertyMetadata(true));
 		public static readonly DependencyProperty OpenFileButtonVisibleProperty = DependencyProperty.RegisterAttached(nameof(OpenFileButtonVisible), typeof(bool), typeof(FileManagerBar), new PropertyMetadata(true));
 		public static readonly DependencyProperty SaveFileButtonVisibleProperty = DependencyProperty.RegisterAttached(nameof(SaveFileButtonVisible), typeof(bool), typeof(FileManagerBar), new PropertyMetadata(true));
-		
+
 		public static readonly DependencyProperty Separator1VisibleProperty = DependencyProperty.RegisterAttached(nameof(Separator1Visible), typeof(bool), typeof(FileManagerBar), new PropertyMetadata(false));
 
 		public static readonly DependencyProperty ImportButtonVisibleProperty = DependencyProperty.RegisterAttached(nameof(ImportButtonVisible), typeof(bool), typeof(FileManagerBar), new PropertyMetadata(false));
@@ -89,7 +77,7 @@ namespace GKitForWPF.UI.Controls {
 		public FileManagerBar() {
 			InitializeComponent();
 
-			if(this.IsDesignMode())
+			if (this.IsDesignMode())
 				return;
 
 			InitBindings();
@@ -114,6 +102,6 @@ namespace GKitForWPF.UI.Controls {
 			ExportButton.RegisterClickEvent(ExportButtonClick);
 		}
 
-		
+
 	}
 }

@@ -69,7 +69,7 @@ namespace GKit
 			get; private set;
 		}
 		private Dictionary<Socket, GClientData> clientDataDict;
-		
+
 		protected abstract void OnStarted();
 		protected abstract void OnStartFailed(Exception ex);
 		protected abstract void OnClosed();
@@ -116,7 +116,7 @@ namespace GKit
 
 				state = GServerState.Starting;
 			}
-			
+
 
 			lock (globalLock) {
 				try {
@@ -190,7 +190,7 @@ namespace GKit
 			}
 			byte[] packet = protocol.Header2Bytes(data.Length).Concat(
 				data).ToArray();
-			
+
 			lock (clientData.sendEventArgs) {
 				if (clientData.isSending) {
 					clientData.sendQueue.Enqueue(packet);
@@ -255,7 +255,7 @@ namespace GKit
 			}
 		}
 		private void DisconnectClientByError(Socket client, Exception ex) {
-			if(ex is ObjectDisposedException) {
+			if (ex is ObjectDisposedException) {
 				//접속 종료
 				DisconnectClient(client);
 			} else {
@@ -293,12 +293,12 @@ namespace GKit
 					Socket client = null;
 					try {
 						client = socket.Accept();
-					} catch(SocketException ex) {
+					} catch (SocketException ex) {
 					}
 
 					if (client == null)
 						continue;
-					if(!acceptConnection) {
+					if (!acceptConnection) {
 						try {
 							client.Shutdown(SocketShutdown.Both);
 						} catch {
@@ -366,8 +366,8 @@ namespace GKit
 		//Event
 		private void OnSendPacket(object sender, SocketAsyncEventArgs e) {
 			Socket client = (Socket)sender;
-			
-			if(CheckAvailable(client, e, client.SendAsync, OnSendPacket)) {
+
+			if (CheckAvailable(client, e, client.SendAsync, OnSendPacket)) {
 				GClientData data;
 
 				lock (ClientSet) {
@@ -407,7 +407,7 @@ namespace GKit
 		private void OnHeaderReceived(object sender, SocketAsyncEventArgs e) {
 			Socket client = (Socket)sender;
 
-			if(CheckAvailable(client, e, client.ReceiveAsync, OnHeaderReceived)) {
+			if (CheckAvailable(client, e, client.ReceiveAsync, OnHeaderReceived)) {
 				int packetLength = protocol.Bytes2Header(e.Buffer);
 
 				OnHeaderReceived(client, e.Buffer);
@@ -431,8 +431,8 @@ namespace GKit
 		}
 		private void OnPacketReceived(object sender, SocketAsyncEventArgs e) {
 			Socket client = (Socket)sender;
-			
-			if(CheckAvailable(client, e, client.ReceiveAsync, OnPacketReceived)) {
+
+			if (CheckAvailable(client, e, client.ReceiveAsync, OnPacketReceived)) {
 				GClientData data;
 
 				lock (ClientSet)

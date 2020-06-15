@@ -23,11 +23,11 @@
 // THE SOFTWARE.
 ///////////////////////////////////////////////////////////////////////////////
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.ComponentModel;
-using System.Collections.Generic;
 
 namespace WintabDN {
 	/// <summary>
@@ -110,8 +110,8 @@ namespace WintabDN {
 			Application.Run();
 		}
 		private static async void CheckAvailable() {
-			for(; ;) {
-				if(!isRunning) {
+			for (; ; ) {
+				if (!isRunning) {
 					Application.Exit();
 					return;
 				}

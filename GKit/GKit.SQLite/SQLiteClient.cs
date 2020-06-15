@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data;
+﻿using System.Data;
 using System.Data.SQLite;
+using System.Text;
 
 namespace GKit.SQLite {
 	public class SQLiteClient {
@@ -74,7 +70,7 @@ namespace GKit.SQLite {
 			return ExecuteNonQuery(cmdText);
 		}
 		public bool ExistTable(string tableName) {
-			return ExecuteNonQuery($"SELECT name FROM sqlite_master WHERE type='table' AND name='{tableName}'") != 0; 
+			return ExecuteNonQuery($"SELECT name FROM sqlite_master WHERE type='table' AND name='{tableName}'") != 0;
 		}
 
 		public int CreateColumn(string tableName, SQLiteFieldAffinity memberInfo) {
@@ -128,12 +124,12 @@ namespace GKit.SQLite {
 			SQLiteCommand cmd = new SQLiteCommand(connection);
 			StringBuilder cmdBuilder = new StringBuilder();
 			cmdBuilder.Append($"UPDATE {tableName} SET ");
-			for(int i=0; i<fields.Length; ++i) {
+			for (int i = 0; i < fields.Length; ++i) {
 				SQLiteField field = fields[i];
 				cmdBuilder.Append($"{field.columnName}=?");
 				cmd.Parameters.Add(field.value);
 			}
-			if(!string.IsNullOrEmpty(whereCondition)) {
+			if (!string.IsNullOrEmpty(whereCondition)) {
 				cmdBuilder.Append($"WHERE {whereCondition}");
 			}
 			cmdBuilder.Append(";");

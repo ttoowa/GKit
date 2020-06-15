@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 #if OnUnity
 namespace GKitForUnity
@@ -20,7 +16,7 @@ namespace GKit
 		public static extern void CopyMemory(void* dest, void* src, uint count);
 
 		public static void Clear(byte[] byteArray, byte value) {
-			fixed(byte* bytePtr = byteArray) {
+			fixed (byte* bytePtr = byteArray) {
 				MemSet(bytePtr, value, byteArray.Length);
 			}
 		}

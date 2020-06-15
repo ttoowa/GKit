@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 #if OnUnity
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -38,7 +34,7 @@ namespace GKit
 			try {
 				action?.Invoke();
 				return true;
-			} catch(Exception ex) {
+			} catch (Exception ex) {
 				GDebug.Log(ex.ToString(), GLogLevel.Warnning);
 				return false;
 			}
@@ -68,7 +64,7 @@ namespace GKit
 			return value <= max && value >= min;
 		}
 
-		public static T Cast<T> (this object obj) {
+		public static T Cast<T>(this object obj) {
 			return (T)obj;
 		}
 

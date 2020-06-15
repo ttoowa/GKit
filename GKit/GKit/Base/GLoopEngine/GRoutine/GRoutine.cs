@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 #if OnUnity
 using UnityEngine;
 using GKitForUnity.Core;
@@ -50,7 +45,7 @@ namespace GKit
 		}
 		internal bool Run(float deltaMillisec) {
 			try {
-				if(UpdateTime(deltaMillisec)) {
+				if (UpdateTime(deltaMillisec)) {
 					return true;
 				}
 				if (delayMillisec <= 0f) {
@@ -77,7 +72,7 @@ namespace GKit
 					return hasValue;
 				}
 				return true;
-			} catch(Exception ex) {
+			} catch (Exception ex) {
 				GDebug.Log(ex.ToString(), GLogLevel.Error);
 				Complete();
 				return false;
@@ -127,7 +122,7 @@ namespace GKit
 			return waitOrder;
 		}
 		private void Complete() {
-			if(IsComplete) 
+			if (IsComplete)
 				return;
 
 			IsComplete = true;

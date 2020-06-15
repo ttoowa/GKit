@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.IO.Pipes;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 #if OnUnity
 using GKitForUnity.Security;
 #elif OnWPF
@@ -36,7 +30,7 @@ namespace GKit
 		}
 		private string inHandle;
 		private string outHandle;
-		
+
 		public GPipeServer(NetProtocol protocol) {
 			this.Protocol = protocol;
 

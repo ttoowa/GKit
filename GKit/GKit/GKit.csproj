@@ -56,7 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base\Data\NodeDelegates.cs" />
-    <Compile Include="Base\Debug\GProfile.cs" />
+    <Compile Include="Base\DebugUtility\GProfile.cs" />
     <Compile Include="Base\GLoopEngine\GLoopSyncMode.cs" />
     <Compile Include="Base\GLoopEngine\GLoopEngine.cs" />
     <Compile Include="Base\GLoopEngine\GRoutine\GRoutine.cs" />
@@ -94,7 +94,7 @@
     <Compile Include="Base\Network\Utility\PacketUtility.cs" />
     <Compile Include="Base\Network\Web\Web.cs" />
     <Compile Include="Base\Security\Encrypt.cs" />
-    <Compile Include="Base\Graphic\Color\ColorStruct.cs" />
+    <Compile Include="Base\Graphics\Color\ColorStruct.cs" />
     <Compile Include="Base\Input\TabletInput\WintabInput.cs" />
     <Compile Include="Base\IO\ImageFileFormat.cs" />
     <Compile Include="Base\IO\IOUtility.cs" />
@@ -102,16 +102,15 @@
     <Compile Include="Base\Security\SecurityEvent.cs" />
     <Compile Include="Base\System\AssemblyInfo.cs" />
     <Compile Include="Base\System\Collections\TwoWayDictionary.cs" />
-    <Compile Include="Base\System\EnumHelper.cs" />
+    <Compile Include="Base\System\EnumUtility.cs" />
     <Compile Include="Base\System\Event\ActionEvent.cs" />
     <Compile Include="Base\System\Event\GRoutineEvent.cs" />
     <Compile Include="Base\System\Interface\INeedInitialization.cs" />
-    <Compile Include="Base\Debug\Log\GDebug.cs" />
-    <Compile Include="Base\Debug\Log\GLogLevel.cs" />
-    <Compile Include="Base\System\MathUtility.cs" />
+    <Compile Include="Base\DebugUtility\Log\GDebug.cs" />
+    <Compile Include="Base\DebugUtility\Log\GLogLevel.cs" />
+    <Compile Include="Base\System\GMathUtility.cs" />
     <Compile Include="Base\System\MultiThread\Parallel\ParallelPriolity.cs" />
     <Compile Include="Base\System\OS\WinUtility.cs" />
-    <Compile Include="Base\System\ProcessCheker.cs" />
     <Compile Include="Base\System\ProcessUtility.cs" />
     <Compile Include="Base\System\ReflectionUtility.cs" />
     <Compile Include="Base\System\Struct\Alignment.cs" />
@@ -119,22 +118,22 @@
     <Compile Include="Base\System\Struct\MotionValue.cs" />
     <Compile Include="Base\System\Struct\Property.cs" />
     <Compile Include="Base\System\Time\TimeFormat.cs" />
-    <Compile Include="Base\System\TrayIcon.cs" />
+    <Compile Include="Base\System\OS\TrayIcon.cs" />
     <Compile Include="Base\Utility\GRandom.cs" />
     <Compile Include="Base\System\Screen\ScreenInfo.cs" />
     <Compile Include="Base\Input\KeyInput\WinKey.cs" />
     <Compile Include="Base\Input\KeyInput\KeyInput.cs" />
     <Compile Include="Base\Input\MouseInput\MouseInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Base\System\ClipBoard.cs" />
+    <Compile Include="Base\System\OS\ClipBoard.cs" />
     <Compile Include="Base\System\MultiThread\Parallel\ParallelLoop.cs" />
     <Compile Include="Base\System\MultiThread\Channel\ThreadChannel.cs" />
-    <Compile Include="Base\System\Startup.cs" />
-    <Compile Include="Base\System\SystemInfo.cs" />
+    <Compile Include="Base\System\OS\Startup.cs" />
+    <Compile Include="Base\System\OS\SystemInfo.cs" />
     <Compile Include="Base\System\Time\TimeUtility.cs" />
     <Compile Include="Base\Utility\GMath.cs" />
     <Compile Include="Base\Utility\GSpline.cs" />
-    <Compile Include="Base\Graphic\Color\ColorUtility.cs" />
+    <Compile Include="Base\Graphics\Color\ColorUtility.cs" />
     <Compile Include="Base\Utility\GResourceUtility.cs" />
     <Compile Include="Base\Utility\IDGenerator.cs" />
     <Compile Include="Base\Utility\Mathf.cs" />

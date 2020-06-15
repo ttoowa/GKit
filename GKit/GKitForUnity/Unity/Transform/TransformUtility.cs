@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 namespace GKitForUnity {
 	public static class TransformUtility {
@@ -12,16 +6,14 @@ namespace GKitForUnity {
 		public static void SetParent(this GameObject child, GameObject parent, bool worldPositionStays = false) {
 			if (parent == null) {
 				child.transform.parent = null;
-			}
-			else {
+			} else {
 				child.transform.SetParent(parent.transform, worldPositionStays);
 			}
 		}
 		public static void SetParent(this GameObject child, Transform parent, bool worldPositionStays = false) {
 			if (parent == null) {
 				child.transform.parent = null;
-			}
-			else {
+			} else {
 				child.transform.SetParent(parent, worldPositionStays);
 			}
 		}

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 #if OnUnity
 namespace GKitForUnity
@@ -41,8 +37,8 @@ namespace GKit
 			Down = false;
 			Up = false;
 
-			if(Hold) {
-				if(!onHold) {
+			if (Hold) {
+				if (!onHold) {
 					Up = true;
 
 					OnUpOnce?.Invoke();
@@ -50,14 +46,14 @@ namespace GKit
 					OnUp?.Invoke();
 				}
 			} else {
-				if(onHold) {
+				if (onHold) {
 					Down = true;
 					OnDownOnce?.Invoke();
 					OnDownOnce = null;
 					OnDown?.Invoke();
 				}
 			}
-			
+
 			Hold = onHold;
 		}
 	}

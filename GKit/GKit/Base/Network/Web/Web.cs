@@ -1,19 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Net;
 #if OnUnity
 using GKitForUnity.MultiThread;
 using GKitForUnity.Security;
+using GKitForUnity.IO;
 #elif OnWPF
 using GKitForWPF.MultiThread;
 using GKitForWPF.Security;
+using GKitForWPF.IO;
 #else
 using GKit.MultiThread;
 using GKit.Security;
+using GKit.IO;
 #endif
 
 #if OnUnity
@@ -32,11 +31,11 @@ namespace GKit
 			lock (clientIDGenerator) {
 				ID = clientIDGenerator.GetID();
 			}
-			new Action(()=> {
+			new Action(() => {
 				try {
 					DownloadFile(url, directoryInfo);
 					OnComplete.RunInThread(null);
-				} catch(Exception ex) {
+				} catch (Exception ex) {
 					GDebug.Log(ex.ToString(), GLogLevel.Warnning);
 					OnFailed.RunInThread(null);
 				}
@@ -52,7 +51,7 @@ namespace GKit
 			//GetPath
 			Uri uri = new Uri(url);
 			string localPath;
-			if(url.Length > 6 && url.Substring(url.Length-6) == ":large") {
+			if (url.Length > 6 && url.Substring(url.Length - 6) == ":large") {
 				//Twitter
 				localPath = new Uri(url.Substring(0, url.Length - 6)).LocalPath;
 			} else {
@@ -64,10 +63,10 @@ namespace GKit
 			//Find Extension
 			if (string.IsNullOrEmpty(extension)) {
 				try {
-					using(MemoryStream stream = new MemoryStream(data)) {
+					using (MemoryStream stream = new MemoryStream(data)) {
 						ImageFileFormat format = IOUtility.GetImageFormat(stream);
 
-						if(format != ImageFileFormat.Unknown) {
+						if (format != ImageFileFormat.Unknown) {
 							extension = "." + format.ToString();
 							filePath += extension;
 						} else {
@@ -79,14 +78,14 @@ namespace GKit
 					extension = "";
 				}
 			}
-				
+
 			int num = 2;
 			while (File.Exists(filePath)) {
 				filePath = Path.Combine(directoryInfo.FullName, fileName + num + extension);
 				++num;
 			}
-				
-			using(FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite)) {
+
+			using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite)) {
 				fileStream.Write(data, 0, data.Length);
 			}
 		}

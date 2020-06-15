@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace GKitForWPF.Resources {
 	public static class StyleResource {
 		internal const string ThemePath = "pack://application:,,,/GKitForWPF;component/WPF/Resources/Themes/";
 		public const string FlatTheme = ThemePath + "FlatTheme.xaml";
-		
+
 		public static void Apply(ResourceDictionary appResource, ThemeType themeType) {
 			string themeUri;
-			switch(themeType) {
+			switch (themeType) {
 				default:
 				case ThemeType.FlatTheme:
 					themeUri = FlatTheme;

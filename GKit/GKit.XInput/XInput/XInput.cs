@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using XInputDotNetPure;
+﻿using XInputDotNetPure;
 
 namespace GKit.XInput {
 	public static class XInput {
@@ -18,7 +13,7 @@ namespace GKit.XInput {
 		static XInput() {
 			Players = new XInputPlayer[MaxPlayerCount];
 
-			for(int playerI=0; playerI<Players.Length; ++playerI) {
+			for (int playerI = 0; playerI < Players.Length; ++playerI) {
 				XInputPlayer player = Players[playerI] = new XInputPlayer();
 
 				player.Index = (PlayerIndex)playerI;
@@ -26,7 +21,7 @@ namespace GKit.XInput {
 		}
 
 		public static void Update() {
-			for(int playerI=0; playerI<Players.Length; ++playerI) {
+			for (int playerI = 0; playerI < Players.Length; ++playerI) {
 				XInputPlayer player = Players[playerI];
 
 				player.Update();

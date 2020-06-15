@@ -1,12 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
-using UnityEngine.UI;
-using GKitForUnity;
+﻿using UnityEngine;
 
 namespace GKitForUnity {
 	[RequireComponent(typeof(RectTransform))]
@@ -15,7 +7,8 @@ namespace GKitForUnity {
 		public HorizontalAlignment HorizontalAlignment {
 			get {
 				return horizontalAlignment;
-			} set {
+			}
+			set {
 				horizontalAlignment = value;
 				RectTransform.SetHorizontalAlignment(value);
 			}
@@ -33,21 +26,24 @@ namespace GKitForUnity {
 		public Vector2 Position {
 			get {
 				return RectTransform.anchoredPosition;
-			} set {
+			}
+			set {
 				RectTransform.anchoredPosition = value;
 			}
 		}
 		public Vector2 SizeDelta {
 			get {
 				return RectTransform.sizeDelta;
-			} set {
+			}
+			set {
 				RectTransform.sizeDelta = value;
 			}
 		}
 		public Vector2 Pivot {
 			get {
 				return RectTransform.pivot;
-			} set {
+			}
+			set {
 				RectTransform.pivot = value;
 			}
 		}
@@ -63,7 +59,7 @@ namespace GKitForUnity {
 			HorizontalAlignment = alignment;
 
 			if (setPivotAuto) {
-				Pivot =  new Vector2(UiUtility.GetPivotPosition(alignment), Pivot.y);
+				Pivot = new Vector2(UiUtility.GetPivotPosition(alignment), Pivot.y);
 			}
 		}
 		public void SetVerticalAlignment(VerticalAlignment alignment, bool setPivotAuto = true) {

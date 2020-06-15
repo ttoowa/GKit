@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using System.Globalization;
 #if OnUnity
 using UnityEngine;
@@ -23,7 +19,7 @@ namespace GKitForWPF
 #else
 namespace GKit
 #endif
-{
+.Graphics {
 	public static class ColorUtility {
 		public static string ToHex(this ColorB color) {
 #if OnUnity
@@ -77,7 +73,7 @@ namespace GKit
 		public static ColorB ToColor(this string hex) {
 			hex = hex.Replace("0x", "");
 			hex = hex.Replace("#", "");
-			
+
 			byte a = 255;
 			byte r = byte.Parse(hex.Substring(0, 2), NumberStyles.HexNumber);
 			byte g = byte.Parse(hex.Substring(2, 2), NumberStyles.HexNumber);
@@ -147,7 +143,7 @@ namespace GKit
 				saturation = 0;
 			} else {
 				saturation = 1f - (1f * min / max);
-				if(Mathf.Abs(delta) < float.Epsilon) {
+				if (Mathf.Abs(delta) < float.Epsilon) {
 					delta = float.Epsilon;
 				}
 				if (color.r == max) {

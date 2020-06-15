@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GKit;
+using GKit.SQLite;
+using System;
 using System.Data;
 using System.Data.SQLite;
-using GKit;
-using GKit.SQLite;
 
 namespace ConsoleTest {
 	public class Program {
@@ -25,7 +21,7 @@ namespace ConsoleTest {
 			dbClient = new SQLiteClient();
 			dbClient.Open(TestFilename);
 
-			if(!dbClient.ExistTable("Member")) {
+			if (!dbClient.ExistTable("Member")) {
 				GDebug.Log(dbClient.CreateTable("Member",
 					new SQLiteFieldAffinity(TypeAffinity.Text, "ID"),
 					new SQLiteFieldAffinity(TypeAffinity.Text, "PW")));

@@ -60,12 +60,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Unity\AnimatorBoolSetter.cs" />
+    <Compile Include="Unity\Utility\ToolComponents\AnimatorBoolSetter.cs" />
     <Compile Include="Unity\Cursor\CursorInfo.cs" />
     <Compile Include="Unity\Cursor\CursorManager.cs" />
-    <Compile Include="Unity\Debug\FpsDisplayer.cs" />
-    <Compile Include="Unity\FpsInitializer.cs" />
-    <Compile Include="Unity\GameObjectDisabler.cs" />
+    <Compile Include="Unity\DebugUtility\FpsDisplayer.cs" />
+    <Compile Include="Unity\Utility\ToolComponents\FpsInitializer.cs" />
+    <Compile Include="Unity\Utility\ToolComponents\GameObjectDisabler.cs" />
     <Compile Include="Unity\Input\Event\InputHandler.cs" />
     <Compile Include="Unity\Input\Event\InputLayer.cs" />
     <Compile Include="Unity\Input\Event\InputManager.cs" />

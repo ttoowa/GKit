@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 #if OnUnity
 namespace GKitForUnity
@@ -40,7 +36,7 @@ namespace GKit
 			return actionList.Remove(action);
 		}
 
-		public static ActionEvent operator + (ActionEvent left, Action right) {
+		public static ActionEvent operator +(ActionEvent left, Action right) {
 			left.Add(right);
 			return left;
 		}

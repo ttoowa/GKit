@@ -1,12 +1,8 @@
 ﻿#if OnUnity
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace GKitForUnity {
@@ -64,7 +60,7 @@ namespace GKitForUnity {
 			return GResourceUtility.Get<T>(path);
 		}
 		public static Texture2D GetTexture(this string localPath, TextureFormat format = TextureFormat.RGBA32, bool generateMipmap = true) {
-			if(File.Exists(localPath)) {
+			if (File.Exists(localPath)) {
 				byte[] binary = File.ReadAllBytes(localPath);
 				Texture2D tex = new Texture2D(2, 2, format, generateMipmap);
 				tex.LoadImage(binary);
@@ -79,11 +75,11 @@ namespace GKitForUnity {
 			staticObjects = Resources.FindObjectsOfTypeAll<GameObject>();
 		}
 		public static GameObject FindGameObject(this string name, bool useFirstFrameList = true) {
-			if(staticObjects == null || !useFirstFrameList) {
+			if (staticObjects == null || !useFirstFrameList) {
 				staticObjects = Resources.FindObjectsOfTypeAll<GameObject>();
 			}
-			for(int i=0; i< staticObjects.Length; ++i) {
-				if(staticObjects[i].name == name) {
+			for (int i = 0; i < staticObjects.Length; ++i) {
+				if (staticObjects[i].name == name) {
 					return staticObjects[i];
 				}
 			}
@@ -101,8 +97,8 @@ namespace GKitForUnity {
 					}
 				}
 				return objQueue.ToArray();
-			} catch(Exception ex) {
-				GDebug.Log($"Can't find gameObject'{name}'{Environment.NewLine}{ex.ToString()}",GLogLevel.Warnning);
+			} catch (Exception ex) {
+				GDebug.Log($"Can't find gameObject'{name}'{Environment.NewLine}{ex.ToString()}", GLogLevel.Warnning);
 				return null;
 			}
 		}

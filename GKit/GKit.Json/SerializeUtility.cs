@@ -1,10 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GKit.Json {
 	public static class SerializeUtility {
@@ -47,7 +43,7 @@ namespace GKit.Json {
 					continue;
 
 				string stringValue = jObject.GetValue<string>(field.Name);
-				
+
 				field.SetValue(model, Convert.ChangeType(stringValue, field.FieldType));
 			}
 		}

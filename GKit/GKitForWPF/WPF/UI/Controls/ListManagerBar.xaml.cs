@@ -1,19 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GKitForWPF.UI.Converters;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using GKitForWPF;
-using GKitForWPF.UI.Converters;
 
 namespace GKitForWPF.UI.Controls {
 	/// <summary>
@@ -76,9 +64,9 @@ namespace GKitForWPF.UI.Controls {
 			BoolToVisibilityConverter boolToVisibilityConverter = new BoolToVisibilityConverter();
 
 			CreateItemButton.SetBinding(Button.VisibilityProperty, new Binding(nameof(CreateItemButtonVisible)) { Source = this, Mode = BindingMode.OneWay, Converter = boolToVisibilityConverter });
-			CreateFolderButton.SetBinding(Button.VisibilityProperty, new Binding(nameof(CreateFolderButtonVisible)) {  Source = this, Mode = BindingMode.OneWay, Converter = boolToVisibilityConverter });
-			CopyItemButton.SetBinding(Button.VisibilityProperty, new Binding(nameof(CopyItemButtonVisible)) {  Source = this, Mode = BindingMode.OneWay, Converter = boolToVisibilityConverter });
-			RemoveItemButton.SetBinding(Button.VisibilityProperty, new Binding(nameof(RemoveItemButtonVisible)) {  Source = this, Mode = BindingMode.OneWay, Converter = boolToVisibilityConverter });
+			CreateFolderButton.SetBinding(Button.VisibilityProperty, new Binding(nameof(CreateFolderButtonVisible)) { Source = this, Mode = BindingMode.OneWay, Converter = boolToVisibilityConverter });
+			CopyItemButton.SetBinding(Button.VisibilityProperty, new Binding(nameof(CopyItemButtonVisible)) { Source = this, Mode = BindingMode.OneWay, Converter = boolToVisibilityConverter });
+			RemoveItemButton.SetBinding(Button.VisibilityProperty, new Binding(nameof(RemoveItemButtonVisible)) { Source = this, Mode = BindingMode.OneWay, Converter = boolToVisibilityConverter });
 		}
 		private void RegisterEvents() {
 			CreateItemButton.RegisterClickEvent(CreateItemButtonClick);

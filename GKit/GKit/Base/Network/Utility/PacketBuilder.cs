@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 #if OnUnity
 namespace GKitForUnity
@@ -25,7 +22,7 @@ namespace GKit
 	public class PacketBuilder {
 		private Queue<byte> byteQueue;
 		public int Count => byteQueue.Count;
-		
+
 		public PacketBuilder() {
 			byteQueue = new Queue<byte>();
 		}
@@ -33,12 +30,12 @@ namespace GKit
 			byteQueue.Clear();
 		}
 		public void Append(params byte[] data) {
-			for(int i=0; i<data.Length; ++i) {
+			for (int i = 0; i < data.Length; ++i) {
 				byteQueue.Enqueue(data[i]);
 			}
 		}
 		public void Append(params byte[][] data) {
-			for(int i=0; i<data.Length; ++i) {
+			for (int i = 0; i < data.Length; ++i) {
 				Append(data[i]);
 			}
 		}

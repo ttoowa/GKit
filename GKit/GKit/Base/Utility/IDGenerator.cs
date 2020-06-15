@@ -21,21 +21,21 @@ namespace GKit
 		}
 		private Stack<int> IDStack;
 
-		public IDGenerator(int startIndex=0) {
+		public IDGenerator(int startIndex = 0) {
 			this.StartIndex = startIndex;
 			IDStack = new Stack<int>();
 			Expand(16);
 		}
 		public int GetID() {
-			if(IDStack.Count == 0) {
+			if (IDStack.Count == 0) {
 				Expand(1);
 			}
 			return IDStack.Pop();
 		}
 		public int GetID(int count) {
 			Expand(count);
-			int ID=-1;
-			for(int i=0; i<count; ++i) {
+			int ID = -1;
+			for (int i = 0; i < count; ++i) {
 				ID = IDStack.Pop();
 			}
 			return ID;
@@ -47,11 +47,11 @@ namespace GKit
 			Capacity = 0;
 			IDStack.Clear();
 		}
-		
+
 		private void Expand(int count) {
 			int i = Math.Max(StartIndex, Capacity);
 			Capacity += count;
-			for(; i<Capacity; ++i) {
+			for (; i < Capacity; ++i) {
 				IDStack.Push(i);
 			}
 		}

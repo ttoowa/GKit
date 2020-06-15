@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace GKitForUnity {
 	/// <summary>
@@ -75,7 +70,7 @@ namespace GKitForUnity {
 					if (MouseInput.Right.Down) {
 						cursorFocus.CallMouseRightDown();
 					}
-					if(MouseInput.Middle.Down) {
+					if (MouseInput.Middle.Down) {
 						cursorFocus.CallMouseMiddleDown();
 					}
 					//마우스업
@@ -85,14 +80,14 @@ namespace GKitForUnity {
 							cursorFocus.CallClick();
 						}
 					}
-					if(MouseInput.Right.Up) {
-						if(cursorFocus.IsMouseRightPressed) {
+					if (MouseInput.Right.Up) {
+						if (cursorFocus.IsMouseRightPressed) {
 							cursorFocus.CallMouseRightUp();
 							cursorFocus.CallRightClick();
 						}
 					}
-					if(MouseInput.Middle.Up) {
-						if(cursorFocus.IsMouseMiddlePressed) {
+					if (MouseInput.Middle.Up) {
+						if (cursorFocus.IsMouseMiddlePressed) {
 							cursorFocus.CallMouseMiddleUp();
 							cursorFocus.CallMiddleClick();
 						}
@@ -121,10 +116,10 @@ namespace GKitForUnity {
 				if (cursorFocus.IsMousePressed) {
 					cursorFocus.CallMouseUp();
 				}
-				if(cursorFocus.IsMouseRightPressed) {
+				if (cursorFocus.IsMouseRightPressed) {
 					cursorFocus.CallMouseRightUp();
 				}
-				if(cursorFocus.IsMouseMiddlePressed) {
+				if (cursorFocus.IsMouseMiddlePressed) {
 					cursorFocus.CallMouseMiddleUp();
 				}
 				if (cursorFocus.IsMouseOver) {

@@ -47,15 +47,15 @@ namespace GKit
 		private void OnDoubleClick_Notify(object sender, EventArgs e) {
 			OnDoubleClick?.Invoke();
 		}
-		
-		#if OnWPF
+
+#if OnWPF
 		public void SetIcon(string icoPath) {
 			Uri iconUri = GResourceUtility.GetUri(icoPath);
 			Stream resourceStream = Application.GetResourceStream(iconUri).Stream;
 			Icon icon = new Icon(resourceStream);
 			SetIcon(icon);
 		}
-		#endif
+#endif
 		public void SetIcon(Icon icon) {
 			Notify.Icon = icon;
 		}

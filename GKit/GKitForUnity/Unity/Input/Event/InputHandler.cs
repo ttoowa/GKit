@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace GKitForUnity {
@@ -29,7 +27,7 @@ namespace GKitForUnity {
 		public bool IsMouseMiddlePressed {
 			get; private set;
 		}
-		
+
 		public GLoopEngine OwnerLoopEngine {
 			get; private set;
 		}
@@ -54,7 +52,8 @@ namespace GKitForUnity {
 		public int Layer {
 			get {
 				return gameObject.layer;
-			} set {
+			}
+			set {
 				gameObject.layer = value;
 				OnLayerChanged?.Invoke(value);
 			}
@@ -62,9 +61,10 @@ namespace GKitForUnity {
 		public CursorInfo Cursor {
 			get {
 				return cursor;
-			} set {
+			}
+			set {
 				cursor = value;
-				if(IsMouseOver) {
+				if (IsMouseOver) {
 					CursorManager.SetCursor(value);
 				}
 			}
@@ -200,7 +200,7 @@ namespace GKitForUnity {
 				return;
 
 			float dragLength = (MouseInput.ScreenPos - mouseDownPos).magnitude;
-			if(dragLength >= DragThreshold) {
+			if (dragLength >= DragThreshold) {
 				calledDragStart = true;
 
 				CallMouseDragStart();

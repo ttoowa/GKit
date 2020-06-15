@@ -1,19 +1,10 @@
-﻿using GKitForWPF;
+﻿using GKitForWPF.Graphics;
 using GKitForWPF.UI.Converters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace GKitForWPF.UI.Controls {
 	public delegate void TextEditedDelegate(string oldText, string newText, ref bool cancelEdit);
@@ -38,9 +29,10 @@ namespace GKitForWPF.UI.Controls {
 
 		public string Text {
 			get {
-					return (string)GetValue(TextProperty);
-			} set {
-					SetValue(TextProperty, value);
+				return (string)GetValue(TextProperty);
+			}
+			set {
+				SetValue(TextProperty, value);
 			}
 		}
 		public string EditingText {
@@ -128,19 +120,19 @@ namespace GKitForWPF.UI.Controls {
 			}
 		}
 		private void InputManager_PreProcessInput(object sender, PreProcessInputEventArgs e) {
-			if(e.StagingItem.Input is MouseButtonEventArgs) {
+			if (e.StagingItem.Input is MouseButtonEventArgs) {
 				MouseButtonEventArgs clickEventArgs = (MouseButtonEventArgs)e.StagingItem.Input;
 
-				if(clickEventArgs.ChangedButton == MouseButton.Left &&
+				if (clickEventArgs.ChangedButton == MouseButton.Left &&
 				clickEventArgs.LeftButton == MouseButtonState.Pressed) {
-					if(IsEditing && !EditingTextBox.IsMouseOver) {
+					if (IsEditing && !EditingTextBox.IsMouseOver) {
 						EndEditing();
 					}
 				}
-			} else if(e.StagingItem.Input is KeyEventArgs) {
+			} else if (e.StagingItem.Input is KeyEventArgs) {
 				KeyEventArgs keyEventArgs = (KeyEventArgs)e.StagingItem.Input;
 
-				if(keyEventArgs.IsDown && keyEventArgs.Key == Key.Return) {
+				if (keyEventArgs.IsDown && keyEventArgs.Key == Key.Return) {
 					if (IsEditing) {
 						EndEditing();
 					}

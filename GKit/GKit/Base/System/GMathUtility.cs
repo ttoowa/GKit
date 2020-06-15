@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-#if OnUnity
+﻿#if OnUnity
 using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
@@ -23,16 +18,16 @@ namespace GKitForWPF
 namespace GKit
 #endif
 {
-	public static class MathExtension {
+	public static class GMathUtility {
 
 		public static Vector2 GetNormal(this float radianAngle) {
 			return new Vector2(Mathf.Cos(radianAngle), Mathf.Sin(radianAngle));
 		}
 		public static float GetNearAngleDelta(this float delta) {
 			delta = delta % 360f;
-			if(delta < -180f) {
+			if (delta < -180f) {
 				delta += 360f;
-			} else if(delta > 180f) {
+			} else if (delta > 180f) {
 				delta -= 360f;
 			}
 			return delta;
