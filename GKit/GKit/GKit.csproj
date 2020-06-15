@@ -106,8 +106,8 @@
     <Compile Include="Base\System\Event\ActionEvent.cs" />
     <Compile Include="Base\System\Event\GRoutineEvent.cs" />
     <Compile Include="Base\System\Interface\INeedInitialization.cs" />
-    <Compile Include="Base\DebugUtility\Log\GDebug.cs" />
-    <Compile Include="Base\DebugUtility\Log\GLogLevel.cs" />
+    <Compile Include="Base\DebugUtility\GDebug.cs" />
+    <Compile Include="Base\DebugUtility\GLogLevel.cs" />
     <Compile Include="Base\System\GMathUtility.cs" />
     <Compile Include="Base\System\MultiThread\Parallel\ParallelPriolity.cs" />
     <Compile Include="Base\System\OS\WinUtility.cs" />
