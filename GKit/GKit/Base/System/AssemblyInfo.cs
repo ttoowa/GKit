@@ -5,7 +5,14 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GKit {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+{
 	public static class AssemblyInfo {
 		public static string Name {
 			get {

@@ -4,9 +4,22 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+#if OnUnity
+using GKitForUnity.MultiThread;
+#elif OnWPF
+using GKitForWPF.MultiThread;
+#else
 using GKit.MultiThread;
+#endif
 
-namespace GKit {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+{
 	public struct FuncProfileResult {
 		public Action action;
 		public float elapsedMillisec;

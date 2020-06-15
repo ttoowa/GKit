@@ -9,7 +9,14 @@ using Screen = UnityEngine.Screen;
 using System.Windows.Forms;
 #endif
 
-namespace GKit {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+{
 #if OnUnity
 	/// <summary>
 	/// 화면에 대한 정보를 제공하는 클래스입니다.

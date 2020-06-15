@@ -7,7 +7,14 @@ using System.Threading.Tasks;
 using UnityEngine;
 #endif
 
-namespace GKit {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+{
 	/// <summary>
 	/// 클립보드 관리 클래스입니다.
 	/// </summary>

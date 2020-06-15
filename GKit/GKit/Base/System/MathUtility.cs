@@ -7,12 +7,22 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
+#elif OnWPF
+using Vector2 = GKitForWPF.Vector2;
+using Vector3 = GKitForWPF.Vector3;
 #else
 using Vector2 = GKit.Vector2;
 using Vector3 = GKit.Vector3;
 #endif
 
-namespace GKit {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+{
 	public static class MathExtension {
 
 		public static Vector2 GetNormal(this float radianAngle) {

@@ -5,7 +5,14 @@ using System.Text;
 using System.Security.Cryptography;
 using System.IO;
 
-namespace GKit.Security {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+.Security {
 	public static class Encrypt {
 		static System.Random random = new System.Random();
 

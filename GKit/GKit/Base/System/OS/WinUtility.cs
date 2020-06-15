@@ -11,7 +11,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Win32.SafeHandles;
 
-namespace GKit {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+{
 	public static class WinUtility {
 		public class Impersonator : IDisposable {
 			[DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]

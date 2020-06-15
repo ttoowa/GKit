@@ -10,7 +10,14 @@ using UnityEngine;
 using System.Windows.Media;
 #endif
 
-namespace GKit {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+{
 	/// <summary>
 	/// 마우스 입력 정보를 제공하는 클래스입니다.
 	/// </summary>

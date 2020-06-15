@@ -5,7 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Sockets;
 
-namespace GKit.Network {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+.Network {
 	/// <summary>
 	/// 패킷 헤더를 정의하는 프로토콜입니다.
 	/// </summary>

@@ -6,11 +6,21 @@ using System.Text;
 using System.Threading.Tasks;
 #if OnUnity
 using UnityEngine;
-#endif
-using GKit;
+using GKitForUnity.Core.Scheduler;
+#elif OnWPF
+using GKitForWPF.Core.Scheduler;
+#else
 using GKit.Core.Scheduler;
+#endif
 
-namespace GKit {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+{
 	public class GScheduler {
 		public GLoopEngine ownerCore;
 		public bool IsRunning => routine != null;

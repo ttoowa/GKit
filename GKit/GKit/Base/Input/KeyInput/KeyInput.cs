@@ -5,7 +5,14 @@ using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
 #endif
 
-namespace GKit {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+{
 
 	//TODO : 키 검사를 안 하다가 최초로 검사할 시 누른 상태일 확률 큼 -> 해결하기
 	//첫 번째 검사는 무조건 false를 반환하고, 한 번이라도 검사한 키는 계속 검사해주는 건 어떨까?

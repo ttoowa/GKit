@@ -9,14 +9,25 @@ using System.Windows;
 using System.Windows.Input;
 using WintabDN;
 using System.Windows.Forms;
-using GKit.MultiThread;
 #if OnUnity
 using UnityEngine;
+using GKitForUnity.MultiThread;
+#elif OnWPF
+using GKitForWPF.MultiThread;
+using System.Windows.Media;
 #else
+using GKit.MultiThread;
 using System.Windows.Media;
 #endif
 
-namespace GKit {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+{
 	/// <summary>
 	/// 32Bit 프로세스에서만 사용하세요.
 	/// </summary>

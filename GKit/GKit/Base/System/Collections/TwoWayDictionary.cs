@@ -4,7 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GKit {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+{
 	public class TwoWayDictionary<T1, T2> {
 		private Dictionary<T1, T2> forward = new Dictionary<T1, T2>();
 		private Dictionary<T2, T1> reverse = new Dictionary<T2, T1>();

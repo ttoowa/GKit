@@ -5,13 +5,23 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using GKit;
-using GKit.Core;
 #if OnUnity
 using UnityEngine;
+using GKitForUnity.Core;
+#elif OnWPF
+using GKitForWPF.Core;
+#else
+using GKit.Core;
 #endif
 
-namespace GKit {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+{
 	/// <summary>
 	/// 여러 프레임에 걸쳐 실행하는 루틴 객체입니다. IEnumerator를 LoopCore에 추가해 얻을 수 있습니다.
 	/// <para>yield return 뒤에 오는 대기 명령 클래스는 다음과 같습니다.</para>

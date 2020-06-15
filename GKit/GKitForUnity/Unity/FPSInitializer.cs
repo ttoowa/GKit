@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace GKit.Unity {
+namespace GKitForUnity {
 	public class FpsInitializer : MonoBehaviour {
 		public int targetFps = 60;
 

@@ -7,7 +7,14 @@ using System.Threading.Tasks;
 using UnityEngine;
 #endif
 
-namespace GKit {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+{
 	public class MotionValue<T> where T : struct {
 		public T dstValue;
 		public T currentValue;

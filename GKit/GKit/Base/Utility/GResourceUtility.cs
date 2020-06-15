@@ -9,10 +9,14 @@ using UnityEngine;
 using System.Windows.Media.Imaging;
 #endif
 
-namespace GKit {
-	/// <summary>
-	/// 리소스를 불러오는 클래스입니다.
-	/// </summary>
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+{
 	public static class GResourceUtility {
 #if OnUnity
 		public static Type Get<Type>(string path) where Type : UnityEngine.Object {

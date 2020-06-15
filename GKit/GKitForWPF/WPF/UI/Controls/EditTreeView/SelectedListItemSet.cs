@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GKit.WPF.UI.Controls {
+namespace GKitForWPF.UI.Controls {
 	public class SelectedListItemSet : IEnumerable<ITreeItem> {
 		public int Count => itemSet.Count;
 

@@ -61,11 +61,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Unity\AnimatorBoolSetter.cs" />
+    <Compile Include="Unity\Cursor\CursorInfo.cs" />
+    <Compile Include="Unity\Cursor\CursorManager.cs" />
     <Compile Include="Unity\Debug\FpsDisplayer.cs" />
     <Compile Include="Unity\FpsInitializer.cs" />
     <Compile Include="Unity\GameObjectDisabler.cs" />
+    <Compile Include="Unity\Input\Event\InputHandler.cs" />
+    <Compile Include="Unity\Input\Event\InputLayer.cs" />
+    <Compile Include="Unity\Input\Event\InputManager.cs" />
+    <Compile Include="Unity\Input\Event\InputMask.cs" />
     <Compile Include="Unity\Transform\TransformUtility.cs" />
-    <Compile Include="Unity\Transform\Alignment.cs" />
     <Compile Include="Unity\Transform\UiTransform.cs" />
     <Compile Include="Unity\Transform\UiUtility.cs" />
     <Compile Include="Unity\Utility\UnityUtility.cs" />
@@ -79,6 +84,10 @@
     <Content Include="Dependency\UnityEngine.dll" />
     <Content Include="Dependency\UnityEngine.UI.dll" />
   </ItemGroup>
-  <Import Project="$(ProjectDir)..\GKit\Base.targets" />
+  <ItemGroup>
+    <Compile Include="..\GKit\Base\**\*.cs">
+      <Link>Base\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

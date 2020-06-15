@@ -4,9 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GKit;
 
-namespace GKit.Core.Scheduler {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+.Core.Scheduler {
 	public class GScheduleTask {
 		public GScheduleTaskType type;
 		public object action;

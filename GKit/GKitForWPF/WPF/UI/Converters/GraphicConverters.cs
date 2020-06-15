@@ -7,10 +7,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using GKit;
-using GKit.WPF;
+using GKitForWPF;
 
-namespace GKit.WPF.UI.Converters {
+namespace GKitForWPF.UI.Converters {
 	public class ColorToLightConverter : IValueConverter {
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
 			if (value == null)

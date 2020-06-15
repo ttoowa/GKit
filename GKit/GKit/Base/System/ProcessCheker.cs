@@ -7,7 +7,14 @@ using System.Drawing;
 using System.Diagnostics;
 using System.Threading;
 
-namespace GKit {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+{
 	/// <summary>
 	/// 동일한 프로세스가 이미 있는지 확인합니다.
 	/// </summary>

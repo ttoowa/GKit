@@ -4,7 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GKit.Security {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+.Security {
 	public class SafeProperty<T> where T : IConvertible {
 		public event Action OnHackedInstance;
 		public T Value {

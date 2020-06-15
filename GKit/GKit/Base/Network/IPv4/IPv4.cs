@@ -4,7 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GKit.Network {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+.Network {
 	public class IPv4 {
 		public const string BaseN_e = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!?/()<>{}[]~+=-_@#$%^&*.,'\"";
 		public const string BaseN_k = "가거고구그기나너노누느니다더도두드디라러로루르리마머모무므미바버보부브비사서소수스시아어오우으이자저조주즈지차처초츠치카커코쿠크키타터토투트티파퍼포푸프피하허호후흐히" +
@@ -79,10 +86,10 @@ namespace GKit.Network {
 
 		public static string IP2sIP(string IP, IPv4Type sIPType) {
 
-			return BMath.Base10ToBaseN(IP2Num(IP), GetBaseN(sIPType));
+			return GMath.Base10ToBaseN(IP2Num(IP), GetBaseN(sIPType));
 		}
 		public static string sIP2IP(string sIP, IPv4Type sIPType) {
-			uint numAddress = (uint)BMath.BaseNToBase10(sIP, GetBaseN(sIPType));
+			uint numAddress = (uint)GMath.BaseNToBase10(sIP, GetBaseN(sIPType));
 			return Num2IP(numAddress);
 		}
 		private static string GetBaseN(IPv4Type type) {

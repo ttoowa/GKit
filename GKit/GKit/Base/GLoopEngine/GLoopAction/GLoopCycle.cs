@@ -1,4 +1,11 @@
-﻿namespace GKit {
+﻿#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+{
 	public enum GLoopCycle {
 		None = 0,
 		EveryFrame = 1,

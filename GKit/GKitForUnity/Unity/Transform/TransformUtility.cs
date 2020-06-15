@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace GKit.Unity {
+namespace GKitForUnity {
 	public static class TransformUtility {
 		//Node
 		public static void SetParent(this GameObject child, GameObject parent, bool worldPositionStays = false) {

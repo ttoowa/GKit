@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace GKit.WPF.UI.Controls {
+namespace GKitForWPF.UI.Controls {
 	/// <summary>
 	/// ItemShadow.xaml에 대한 상호 작용 논리
 	/// </summary>

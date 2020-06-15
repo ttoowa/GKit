@@ -6,7 +6,13 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
 namespace GKit
+#endif
 {
     public static class EnumHelper
     {

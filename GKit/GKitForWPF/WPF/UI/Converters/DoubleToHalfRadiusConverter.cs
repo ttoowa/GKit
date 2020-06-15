@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
-namespace GKit.WPF.UI.Converters {
+namespace GKitForWPF.UI.Converters {
 	public class DoubleToHalfRadiusConverter : IValueConverter {
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
 		double radius = (double)value * 0.5d;

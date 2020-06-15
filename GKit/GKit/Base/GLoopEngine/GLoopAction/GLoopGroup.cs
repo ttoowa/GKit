@@ -1,7 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GKit.Core.Component {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+.Core.Component {
 	public class GLoopGroup {
 		public int TaskCount => TaskList.Count;
 		public GLoopEngine OwnerCore {

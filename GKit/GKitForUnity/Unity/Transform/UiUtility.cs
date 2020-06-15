@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace GKit.Unity {
+namespace GKitForUnity {
 	public static class UiUtility {
 
 		public static void SetHorizontalAlignment(this RectTransform rectTransform, HorizontalAlignment alignment) {

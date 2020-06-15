@@ -7,7 +7,14 @@ using UnityEngine;
 using Debug = UnityEngine.Debug;
 #endif
 
-namespace GKit {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+{
 	public class GJobManager {
 		/// <summary>
 		/// 한 프레임 당 작업을 실행할 수 있는 최대 경과 시간 (기본 : 4)

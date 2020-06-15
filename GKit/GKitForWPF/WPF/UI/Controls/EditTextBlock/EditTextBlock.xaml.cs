@@ -1,5 +1,5 @@
-﻿using GKit;
-using GKit.WPF.UI.Converters;
+﻿using GKitForWPF;
+using GKitForWPF.UI.Converters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace GKit.WPF.UI.Controls {
+namespace GKitForWPF.UI.Controls {
 	public delegate void TextEditedDelegate(string oldText, string newText, ref bool cancelEdit);
 
 	public partial class EditTextBlock : UserControl {

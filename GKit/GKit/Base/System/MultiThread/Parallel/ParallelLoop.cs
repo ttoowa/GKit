@@ -8,7 +8,14 @@ using System.Threading.Tasks;
 using UnityEngine;
 #endif
 
-namespace GKit.MultiThread {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+.MultiThread {
 	/// <param name="startIndex">for문을 시작하는 인덱스로 사용하세요.</param>
 	/// <param name="endIndex">for문을 끝내는 조건의 인덱스로 사용하세요.</param>
 	public delegate void LoopDelegate(int startIndex, int endIndex);

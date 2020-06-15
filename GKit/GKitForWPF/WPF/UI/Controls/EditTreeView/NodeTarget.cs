@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GKit.WPF.UI.Controls {
+namespace GKitForWPF.UI.Controls {
 	public class NodeTarget {
 		public ITreeItem node;
 		public NodeDirection direction;

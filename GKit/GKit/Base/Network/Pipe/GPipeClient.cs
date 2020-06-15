@@ -7,7 +7,14 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GKit.Network {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+.Network {
 	public class GPipeClient : IDisposable {
 		private const string HandleHeader_In = "IN[";
 		private const string HandleHeader_Out = "OUT[";

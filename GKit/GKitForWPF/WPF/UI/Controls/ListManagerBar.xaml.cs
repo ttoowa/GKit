@@ -12,10 +12,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using GKit;
-using GKit.WPF.UI.Converters;
+using GKitForWPF;
+using GKitForWPF.UI.Converters;
 
-namespace GKit.WPF.UI.Controls {
+namespace GKitForWPF.UI.Controls {
 	/// <summary>
 	/// ListManagerBar.xaml에 대한 상호 작용 논리
 	/// </summary>

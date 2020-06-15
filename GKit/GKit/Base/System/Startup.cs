@@ -5,9 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Win32;
-using GKit;
 
-namespace GKit {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+{
 	public static class Startup {
 		private const string runKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
 		public static void Set(string KeyName, bool enable, string arg = null) {

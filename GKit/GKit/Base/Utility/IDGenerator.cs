@@ -1,7 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GKit {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+{
 	/// <summary>
 	/// 중복되지 않는 ID를 생성하는 클래스입니다.
 	/// </summary>

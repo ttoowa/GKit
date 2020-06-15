@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace GKit.WPF {
+namespace GKitForWPF {
 	public class FindByTagAttribute : Attribute {
 	}
 	public static class FindControlUtility {

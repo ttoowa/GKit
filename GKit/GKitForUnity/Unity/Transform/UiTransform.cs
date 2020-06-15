@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
-using GKit;
+using GKitForUnity;
 
-namespace GKit.Unity {
+namespace GKitForUnity {
 	[RequireComponent(typeof(RectTransform))]
 	public class UiTransform : MonoBehaviour {
 		private HorizontalAlignment horizontalAlignment;

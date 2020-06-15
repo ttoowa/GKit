@@ -1,7 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace GKit {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+{
 	public enum TimeFormat {
 		yyyy,
 		yyyyMM,

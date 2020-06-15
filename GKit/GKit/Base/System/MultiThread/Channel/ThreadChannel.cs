@@ -7,7 +7,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace GKit.MultiThread {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+.MultiThread {
 	public static class ThreadChannel {
 		private static Dictionary<string, Channel> channelDict;
 		private static Stack<Channel> channelPool;

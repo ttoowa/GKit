@@ -6,7 +6,14 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 #endif
 
-namespace GKit {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+{
 	public enum Direction {
 		Top,
 		Bottom,

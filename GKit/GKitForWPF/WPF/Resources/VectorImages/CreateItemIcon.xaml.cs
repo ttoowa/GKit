@@ -13,10 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace GKit.WPF.Resources.VectorImages {
-	/// <summary>
-	/// Button_NewFile.xaml에 대한 상호 작용 논리
-	/// </summary>
+namespace GKitForWPF.Resources.VectorImages {
 	public partial class CreateItemIcon : UserControl
 	{
 		public CreateItemIcon()

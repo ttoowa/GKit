@@ -1,5 +1,5 @@
-﻿using GKit;
-using GKit.WPF.UI.Converters;
+﻿using GKitForWPF;
+using GKitForWPF.UI.Converters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 
-namespace GKit.WPF.UI.Controls {
+namespace GKitForWPF.UI.Controls {
 	public delegate void ListItemDelegate(ITreeItem item);
 	public delegate void ListItemLoopDelegate(ITreeItem item, ref bool breakFlag);
 	public delegate void ListItemMoveDelegate(ITreeItem item, ITreeFolder oldParent, ITreeFolder newParent, int index);

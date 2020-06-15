@@ -1,5 +1,5 @@
 ﻿#if OnUnity
-namespace GKit {
+namespace GKitForUnity {
 	public enum GLoopSyncMode {
 		Update,
 		FixedUpdate,

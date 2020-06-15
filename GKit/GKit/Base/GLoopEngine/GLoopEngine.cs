@@ -3,13 +3,24 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using GKit.Core.Component;
 #if OnUnity
 using Debug = UnityEngine.Debug;
 using UnityEngine;
+using GKitForUnity.Core.Component;
+#elif OnWPF
+using GKitForWPF.Core.Component;
+#else
+using GKit.Core.Component;
 #endif
 
-namespace GKit {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+{
 	/// <summary>
 	/// 일정시간 간격으로 함수를 반복호출하는 클래스입니다.
 	/// </summary>
@@ -289,7 +300,7 @@ namespace GKit {
 #if OnUnity
 			tickMs = 1000f / Application.targetFrameRate;
 #else
-			fps = BMath.Clamp(fps, 1, 1000);
+			fps = GMath.Clamp(fps, 1, 1000);
 			tickMs = Mathf.Max(0.001f, 1000f / fps);
 #endif
 		}

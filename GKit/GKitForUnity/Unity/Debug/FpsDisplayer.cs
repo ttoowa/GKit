@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace GKit.Unity {
+namespace GKitForUnity {
 	public class FpsDisplayer : MonoBehaviour {
 		public Font font;
 		public Color textColor = new Color(243f / 255f, 203f / 255f, 34f / 255f, 1f);

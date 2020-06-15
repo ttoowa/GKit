@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace GKit.WPF.Resources {
+namespace GKitForWPF.Resources {
 	public static class StyleResource {
 		internal const string ThemePath = "pack://application:,,,/GKitForWPF;component/WPF/Resources/Themes/";
 		public const string FlatTheme = ThemePath + "FlatTheme.xaml";

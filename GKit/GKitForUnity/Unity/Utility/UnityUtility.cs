@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace GKit.Unity {
+namespace GKitForUnity {
 	public static class UnityUtility {
 		/// <summary>
 		/// GetComponent<T>() 를 줄인 함수입니다.

@@ -5,7 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace GKit.Network {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+.Network {
 	public static class EndianConverter {
 		public static byte[] Reverse(this byte[] data) {
 			Array.Reverse(data);

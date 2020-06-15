@@ -16,7 +16,14 @@ using System.Windows.Media;
 using ColorB = System.Windows.Media.Color;
 #endif
 
-namespace GKit {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+{
 	public static class ColorUtility {
 		public static string ToHex(this ColorB color) {
 #if OnUnity
@@ -86,9 +93,9 @@ namespace GKit {
 #endif
 		}
 		public static ColorB ToColor(this HSV hsv) {
-			hsv.hue = BMath.Clamp(hsv.hue, 0f, 360f);
-			hsv.saturation = BMath.Clamp(hsv.saturation, 0f, 1f);
-			hsv.value = BMath.Clamp(hsv.value, 0f, 1f);
+			hsv.hue = GMath.Clamp(hsv.hue, 0f, 360f);
+			hsv.saturation = GMath.Clamp(hsv.saturation, 0f, 1f);
+			hsv.value = GMath.Clamp(hsv.value, 0f, 1f);
 
 			float hD60 = hsv.hue / 60;
 			double f = hD60 - Math.Floor(hD60);

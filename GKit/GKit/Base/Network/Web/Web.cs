@@ -5,10 +5,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net;
+#if OnUnity
+using GKitForUnity.MultiThread;
+using GKitForUnity.Security;
+#elif OnWPF
+using GKitForWPF.MultiThread;
+using GKitForWPF.Security;
+#else
 using GKit.MultiThread;
 using GKit.Security;
+#endif
 
-namespace GKit.Network {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+.Network {
 	public static class Web {
 		private static IDGenerator clientIDGenerator = new IDGenerator();
 

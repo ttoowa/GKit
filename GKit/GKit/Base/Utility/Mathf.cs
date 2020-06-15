@@ -4,7 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 #if !OnUnity
-namespace GKit {
+#if OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+{
 	public static class Mathf {
 		public const float PI = 3.14159274f;
 

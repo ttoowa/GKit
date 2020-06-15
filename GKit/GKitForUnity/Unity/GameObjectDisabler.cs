@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace GKit.Unity {
+namespace GKitForUnity {
 	public class GameObjectDisabler : MonoBehaviour {
 		private void Start() {
 			gameObject.SetActive(false);

@@ -4,7 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GKit.Network {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+.Network {
 	public enum PacketBuildMode {
 		OnlyData,
 		ByteHeader_Data,
@@ -25,10 +32,12 @@ namespace GKit.Network {
 		public void Clear() {
 			byteQueue.Clear();
 		}
-		public void Append(byte data) {
-			byteQueue.Enqueue(data);
+		public void Append(params byte[] data) {
+			for(int i=0; i<data.Length; ++i) {
+				byteQueue.Enqueue(data[i]);
+			}
 		}
-		public void Append(byte[] data) {
+		public void Append(params byte[][] data) {
 			for(int i=0; i<data.Length; ++i) {
 				Append(data[i]);
 			}

@@ -5,7 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GKit {
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+{
 	public unsafe static class NativeUtility {
 		[DllImport("msvcrt.dll", EntryPoint = "memset", SetLastError = false)]
 		public static extern void MemSet(void* dest, int value, int byteCount);

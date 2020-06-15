@@ -3,10 +3,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
 using System.Windows.Input;
-using GKit.WPF;
+using GKitForWPF;
 using System.Collections.Generic;
 
-namespace GKit.WPF.UI.Behaviors {
+namespace GKitForWPF.UI.Behaviors {
 	public class ScrollData {
 		public double VerticalOffset {
 			get => scrollViewer.VerticalOffset;
