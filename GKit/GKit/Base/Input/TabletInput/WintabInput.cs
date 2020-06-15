@@ -64,10 +64,10 @@ namespace GKit
 		private int maxTangentPressure;
 		private WintabPacket packet;
 		public Vector2 displaySize;
-		public BRect NativeRect;
-		public BRect inputRect;
-		public BRect outputRect;
-		public BRect systemRect;
+		public GRect NativeRect;
+		public GRect inputRect;
+		public GRect outputRect;
+		public GRect systemRect;
 		private List<GLoopAction> taskList;
 		private float activeCheckDelaySec;
 		private int activeStack;
@@ -98,9 +98,9 @@ namespace GKit
 				SystemInformation.VirtualScreen.Width,
 				SystemInformation.VirtualScreen.Height);
 			if (context != null) {
-				inputRect = new BRect(context.InOrgX, context.InOrgY, context.InExtX, context.InExtY);
-				outputRect = new BRect(context.OutOrgX, context.OutOrgY, context.OutExtX, context.OutExtY);
-				systemRect = new BRect(context.SysOrgX, context.SysOrgY, context.SysExtX, context.SysExtY);
+				inputRect = new GRect(context.InOrgX, context.InOrgY, context.InExtX, context.InExtY);
+				outputRect = new GRect(context.OutOrgX, context.OutOrgY, context.OutExtX, context.OutExtY);
+				systemRect = new GRect(context.SysOrgX, context.SysOrgY, context.SysExtX, context.SysExtY);
 			}
 		}
 
@@ -186,7 +186,7 @@ namespace GKit
 			deviceID = WInfo.GetDefaultDeviceIndex();
 			WintabAxis tabletX = WInfo.GetDeviceAxis(deviceID, EAxisDimension.AXIS_X);
 			WintabAxis tabletY = WInfo.GetDeviceAxis(deviceID, EAxisDimension.AXIS_Y);
-			NativeRect = new BRect(tabletX.axMin, tabletX.axMax, tabletY.axMin, tabletY.axMax);
+			NativeRect = new GRect(tabletX.axMin, tabletX.axMax, tabletY.axMin, tabletY.axMax);
 
 			context.OutOrgX = context.OutOrgY = 0;
 			context.OutExtX = (int)(context.OutExtX * OutputExtFactor);
@@ -213,7 +213,7 @@ namespace GKit
 			deviceID = WInfo.GetDefaultDeviceIndex();
 			WintabAxis tabletX = WInfo.GetDeviceAxis(deviceID, EAxisDimension.AXIS_X);
 			WintabAxis tabletY = WInfo.GetDeviceAxis(deviceID, EAxisDimension.AXIS_Y);
-			NativeRect = new BRect(tabletX.axMin, tabletY.axMin, tabletX.axMax, tabletY.axMax);
+			NativeRect = new GRect(tabletX.axMin, tabletY.axMin, tabletX.axMax, tabletY.axMax);
 
 			context.OutOrgX = context.OutOrgY = 0;
 			context.OutExtX = (int)(context.OutExtX * OutputExtFactor);

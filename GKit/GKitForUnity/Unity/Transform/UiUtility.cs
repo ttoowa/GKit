@@ -5,12 +5,12 @@ namespace GKitForUnity {
 	public static class UiUtility {
 
 		public static void SetHorizontalAlignment(this RectTransform rectTransform, HorizontalAlignment alignment) {
-			Range anchorRange = GetAnchorRange(alignment);
+			GRange anchorRange = GetAnchorRange(alignment);
 			rectTransform.anchorMin = new Vector2(anchorRange.min, rectTransform.anchorMin.y);
 			rectTransform.anchorMax = new Vector2(anchorRange.max, rectTransform.anchorMax.y);
 		}
 		public static void SetVerticalAlignment(this RectTransform rectTransform, VerticalAlignment alignment) {
-			Range anchorRange = GetAnchorRange(alignment);
+			GRange anchorRange = GetAnchorRange(alignment);
 			rectTransform.anchorMin = new Vector2(rectTransform.anchorMin.x, anchorRange.min);
 			rectTransform.anchorMax = new Vector2(rectTransform.anchorMax.x, anchorRange.max);
 		}
@@ -21,7 +21,7 @@ namespace GKitForUnity {
 			rectTransform.pivot = new Vector2(rectTransform.pivot.x, GetPivotPosition(alignment));
 		}
 
-		public static Range GetAnchorRange(HorizontalAlignment alignment) {
+		public static GRange GetAnchorRange(HorizontalAlignment alignment) {
 			float anchorMin;
 			float anchorMax;
 			switch (alignment) {
@@ -43,9 +43,9 @@ namespace GKitForUnity {
 					anchorMax = 1f;
 					break;
 			}
-			return new Range(anchorMin, anchorMax);
+			return new GRange(anchorMin, anchorMax);
 		}
-		public static Range GetAnchorRange(VerticalAlignment alignment) {
+		public static GRange GetAnchorRange(VerticalAlignment alignment) {
 			float anchorMin;
 			float anchorMax;
 			switch (alignment) {
@@ -67,7 +67,7 @@ namespace GKitForUnity {
 					anchorMax = 1f;
 					break;
 			}
-			return new Range(anchorMin, anchorMax);
+			return new GRange(anchorMin, anchorMax);
 		}
 		public static float GetPivotPosition(HorizontalAlignment alignment) {
 			switch (alignment) {

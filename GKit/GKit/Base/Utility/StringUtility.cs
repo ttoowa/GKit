@@ -12,7 +12,7 @@ namespace GKit
 			if (text == null)
 				return null;
 
-			RangeInt range = new RangeInt(0, text.Length);
+			GRangeInt range = new GRangeInt(0, text.Length);
 			bool foundStart = false;
 			bool foundEnd = false;
 

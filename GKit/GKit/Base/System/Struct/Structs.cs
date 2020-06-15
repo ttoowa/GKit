@@ -31,7 +31,7 @@ namespace GKit
 		Top,
 	}
 
-	public struct RangeInt {
+	public struct GRangeInt {
 		public int min;
 		public int max;
 		public int Length {
@@ -45,7 +45,7 @@ namespace GKit
 			}
 		}
 
-		public RangeInt(int min, int max) {
+		public GRangeInt(int min, int max) {
 			this.min = min;
 			this.max = max;
 		}
@@ -53,7 +53,7 @@ namespace GKit
 			return min.ToString("(0.000") + max.ToString(", 0.000)");
 		}
 	}
-	public struct Range {
+	public struct GRange {
 		public float min;
 		public float max;
 		public float Length {
@@ -67,7 +67,7 @@ namespace GKit
 			}
 		}
 
-		public Range(float min, float max) {
+		public GRange(float min, float max) {
 			this.min = min;
 			this.max = max;
 		}
@@ -76,7 +76,7 @@ namespace GKit
 			return min.ToString("(0.000") + max.ToString(", 0.000)");
 		}
 	}
-	public struct BRect {
+	public struct GRect {
 		public float xMin;
 		public float yMin;
 		public float xMax;
@@ -112,22 +112,22 @@ namespace GKit
 			}
 		}
 
-		public BRect(float xyMinMax) : this(xyMinMax, xyMinMax) {
+		public GRect(float xyMinMax) : this(xyMinMax, xyMinMax) {
 
 		}
-		public BRect(float xMinMax, float yMinMax) : this(xMinMax, yMinMax, xMinMax, yMinMax) {
+		public GRect(float xMinMax, float yMinMax) : this(xMinMax, yMinMax, xMinMax, yMinMax) {
 		}
-		public BRect(float xMin, float yMin, float xMax, float yMax) {
+		public GRect(float xMin, float yMin, float xMax, float yMax) {
 			this.xMin = xMin;
 			this.yMin = yMin;
 			this.xMax = xMax;
 			this.yMax = yMax;
 		}
-		public static explicit operator BRectInt(BRect rect) {
-			return new BRectInt((int)rect.xMin, (int)rect.yMin, (int)rect.xMax, (int)rect.yMax);
+		public static explicit operator GRectInt(GRect rect) {
+			return new GRectInt((int)rect.xMin, (int)rect.yMin, (int)rect.xMax, (int)rect.yMax);
 		}
 
-		public void Extend(BRect source) {
+		public void Extend(GRect source) {
 			if (xMin > source.xMin) {
 				xMin = source.xMin;
 			}
@@ -141,7 +141,7 @@ namespace GKit
 				yMin = source.yMin;
 			}
 		}
-		public void Reduce(BRect source) {
+		public void Reduce(GRect source) {
 			if (xMin < source.xMin) {
 				xMin = source.xMin;
 			}
@@ -161,7 +161,7 @@ namespace GKit
 			return "(" + xMin.ToString(Format) + ", " + xMax.ToString(Format) + "), (" + yMin.ToString(Format) + ", " + yMax.ToString(Format) + ")";
 		}
 	}
-	public struct BRectInt {
+	public struct GRectInt {
 		public int xMin;
 		public int yMin;
 		public int xMax;
@@ -197,22 +197,22 @@ namespace GKit
 			}
 		}
 
-		public BRectInt(int xyMinMax) : this(xyMinMax, xyMinMax) {
+		public GRectInt(int xyMinMax) : this(xyMinMax, xyMinMax) {
 
 		}
-		public BRectInt(int xMinMax, int yMinMax) : this(xMinMax, yMinMax, xMinMax, yMinMax) {
+		public GRectInt(int xMinMax, int yMinMax) : this(xMinMax, yMinMax, xMinMax, yMinMax) {
 		}
-		public BRectInt(int xMin, int yMin, int xMax, int yMax) {
+		public GRectInt(int xMin, int yMin, int xMax, int yMax) {
 			this.xMin = xMin;
 			this.yMin = yMin;
 			this.xMax = xMax;
 			this.yMax = yMax;
 		}
-		public static implicit operator BRect(BRectInt rect) {
-			return new BRect(rect.xMin, rect.yMin, rect.xMax, rect.yMax);
+		public static implicit operator GRect(GRectInt rect) {
+			return new GRect(rect.xMin, rect.yMin, rect.xMax, rect.yMax);
 		}
 
-		public void Extend(BRectInt source) {
+		public void Extend(GRectInt source) {
 			if (xMin > source.xMin) {
 				xMin = source.xMin;
 			}
@@ -226,7 +226,7 @@ namespace GKit
 				yMin = source.yMin;
 			}
 		}
-		public void Reduce(BRectInt source) {
+		public void Reduce(GRectInt source) {
 			if (xMin < source.xMin) {
 				xMin = source.xMin;
 			}
