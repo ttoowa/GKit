@@ -28,39 +28,57 @@ namespace GKitForWPF {
 			}
 		}
 
-		public static void RegisterClickEvent(this Button button, Action action) {
-			button.Click += (object sender, RoutedEventArgs e) => { action?.Invoke(); };
+		public static void RegisterClickEvent(this Button button, Action action, bool handled = false) {
+			button.Click += (object sender, RoutedEventArgs e) => { 
+				action?.Invoke();
+				if (handled)
+					e.Handled = true;
+			};
 		}
-		public static void RegisterClickEvent(this Button button, ActionEvent actionEvent) {
-			button.Click += (object sender, RoutedEventArgs e) => { actionEvent?.Invoke(); };
+		public static void RegisterClickEvent(this Button button, ActionEvent actionEvent, bool handled = false) {
+			button.Click += (object sender, RoutedEventArgs e) => { 
+				actionEvent?.Invoke();
+				if (handled)
+					e.Handled = true;
+			};
 		}
-		public static void RegisterClickEvent(this Button button, RoutedEventHandler handler) {
-			button.Click += (object sender, RoutedEventArgs e) => { handler.Invoke(sender, e); };
+		public static void RegisterClickEvent(this Button button, RoutedEventHandler handler, bool handled = false) {
+			button.Click += (object sender, RoutedEventArgs e) => { 
+				handler.Invoke(sender, e);
+				if (handled)
+					e.Handled = true;
+			};
 		}
 
-		public static void RegisterOnClick(this FrameworkElement control, Action action) {
+		public static void RegisterClickEvent(this FrameworkElement control, Action action, bool handled = false) {
 			control.MouseLeftButtonDown += (object sender, MouseButtonEventArgs e) => {
 				MouseInput.Left.OnUpOnce += () => {
 					if (control.IsMouseOver) {
 						action?.Invoke();
 					}
+					if (handled)
+						e.Handled = true;
 				};
 			};
 		}
-		public static void RegisterOnRightClick(this FrameworkElement control, Action action) {
+		public static void RegisterRightClickEvent(this FrameworkElement control, Action action, bool handled = false) {
 			control.MouseRightButtonDown += (object sender, MouseButtonEventArgs e) => {
 				MouseInput.Right.OnUpOnce += () => {
 					if (control.IsMouseOver) {
 						action?.Invoke();
 					}
+					if (handled)
+						e.Handled = true;
 				};
 			};
 		}
-		public static void RegisterDoubleClickEvent(this FrameworkElement control, Action action) {
+		public static void RegisterDoubleClickEvent(this FrameworkElement control, Action action, bool handled = false) {
 			control.MouseLeftButtonDown += (object sender, MouseButtonEventArgs e) => {
 				if (e.ClickCount == 2) {
 					action?.Invoke();
 				}
+				if (handled)
+					e.Handled = true;
 			};
 		}
 
