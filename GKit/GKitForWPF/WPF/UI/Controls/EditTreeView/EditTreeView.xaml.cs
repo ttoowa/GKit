@@ -92,7 +92,7 @@ namespace GKitForWPF.UI.Controls {
 		private ITreeItem pressedItem;
 
 		//Select
-		public SelectedListItemSet SelectedItemSet {
+		public SelectedItemSet SelectedItemSet {
 			get; private set;
 		}
 		public ITreeFolder SelectedItemParent {
@@ -122,7 +122,7 @@ namespace GKitForWPF.UI.Controls {
 			SetDraggingCursorVisible(false);
 		}
 		private void InitMembers() {
-			SelectedItemSet = new SelectedListItemSet();
+			SelectedItemSet = new SelectedItemSet();
 		}
 		private void InitBindings() {
 			BoolToVisibilityConverter boolToVisibilityConverter = new BoolToVisibilityConverter();
@@ -364,7 +364,7 @@ namespace GKitForWPF.UI.Controls {
 			DraggingCursor.Height = height;
 		}
 
-		private bool MoveSelectedItems(SelectedListItemSet selectedItemSet, NodeTarget target) {
+		private bool MoveSelectedItems(SelectedItemSet selectedItemSet, NodeTarget target) {
 			if (target == null)
 				return false;
 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace GKitForWPF.UI.Controls {
-	public class SelectedListItemSet : IEnumerable<ITreeItem> {
+	public class SelectedItemSet : IEnumerable<ITreeItem> {
 		public int Count => itemSet.Count;
 
 		private HashSet<ITreeItem> itemSet;
@@ -16,7 +16,7 @@ namespace GKitForWPF.UI.Controls {
 		public event ListItemDelegate SelectionRemoved;
 
 
-		public SelectedListItemSet() {
+		public SelectedItemSet() {
 			itemSet = new HashSet<ITreeItem>();
 		}
 
