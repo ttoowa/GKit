@@ -75,7 +75,6 @@
     <Compile Include="WPF\UI\Controls\EditTreeView\ITreeItem.cs" />
     <Compile Include="WPF\UI\Controls\EditTreeView\NodeDirection.cs" />
     <Compile Include="WPF\UI\Controls\EditTreeView\NodeTarget.cs" />
-    <Compile Include="WPF\UI\Controls\EditTreeView\SelectedListItemSet.cs" />
     <Compile Include="WPF\UI\Controls\EditTextBlock\EditTextBlock.xaml.cs">
       <DependentUpon>EditTextBlock.xaml</DependentUpon>
     </Compile>

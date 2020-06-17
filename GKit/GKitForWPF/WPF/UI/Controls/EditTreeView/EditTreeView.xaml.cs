@@ -11,15 +11,12 @@ using System.Windows.Media;
 
 
 namespace GKitForWPF.UI.Controls {
-	public delegate void ListItemDelegate(ITreeItem item);
-	public delegate void ListItemLoopDelegate(ITreeItem item, ref bool breakFlag);
-	public delegate void ListItemMoveDelegate(ITreeItem item, ITreeFolder oldParent, ITreeFolder newParent, int index);
-	public delegate void MessageDelegate(string message);
-
-	/// <summary>
-	/// EditTreeView.xaml에 대한 상호 작용 논리
-	/// </summary>
 	public partial class EditTreeView : UserControl, ITreeFolder {
+		public delegate void ItemDelegate(ITreeItem item);
+		public delegate void ItemLoopDelegate(ITreeItem item, ref bool breakFlag);
+		public delegate void ItemMoveDelegate(ITreeItem item, ITreeFolder oldParent, ITreeFolder newParent, int index);
+		public delegate void MessageDelegate(string message);
+
 		public static readonly DependencyProperty DraggingCursorBrushProperty = DependencyProperty.RegisterAttached(nameof(DraggingCursorBrush), typeof(Brush), typeof(EditTreeView), new PropertyMetadata("4DFFEF".ToBrush()));
 		public static readonly DependencyProperty AutoApplyItemMoveProperty = DependencyProperty.RegisterAttached(nameof(AutoApplyItemMove), typeof(bool), typeof(EditTreeView), new PropertyMetadata(true));
 		public static readonly DependencyProperty CanMultiSelectProperty = DependencyProperty.RegisterAttached(nameof(CanMultiSelect), typeof(bool), typeof(EditTreeView), new PropertyMetadata(true));
@@ -98,7 +95,7 @@ namespace GKitForWPF.UI.Controls {
 		public ITreeFolder SelectedItemParent {
 			get {
 				if (SelectedItemSet.Count == 1) {
-					ITreeItem item = SelectedItemSet.First;
+					ITreeItem item = SelectedItemSet.First as ITreeItem;
 					if (item is ITreeFolder) {
 						return item as ITreeFolder;
 					} else {
@@ -109,7 +106,7 @@ namespace GKitForWPF.UI.Controls {
 			}
 		}
 
-		public event ListItemMoveDelegate ItemMoved;
+		public event ItemMoveDelegate ItemMoved;
 		public event MessageDelegate MessageOccured;
 
 		public EditTreeView() {
@@ -153,7 +150,7 @@ namespace GKitForWPF.UI.Controls {
 						SelectedItemSet.AddSelectedItem(item);
 					}
 
-					pressedItem = SelectedItemSet.Count > 0 ? SelectedItemSet.Last : null;
+					pressedItem = SelectedItemSet.Count > 0 ? SelectedItemSet.Last as ITreeItem : null;
 				} else if (CanMultiSelect && pressedItem != null && (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))) {
 					//Shift select
 					//pressedItem(Exclusive) ~ Item(Inclusive) 까지 선택한다.
@@ -244,7 +241,7 @@ namespace GKitForWPF.UI.Controls {
 
 		public void SetDisplayName(string name) {
 		}
-		public void SetDisplaySelected(bool isSelected) {
+		public void SetSelected(bool isSelected) {
 		}
 
 		private void ShiftSelectItems(ITreeItem startItem, ITreeItem endItem) {
@@ -280,7 +277,7 @@ namespace GKitForWPF.UI.Controls {
 		}
 
 		//TreeSearch
-		public void ForeachItems(ListItemLoopDelegate nodeItemDelegate) {
+		public void ForeachItems(ItemLoopDelegate nodeItemDelegate) {
 			ForeachItemsRecursion(this);
 
 			bool ForeachItemsRecursion(ITreeFolder folder) {
@@ -302,7 +299,7 @@ namespace GKitForWPF.UI.Controls {
 				return true;
 			}
 		}
-		public void ForeachItemsOptimize(ListItemLoopDelegate nodeItemDelegate) {
+		public void ForeachItemsOptimize(ItemLoopDelegate nodeItemDelegate) {
 			float childContextHeight = (float)ChildItemScrollViewer.ActualHeight;
 
 			ForeachItemsRecursion(this);

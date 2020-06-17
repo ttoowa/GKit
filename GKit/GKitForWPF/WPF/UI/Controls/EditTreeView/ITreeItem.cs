@@ -1,7 +1,8 @@
 ﻿using System.Windows;
+using GKitForWPF;
 
 namespace GKitForWPF.UI.Controls {
-	public interface ITreeItem {
+	public interface ITreeItem : ISelectable {
 		string DisplayName {
 			get;
 		}
@@ -15,7 +16,6 @@ namespace GKitForWPF.UI.Controls {
 		}
 
 		void SetDisplayName(string name);
-		void SetDisplaySelected(bool isSelected);
 
 		//IListFolder GetParentItem();
 

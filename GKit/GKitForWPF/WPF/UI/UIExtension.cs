@@ -15,7 +15,7 @@ namespace GKitForWPF {
 	public static class UIExtension {
 		private const float DefaultCoverValue = 0.1f;
 
-		public static void RegisterLoaded(this FrameworkElement element, RoutedEventHandler handler) {
+		public static void RegisterLoadedOnce(this FrameworkElement element, RoutedEventHandler handler) {
 			RoutedEventHandler unregisterEvent = null;
 			unregisterEvent = UnregisterEvent;
 

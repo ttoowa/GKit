@@ -101,6 +101,7 @@
     <Compile Include="Base\Security\SafeProperty.cs" />
     <Compile Include="Base\Security\SecurityEvent.cs" />
     <Compile Include="Base\System\AssemblyInfo.cs" />
+    <Compile Include="Base\System\Collections\SelectedListItemSet.cs" />
     <Compile Include="Base\System\Collections\TwoWayDictionary.cs" />
     <Compile Include="Base\System\EnumUtility.cs" />
     <Compile Include="Base\System\Event\ActionEvent.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="Base\DebugUtility\GDebug.cs" />
     <Compile Include="Base\DebugUtility\GLogLevel.cs" />
     <Compile Include="Base\System\GMathUtility.cs" />
+    <Compile Include="Base\System\Interface\ISelectable.cs" />
     <Compile Include="Base\System\MultiThread\Parallel\ParallelPriolity.cs" />
     <Compile Include="Base\System\OS\WinUtility.cs" />
     <Compile Include="Base\System\ProcessUtility.cs" />
