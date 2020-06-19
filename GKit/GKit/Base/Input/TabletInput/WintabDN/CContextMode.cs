@@ -1,5 +1,5 @@
 ﻿namespace WintabDN {
-	public enum WContextMode {
+	public enum CContextMode {
 		System,
 		Digital,
 	}

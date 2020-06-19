@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 #if OnUnity
 using UnityEngine;
 #else
@@ -38,16 +39,24 @@ namespace GKit
 			return (Type)request.asset;
 		}
 #elif OnWPF
+		public static class Image {
+			public static BitmapImage FromUri(string relativePath) {
+				return new BitmapImage(GetUri("Resources/Image/" + relativePath));
+			}
+		}
+
 		public static Uri GetUri(string path) {
 			return new Uri("pack://application:,,,/" + path, UriKind.Absolute);
 		}
 		public static Uri GetUri(string assemblyName, string path) {
 			return new Uri($"pack://application:,,,/{assemblyName};component/{path}", UriKind.Absolute);
 		}
-		public static class Image {
-			public static BitmapImage FromUri(string relativePath) {
-				return new BitmapImage(GetUri("Resources/Image/" + relativePath));
-			}
+
+		public static T GetAppResource<T>(object key) {
+			return (T)Application.Current.Resources[key];
+		}
+		public static T GetAppResource<T>(Application app, object key) {
+			return (T)app.Resources[key];
 		}
 #endif
 	}
