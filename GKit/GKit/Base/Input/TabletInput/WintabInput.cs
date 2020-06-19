@@ -32,8 +32,8 @@ namespace GKit
 		public bool IsRunning {
 			get; private set;
 		}
-		public bool IsAvailable => WInfo.IsWintabAvailable();
-		public bool IsStylusActive => WInfo.IsStylusActive();
+		public bool IsAvailable => CWintabInfo.IsWintabAvailable();
+		public bool IsStylusActive => CWintabInfo.IsStylusActive();
 		public bool IsPenActive {
 			get; private set;
 		}
@@ -58,8 +58,8 @@ namespace GKit
 		public WintabPacket Packet => packet;
 
 		private GLoopEngine core;
-		private WContext context;
-		private WData data;
+		private CWintabContext context;
+		private CWintabData data;
 		private int maxNormalPressure;
 		private int maxTangentPressure;
 		private WintabPacket packet;
@@ -92,8 +92,8 @@ namespace GKit
 			if (!IsRunning)
 				return;
 
-			maxNormalPressure = WInfo.GetMaxPressure(true);
-			maxTangentPressure = WInfo.GetMaxPressure(false);
+			maxNormalPressure = CWintabInfo.GetMaxPressure(true);
+			maxTangentPressure = CWintabInfo.GetMaxPressure(false);
 			displaySize = new Vector2(
 				SystemInformation.VirtualScreen.Width,
 				SystemInformation.VirtualScreen.Height);
@@ -104,7 +104,7 @@ namespace GKit
 			}
 		}
 
-		public void CaptureStart(WContextMode mode) {
+		public void CaptureStart(CContextMode mode) {
 			if (IsRunning)
 				return;
 
@@ -112,10 +112,10 @@ namespace GKit
 				bool result;
 				switch (mode) {
 					default:
-					case WContextMode.Digital:
+					case CContextMode.Digital:
 						result = InitDigitalContextCapture();
 						break;
-					case WContextMode.System:
+					case CContextMode.System:
 						result = InitSystemContextCapture();
 						break;
 				}
@@ -155,7 +155,7 @@ namespace GKit
 				return false;
 			}
 
-			data = new WData(context);
+			data = new CWintabData(context);
 			data.SetWTPacketEventHandler(OnReceivePacket);
 			return true;
 		}
@@ -165,13 +165,13 @@ namespace GKit
 			if (context == null)
 				return false;
 
-			data = new WData(context);
+			data = new CWintabData(context);
 			data.SetWTPacketEventHandler(OnReceivePacket);
 			return true;
 		}
 
-		private WContext OpenDigitalContext(bool ctrlSysCursor = true) {
-			WContext context = WInfo.GetDefaultDigitizingContext();
+		private CWintabContext OpenDigitalContext(bool ctrlSysCursor = true) {
+			CWintabContext context = CWintabInfo.GetDefaultDigitizingContext();
 
 			if (context == null) {
 				return null;
@@ -183,9 +183,9 @@ namespace GKit
 			}
 			context.Name = "BgoonLibrary Tablet Context";
 
-			deviceID = WInfo.GetDefaultDeviceIndex();
-			WintabAxis tabletX = WInfo.GetDeviceAxis(deviceID, EAxisDimension.AXIS_X);
-			WintabAxis tabletY = WInfo.GetDeviceAxis(deviceID, EAxisDimension.AXIS_Y);
+			deviceID = CWintabInfo.GetDefaultDeviceIndex();
+			WintabAxis tabletX = CWintabInfo.GetDeviceAxis(deviceID, EAxisDimension.AXIS_X);
+			WintabAxis tabletY = CWintabInfo.GetDeviceAxis(deviceID, EAxisDimension.AXIS_Y);
 			NativeRect = new GRect(tabletX.axMin, tabletX.axMax, tabletY.axMin, tabletY.axMax);
 
 			context.OutOrgX = context.OutOrgY = 0;
@@ -196,8 +196,8 @@ namespace GKit
 
 			return context.Open() ? context : null;
 		}
-		private WContext OpenSystemContext(bool ctrlSysCursor = true) {
-			WContext context = WInfo.GetDefaultSystemContext();
+		private CWintabContext OpenSystemContext(bool ctrlSysCursor = true) {
+			CWintabContext context = CWintabInfo.GetDefaultSystemContext();
 
 			if (context == null) {
 				return null;
@@ -210,9 +210,9 @@ namespace GKit
 			}
 			context.Name = "BgoonLibrary Tablet Context";
 
-			deviceID = WInfo.GetDefaultDeviceIndex();
-			WintabAxis tabletX = WInfo.GetDeviceAxis(deviceID, EAxisDimension.AXIS_X);
-			WintabAxis tabletY = WInfo.GetDeviceAxis(deviceID, EAxisDimension.AXIS_Y);
+			deviceID = CWintabInfo.GetDefaultDeviceIndex();
+			WintabAxis tabletX = CWintabInfo.GetDeviceAxis(deviceID, EAxisDimension.AXIS_X);
+			WintabAxis tabletY = CWintabInfo.GetDeviceAxis(deviceID, EAxisDimension.AXIS_Y);
 			NativeRect = new GRect(tabletX.axMin, tabletY.axMin, tabletX.axMax, tabletY.axMax);
 
 			context.OutOrgX = context.OutOrgY = 0;
@@ -238,7 +238,7 @@ namespace GKit
 					lock (dataWriteLock) {
 						MarkActive();
 
-						pressure = (float)packet.pkNormalPressure.pkAbsoluteNormalPressure / maxNormalPressure;
+						pressure = (float)packet.pkNormalPressure / maxNormalPressure;
 						distance = (float)packet.pkZ / maxTangentPressure;
 						position = new Vector2(packet.pkX, packet.pkY) / OutputExtFactor;
 
