@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Windows.Documents;
 #if OnUnity
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -64,6 +66,12 @@ namespace GKit
 			return value <= max && value >= min;
 		}
 
+		public static T[] ToArray<T>(this T value) where T : struct {
+			return new T[] { value };
+		}
+		public static List<T> ToList<T>(this T value) where T : struct {
+			return new List<T>() { value };
+		}
 		public static T Cast<T>(this object obj) {
 			return (T)obj;
 		}
@@ -71,5 +79,6 @@ namespace GKit
 		public static bool HasTrueValue(this bool? value) {
 			return value.HasValue && value.Value;
 		}
+
 	}
 }

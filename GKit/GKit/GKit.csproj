@@ -91,7 +91,6 @@
     <Compile Include="Base\Network\Utility\EndianConverter.cs" />
     <Compile Include="Base\Network\Utility\PacketBuilder.cs" />
     <Compile Include="Base\Network\Utility\PacketData.cs" />
-    <Compile Include="Base\Network\Utility\PacketUtility.cs" />
     <Compile Include="Base\Network\Web\Web.cs" />
     <Compile Include="Base\Security\Encrypt.cs" />
     <Compile Include="Base\Graphics\Color\ColorStruct.cs" />
@@ -142,7 +141,7 @@
     <Compile Include="Base\Utility\NativeUtility.cs" />
     <Compile Include="Base\Utility\ObjectPool.cs" />
     <Compile Include="Base\System\Struct\Structs.cs" />
-    <Compile Include="Base\System\SystemUtility.cs" />
+    <Compile Include="Base\Utility\SystemUtility.cs" />
     <Compile Include="Base\Utility\StringUtility.cs" />
   </ItemGroup>
   <ItemGroup />

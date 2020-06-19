@@ -70,10 +70,9 @@ namespace GKit
 		}
 		private Dictionary<Socket, GClientData> clientDataDict;
 
+		protected abstract void OnFatalError(Exception ex);
 		protected abstract void OnStarted();
-		protected abstract void OnStartFailed(Exception ex);
 		protected abstract void OnClosed();
-		protected abstract void OnClosedByError(Exception ex);
 		protected abstract void OnClientConnected(Socket client);
 		protected abstract void OnClientDisconnected(Socket client);
 		protected abstract void OnClientDisconnectedByError(Socket client, Exception ex);
@@ -107,6 +106,18 @@ namespace GKit
 			clientDataDict = new Dictionary<Socket, GClientData>();
 
 			acceptConnection = true;
+		}
+		public void Clear() {
+			port = -1;
+			backLogNum = -1;
+
+			if (socket != null) {
+				socket.Close();
+				socket = null;
+			}
+
+			lock (stateLock)
+				state = GServerState.Stopped;
 		}
 
 		public void Start(int port, int backLogNum) {
@@ -147,18 +158,9 @@ namespace GKit
 
 					OnStarted();
 				} catch (Exception ex) {
-					port = -1;
-					backLogNum = -1;
+					Clear();
 
-					if (socket != null) {
-						socket.Close();
-						socket = null;
-					}
-
-					lock (stateLock)
-						state = GServerState.Stopped;
-
-					OnStartFailed(ex);
+					OnFatalError(ex);
 				}
 			}
 		}
@@ -213,7 +215,7 @@ namespace GKit
 		private void CloseByError(Exception ex) {
 			CloseWork();
 
-			OnClosedByError(ex);
+			OnFatalError(ex);
 		}
 		private void CloseWork() {
 			lock (stateLock) {
