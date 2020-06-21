@@ -436,7 +436,11 @@ namespace GKit
 					if (!clientDataDict.TryGetValue(client, out data))
 						return;
 
-				OnPacketReceived(client, e.Buffer);
+				try {
+					OnPacketReceived(client, e.Buffer);
+				} catch (Exception ex) {
+					DisconnectClientByError(client, ex);
+				}
 
 				e.SetBuffer(data.receivedHeaderBuffer, 0, data.receivedHeaderBuffer.Length);
 				e.Completed -= Base_OnPacketReceived;
@@ -445,8 +449,8 @@ namespace GKit
 				try {
 					if (!client.ReceiveAsync(e))
 						Base_OnHeaderReceived(client, e);
-				} catch (Exception sException) {
-					DisconnectClientByError(client, sException);
+				} catch (Exception ex) {
+					DisconnectClientByError(client, ex);
 				}
 			}
 		}

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
 #if OnUnity
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -77,6 +79,11 @@ namespace GKit
 
 		public static bool HasTrueValue(this bool? value) {
 			return value.HasValue && value.Value;
+		}
+
+		public static bool IsZeroSizeStruct(this Type t) {
+			return t.IsValueType && !t.IsPrimitive &&
+				   t.GetFields((BindingFlags)0x34).All(fi => IsZeroSizeStruct(fi.FieldType));
 		}
 
 	}
