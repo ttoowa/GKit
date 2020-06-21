@@ -13,9 +13,12 @@ namespace GKitForWPF
 namespace GKit
 #endif
 .Network {
+
+	//TODO : 에러가 발생하는 상황을 캐치해서 Disconnect하는 로직 작성하기
 	public abstract class GClientBase {
 		public class DisconnectedEventArgs {
-			public bool onError;
+			public bool OnException => exception != null;
+			public Exception exception;
 		}
 
 		public GClientState State {
@@ -37,29 +40,27 @@ namespace GKit
 			}
 		}
 
-		#region Locks
-
+		//Locks
 		private object stateLock = new object();
 		private object globalLock = new object();
 
-		#endregion
+		private IPEndPoint serverEndPoint;
+		private GSocketArgs socketArgs;
+		private NetProtocol protocol;
+
+		private Socket socket;
 
 		private GClientState state = GClientState.Disconnected;
-		private NetProtocol protocol;
 		private bool isSending;
-		private GSocketArgs socketArgs;
-		private IPEndPoint serverEndPoint;
-		private Socket socket;
 		private byte[] header;
-		private SocketAsyncEventArgs connectEventArgs;
 		private SocketAsyncEventArgs sendEventArgs;
 		private SocketAsyncEventArgs receiveEventArgs;
 		private Queue<byte[]> sendQueue = new Queue<byte[]>();
 
 		//Event
 
-		protected abstract void OnConnected();
 		protected abstract void OnFatalError(Exception ex);
+		protected abstract void OnConnected();
 		protected abstract void OnDisconnected(DisconnectedEventArgs e);
 		protected abstract void OnHeaderReceived(byte[] header);
 		protected abstract void OnPacketReceived(byte[] packet);
@@ -75,15 +76,14 @@ namespace GKit
 			header = new byte[protocol.HeaderSize];
 		}
 		private void Reset() {
-			connectEventArgs = new SocketAsyncEventArgs();
 			sendEventArgs = new SocketAsyncEventArgs();
 			receiveEventArgs = new SocketAsyncEventArgs();
 
-			connectEventArgs.Completed += OnConnected;
-			sendEventArgs.Completed += OnPacketSended;
+			sendEventArgs.Completed += Base_OnPacketSended;
 		}
 
-		public void Connect(IPEndPoint serverEndPoint) {
+		public void Connect(IPEndPoint serverEndPoint, bool useAsync = false) {
+			//Change state
 			lock (stateLock) {
 				if (state != GClientState.Disconnected)
 					throw new Exception("Socket already connected.");
@@ -93,11 +93,11 @@ namespace GKit
 			}
 
 			Reset();
-			Exception exception = null;
 
+			//Socket setting
+			Exception socketSettingException = null;
 			lock (globalLock) {
 				try {
-					//소켓 설정
 					socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 					socket.NoDelay = socketArgs.noDelay;
 					socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Linger, new LingerOption(socketArgs.useLinger, socketArgs.lingerTime));
@@ -112,9 +112,6 @@ namespace GKit
 					} catch {
 						socketArgs.useKeepAlive = false;
 					}
-
-					connectEventArgs.RemoteEndPoint = serverEndPoint;
-				
 				} catch (Exception ex) {
 					if (socket != null) {
 						socket.Close();
@@ -124,18 +121,35 @@ namespace GKit
 					lock (stateLock)
 						state = GClientState.Disconnected;
 
-					exception = ex;
+					socketSettingException = ex;
 				}
 			}
 
-			if (exception != null) {
-				OnFatalError(exception);
+			if (socketSettingException != null) {
+				OnFatalError(socketSettingException);
 				return;
 			}
 
+			//Connect
+			SocketAsyncEventArgs connectEventArgs = null;
 			try {
-				if (!socket.ConnectAsync(connectEventArgs))
-					OnConnected(socket, connectEventArgs);
+				if (useAsync) {
+					//Async
+					connectEventArgs = new SocketAsyncEventArgs();
+					connectEventArgs.Completed += Base_OnConnected;
+					connectEventArgs.RemoteEndPoint = serverEndPoint;
+
+					if (!socket.ConnectAsync(connectEventArgs)) {
+						//비동기 완료
+						Base_OnConnected(socket, connectEventArgs);
+					} else {
+						return;
+					}
+				} else {
+					//Blocking
+					socket.Connect(serverEndPoint);
+					Base_OnConnected(socket, null);
+				}
 			} catch (Exception ex) {
 				OnFatalError(ex);
 			}
@@ -143,7 +157,6 @@ namespace GKit
 		public void Disconnect() {
 			if (DisconnectedJob()) {
 				var args = new DisconnectedEventArgs() {
-					onError = false,
 				};
 
 				OnDisconnected(args);
@@ -174,7 +187,7 @@ namespace GKit
 			try {
 				sendEventArgs.SetBuffer(packet, 0, packet.Length);
 				if (!socket.SendAsync(sendEventArgs))
-					OnPacketSended(socket, sendEventArgs);
+					Base_OnPacketSended(socket, sendEventArgs);
 			} catch (Exception ex) {
 				DisconnectByError(ex);
 			}
@@ -236,40 +249,43 @@ namespace GKit
 		}
 
 		//Event
-		private void OnConnected(object sender, SocketAsyncEventArgs e) {
-			if (e.SocketError != SocketError.Success) {
-				if (socket != null) {
-					socket.Close();
-					socket = null;
+		private void Base_OnConnected(object sender, SocketAsyncEventArgs e) {
+			if(e != null) {
+				if (e.SocketError != SocketError.Success) {
+					if (socket != null) {
+						socket.Close();
+						socket = null;
+					}
+
+					lock (stateLock)
+						state = GClientState.Disconnected;
+
+					OnFatalError(new SocketException((int)e.SocketError));
+
+					return;
 				}
-
-				lock (stateLock)
-					state = GClientState.Disconnected;
-
-				OnFatalError(new SocketException((int)e.SocketError));
-
-				return;
+				e.Dispose();
 			}
 
 			lock (stateLock)
 				state = GClientState.Connected;
 
 			receiveEventArgs.SetBuffer(header, 0, header.Length);
-			receiveEventArgs.Completed += OnHeaderReceived;
+			receiveEventArgs.Completed += Base_OnHeaderReceived;
 
 			OnConnected();
 
 			try {
 				if (!socket.ReceiveAsync(receiveEventArgs))
-					OnHeaderReceived(socket, receiveEventArgs);
+					Base_OnHeaderReceived(socket, receiveEventArgs);
 			} catch (Exception ex) {
 				DisconnectByError(ex);
 			}
 		}
-		private void OnPacketSended(object sender, SocketAsyncEventArgs e) {
+		private void Base_OnPacketSended(object sender, SocketAsyncEventArgs e) {
 			Socket socket = (Socket)sender;
 
-			if (CheckAvailable(socket, e, socket.SendAsync, OnPacketSended)) {
+			if (CheckAvailable(socket, e, socket.SendAsync, Base_OnPacketSended)) {
 				byte[] packet;
 				lock (e) {
 					if (sendQueue.Count == 0) {
@@ -291,15 +307,15 @@ namespace GKit
 				try {
 					e.SetBuffer(packet, 0, packet.Length);
 					if (!socket.SendAsync(e))
-						OnPacketSended(socket, e);
+						Base_OnPacketSended(socket, e);
 				} catch (Exception ex) {
 					DisconnectByError(ex);
 				}
 			}
 		}
-		private void OnHeaderReceived(object sender, SocketAsyncEventArgs e) {
+		private void Base_OnHeaderReceived(object sender, SocketAsyncEventArgs e) {
 			Socket socket = (Socket)sender;
-			if (CheckAvailable(this.socket, e, socket.ReceiveAsync, this.OnHeaderReceived)) {
+			if (CheckAvailable(this.socket, e, socket.ReceiveAsync, this.Base_OnHeaderReceived)) {
 				int packetLength = protocol.Bytes2Header(e.Buffer);
 
 				OnHeaderReceived(e.Buffer);
@@ -309,11 +325,11 @@ namespace GKit
 				} else {
 					e.SetBuffer(new byte[packetLength], 0, packetLength);
 
-					e.Completed -= OnHeaderReceived;
-					e.Completed += OnPacketReceived;
+					e.Completed -= Base_OnHeaderReceived;
+					e.Completed += Base_OnPacketReceived;
 					try {
 						if (!socket.ReceiveAsync(e)) {
-							OnPacketReceived(socket, e);
+							Base_OnPacketReceived(socket, e);
 						}
 					} catch (Exception ex) {
 						DisconnectByError(ex);
@@ -321,19 +337,19 @@ namespace GKit
 				}
 			}
 		}
-		private void OnPacketReceived(object sender, SocketAsyncEventArgs e) {
+		private void Base_OnPacketReceived(object sender, SocketAsyncEventArgs e) {
 			Socket socket = (Socket)sender;
 
-			if (CheckAvailable(socket, e, socket.ReceiveAsync, OnPacketReceived)) {
+			if (CheckAvailable(socket, e, socket.ReceiveAsync, Base_OnPacketReceived)) {
 				OnPacketReceived(e.Buffer);
 
 				e.SetBuffer(header, 0, header.Length);
 
-				e.Completed -= OnPacketReceived;
-				e.Completed += OnHeaderReceived;
+				e.Completed -= Base_OnPacketReceived;
+				e.Completed += Base_OnHeaderReceived;
 				try {
 					if (!socket.ReceiveAsync(e)) {
-						OnHeaderReceived(socket, e);
+						Base_OnHeaderReceived(socket, e);
 					}
 				} catch (Exception ex) {
 					DisconnectByError(ex);

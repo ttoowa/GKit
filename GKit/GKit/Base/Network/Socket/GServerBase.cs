@@ -16,6 +16,11 @@ namespace GKit
 #endif
 .Network {
 	public abstract class GServerBase {
+		public class DisconnectedEventArgs {
+			public bool OnException => exception != null;
+			public Exception exception;
+		}
+
 		public GServerState ServerState {
 			get {
 				lock (stateLock) {
@@ -23,7 +28,7 @@ namespace GKit
 				}
 			}
 		}
-		public bool IsAcceptConnecting {
+		public bool AcceptConnection {
 			get {
 				return acceptConnection;
 			}
@@ -46,21 +51,21 @@ namespace GKit
 			}
 		}
 
-		#region Locks
-
+		//Locks
 		private object stateLock = new object();
 		private object globalLock = new object();
 
-		#endregion
-
 		private GServerState state = GServerState.Stopped;
-		private NetProtocol protocol;
 		private bool acceptConnection;
+
 		private int port;
 		private int backLogNum;
 		private GSocketArgs socketArgs;
+		private NetProtocol protocol;
+
 		private Socket socket;
 		private Thread acceptThread;
+
 		public HashSet<Socket> ClientSet {
 			get; private set;
 		}
@@ -189,7 +194,7 @@ namespace GKit
 			try {
 				clientData.sendEventArgs.SetBuffer(packet, 0, packet.Length);
 				if (!clientData.SendAsync())
-					OnSendPacket(client, clientData.sendEventArgs);
+					Base_OnSendPacket(client, clientData.sendEventArgs);
 			} catch (Exception ex) {
 				DisconnectClientByError(clientData.socket, ex);
 			}
@@ -306,7 +311,7 @@ namespace GKit
 					}
 
 					//이벤트 설정
-					data.sendEventArgs.Completed += OnSendPacket;
+					data.sendEventArgs.Completed += Base_OnSendPacket;
 
 					OnClientConnected(client);
 
@@ -319,10 +324,10 @@ namespace GKit
 		private void StartReceiveClient(GClientData clientData) {
 			try {
 				clientData.receiveEventArgs.SetBuffer(clientData.receivedHeaderBuffer, 0, clientData.receivedHeaderBuffer.Length);
-				clientData.receiveEventArgs.Completed += OnHeaderReceived;
+				clientData.receiveEventArgs.Completed += Base_OnHeaderReceived;
 
 				if (!clientData.socket.ReceiveAsync(clientData.receiveEventArgs))
-					OnHeaderReceived(clientData.socket, clientData.receiveEventArgs);
+					Base_OnHeaderReceived(clientData.socket, clientData.receiveEventArgs);
 			} catch (Exception sException) {
 				DisconnectClientByError(clientData.socket, sException);
 			}
@@ -349,11 +354,12 @@ namespace GKit
 			}
 			return false;
 		}
+		
 		//Event
-		private void OnSendPacket(object sender, SocketAsyncEventArgs e) {
+		private void Base_OnSendPacket(object sender, SocketAsyncEventArgs e) {
 			Socket client = (Socket)sender;
 
-			if (CheckAvailable(client, e, client.SendAsync, OnSendPacket)) {
+			if (CheckAvailable(client, e, client.SendAsync, Base_OnSendPacket)) {
 				GClientData data;
 
 				lock (ClientSet) {
@@ -384,16 +390,16 @@ namespace GKit
 				try {
 					e.SetBuffer(packet, 0, packet.Length);
 					if (!client.SendAsync(e))
-						OnSendPacket(client, e);
+						Base_OnSendPacket(client, e);
 				} catch (Exception ex) {
 					DisconnectClientByError(client, ex);
 				}
 			}
 		}
-		private void OnHeaderReceived(object sender, SocketAsyncEventArgs e) {
+		private void Base_OnHeaderReceived(object sender, SocketAsyncEventArgs e) {
 			Socket client = (Socket)sender;
 
-			if (CheckAvailable(client, e, client.ReceiveAsync, OnHeaderReceived)) {
+			if (CheckAvailable(client, e, client.ReceiveAsync, Base_OnHeaderReceived)) {
 				int packetLength = protocol.Bytes2Header(e.Buffer);
 
 				OnHeaderReceived(client, e.Buffer);
@@ -403,22 +409,22 @@ namespace GKit
 				else {
 					e.SetBuffer(new byte[packetLength], 0, packetLength);
 
-					e.Completed -= OnHeaderReceived;
-					e.Completed += OnPacketReceived;
+					e.Completed -= Base_OnHeaderReceived;
+					e.Completed += Base_OnPacketReceived;
 
 					try {
 						if (!client.ReceiveAsync(e))
-							OnPacketReceived(client, e);
+							Base_OnPacketReceived(client, e);
 					} catch (Exception ex) {
 						DisconnectClientByError(client, ex);
 					}
 				}
 			}
 		}
-		private void OnPacketReceived(object sender, SocketAsyncEventArgs e) {
+		private void Base_OnPacketReceived(object sender, SocketAsyncEventArgs e) {
 			Socket client = (Socket)sender;
 
-			if (CheckAvailable(client, e, client.ReceiveAsync, OnPacketReceived)) {
+			if (CheckAvailable(client, e, client.ReceiveAsync, Base_OnPacketReceived)) {
 				GClientData data;
 
 				lock (ClientSet)
@@ -428,12 +434,12 @@ namespace GKit
 				OnPacketReceived(client, e.Buffer);
 
 				e.SetBuffer(data.receivedHeaderBuffer, 0, data.receivedHeaderBuffer.Length);
-				e.Completed -= OnPacketReceived;
-				e.Completed += OnHeaderReceived;
+				e.Completed -= Base_OnPacketReceived;
+				e.Completed += Base_OnHeaderReceived;
 
 				try {
 					if (!client.ReceiveAsync(e))
-						OnHeaderReceived(client, e);
+						Base_OnHeaderReceived(client, e);
 				} catch (Exception sException) {
 					DisconnectClientByError(client, sException);
 				}
