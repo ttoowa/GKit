@@ -173,6 +173,13 @@ namespace GKit
 			}
 		}
 		public void SendTo(Socket client, byte[] data) {
+			if (data == null)
+				return;
+			if(!client.Connected) {
+				OnFatalError(new Exception("Packet can't be sent because the socket isn't connected."));
+				return;
+			}
+			
 			GClientData clientData;
 			lock (ClientSet) {
 				clientData = clientDataDict[client];

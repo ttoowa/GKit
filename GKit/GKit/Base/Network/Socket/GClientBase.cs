@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
 #if OnUnity
 namespace GKitForUnity
@@ -81,7 +82,7 @@ namespace GKit
 			sendEventArgs.Completed += Base_OnPacketSended;
 		}
 
-		public void Connect(IPEndPoint serverEndPoint, bool useAsync = false) {
+		public bool Connect(IPEndPoint serverEndPoint, bool useAsync = false, int timeout = 3000) {
 			//Change state
 			lock (stateLock) {
 				if (state != GClientState.Disconnected)
@@ -125,8 +126,12 @@ namespace GKit
 			}
 
 			if (socketSettingException != null) {
+				lock (stateLock) {
+					state = GClientState.Disconnected;
+				}
+
 				OnFatalError(socketSettingException);
-				return;
+				return false;
 			}
 
 			//Connect
@@ -142,16 +147,31 @@ namespace GKit
 						//비동기 완료
 						Base_OnConnected(socket, connectEventArgs);
 					} else {
-						return;
+						CancelAsyncConnect(timeout);
 					}
 				} else {
 					//Blocking
-					socket.Connect(serverEndPoint);
-					Base_OnConnected(socket, null);
+					IAsyncResult result = socket.BeginConnect(serverEndPoint, null, null);
+					bool success = result.AsyncWaitHandle.WaitOne(timeout, true);
+					if(socket.Connected) {
+						Base_OnConnected(socket, null);
+					} else {
+						lock (stateLock) {
+							state = GClientState.Disconnected;
+						}
+
+						return false;
+					}
 				}
 			} catch (Exception ex) {
+				lock (stateLock) {
+					state = GClientState.Disconnected;
+				}
+
 				OnFatalError(ex);
+				return false;
 			}
+			return true;
 		}
 		public void Disconnect() {
 			if (DisconnectedJob()) {
@@ -164,8 +184,12 @@ namespace GKit
 		}
 
 		public void Send(byte[] data) {
-			if (state != GClientState.Connected || data == null)
+			if(data == null)
 				return;
+			if (state != GClientState.Connected) {
+				OnFatalError(new Exception("Packet can't be sent because the socket isn't connected."));
+				return;
+			}
 
 			PacketBuilder builder = new PacketBuilder();
 			builder.Append(protocol.Header2Bytes(data.Length));
@@ -353,6 +377,18 @@ namespace GKit
 				} catch (Exception ex) {
 					DisconnectByError(ex);
 				}
+			}
+		}
+
+		private async void CancelAsyncConnect(int timeoutMillisec) {
+			await Task.Delay(timeoutMillisec);
+
+			try {
+				if (socket != null && !socket.Connected) {
+					socket.Dispose();
+					socket = null;
+				}
+			} catch (Exception ex) {
 			}
 		}
 	}
