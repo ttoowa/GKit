@@ -90,6 +90,7 @@
     <Compile Include="Base\Network\Socket\Element\NetProtocol.cs" />
     <Compile Include="Base\Network\Socket\Element\GServerState.cs" />
     <Compile Include="Base\Network\Socket\GServerBase.cs" />
+    <Compile Include="Base\Network\Socket\GSocketArgs.cs" />
     <Compile Include="Base\Network\Utility\EndianConverter.cs" />
     <Compile Include="Base\Network\Utility\PacketBuilder.cs" />
     <Compile Include="Base\Network\Utility\PacketData.cs" />

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GKit.Base.Network.Socket;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -13,6 +14,10 @@ namespace GKit
 #endif
 .Network {
 	public abstract class GClientBase {
+		public class DisconnectedEventArgs {
+			public bool onError;
+		}
+
 		public GClientState State {
 			get {
 				lock (stateLock)
@@ -42,12 +47,7 @@ namespace GKit
 		private GClientState state = GClientState.Disconnected;
 		private NetProtocol protocol;
 		private bool isSending;
-		private bool noDelay;
-		private bool useKeepAlive;
-		private bool useLinger;
-		private int keepAliveTime;
-		private int keepAliveInterval;
-		private int lingerTime;
+		private GSocketArgs socketArgs;
 		private IPEndPoint serverEndPoint;
 		private Socket socket;
 		private byte[] header;
@@ -59,31 +59,18 @@ namespace GKit
 		//Event
 
 		protected abstract void OnConnected();
-		protected abstract void OnConnectFailed(Exception ex);
-		protected abstract void OnDisconnectedByError(Exception ex);
-		protected abstract void OnDisconnected();
+		protected abstract void OnFatalError(Exception ex);
+		protected abstract void OnDisconnected(DisconnectedEventArgs e);
 		protected abstract void OnHeaderReceived(byte[] header);
 		protected abstract void OnPacketReceived(byte[] packet);
 
-		/// <param name="protocol">통신할 때 사용되는 규칙 (null : 기본값 int)</param>
-		/// <param name="noDelay">패킷을 여러 개 모아 전송할 지 여부</param>
-		/// <param name="useKeepAlive">연결 유지 사용</param>
-		/// <param name="keepAliveTime">연결 유지 시간제한 (밀리초)</param>
-		/// <param name="keepAliveInternal">연결 유지 간격 (밀리초)</param>
-		/// <param name="useLinger">연결 끊김 시 남은 버퍼 전송 여부</param>
-		/// <param name="lingerTime">남은 버퍼 전송 대기시간 (초)</param>
-		public GClientBase(NetProtocol protocol = null, bool noDelay = false, bool useKeepAlive = true, int keepAliveTime = 3000, int keepAliveInternal = 1000, bool useLinger = false, int lingerTime = 3) {
+		public GClientBase(NetProtocol protocol, GSocketArgs args) {
 			if (protocol == null) {
 				protocol = new NetProtocol();
 			}
 
 			this.protocol = protocol;
-			this.noDelay = noDelay;
-			this.useKeepAlive = useKeepAlive;
-			this.useLinger = useLinger;
-			this.keepAliveTime = keepAliveTime;
-			this.keepAliveInterval = keepAliveInternal;
-			this.lingerTime = lingerTime;
+			this.socketArgs = args;
 			
 			header = new byte[protocol.HeaderSize];
 		}
@@ -92,17 +79,17 @@ namespace GKit
 			sendEventArgs = new SocketAsyncEventArgs();
 			receiveEventArgs = new SocketAsyncEventArgs();
 
-			connectEventArgs.Completed += OnConnect;
+			connectEventArgs.Completed += OnConnected;
 			sendEventArgs.Completed += OnPacketSended;
 		}
 
-		public void ConnectTo(IPEndPoint serverEndPoint) {
-			this.serverEndPoint = serverEndPoint;
+		public void Connect(IPEndPoint serverEndPoint) {
 			lock (stateLock) {
 				if (state != GClientState.Disconnected)
-					return;
+					throw new Exception("Socket already connected.");
 
 				state = GClientState.Connecting;
+				this.serverEndPoint = serverEndPoint;
 			}
 
 			Reset();
@@ -112,18 +99,18 @@ namespace GKit
 				try {
 					//소켓 설정
 					socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-					socket.NoDelay = !noDelay;
-					socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Linger, new LingerOption(useLinger, lingerTime));
+					socket.NoDelay = socketArgs.noDelay;
+					socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Linger, new LingerOption(socketArgs.useLinger, socketArgs.lingerTime));
 
 					byte[] optionBuffer = new byte[12];
-					Array.Copy(BitConverter.GetBytes(useKeepAlive ? 1 : 0), 0, optionBuffer, 0, sizeof(int));
-					Array.Copy(BitConverter.GetBytes(keepAliveTime), 0, optionBuffer, sizeof(int), sizeof(int));
-					Array.Copy(BitConverter.GetBytes(keepAliveInterval), 0, optionBuffer, sizeof(int) * 2, sizeof(int));
+					Array.Copy(BitConverter.GetBytes(socketArgs.useKeepAlive ? 1 : 0), 0, optionBuffer, 0, sizeof(int));
+					Array.Copy(BitConverter.GetBytes(socketArgs.keepAliveTime), 0, optionBuffer, sizeof(int), sizeof(int));
+					Array.Copy(BitConverter.GetBytes(socketArgs.keepAliveInterval), 0, optionBuffer, sizeof(int) * 2, sizeof(int));
 
 					try {
 						socket.IOControl(IOControlCode.KeepAliveValues, optionBuffer, null);
 					} catch {
-						useKeepAlive = false;
+						socketArgs.useKeepAlive = false;
 					}
 
 					connectEventArgs.RemoteEndPoint = serverEndPoint;
@@ -142,21 +129,24 @@ namespace GKit
 			}
 
 			if (exception != null) {
-				OnConnectFailed(exception);
+				OnFatalError(exception);
 				return;
-			} else {
-				try {
-					if (!socket.ConnectAsync(connectEventArgs))
-						OnConnect(socket, connectEventArgs);
-				} catch (Exception ex) {
-					OnConnectFailed(ex);
-				}
+			}
+
+			try {
+				if (!socket.ConnectAsync(connectEventArgs))
+					OnConnected(socket, connectEventArgs);
+			} catch (Exception ex) {
+				OnFatalError(ex);
 			}
 		}
 		public void Disconnect() {
-			if (DisconnectedWork()) {
+			if (DisconnectedJob()) {
+				var args = new DisconnectedEventArgs() {
+					onError = false,
+				};
 
-				OnDisconnected();
+				OnDisconnected(args);
 				serverEndPoint = null;
 			}
 		}
@@ -192,13 +182,13 @@ namespace GKit
 		
 
 		private void DisconnectByError(Exception ex) {
-			if (DisconnectedWork()) {
+			if (DisconnectedJob()) {
 
 				DisconnectByError(ex);
 				serverEndPoint = null;
 			}
 		}
-		private bool DisconnectedWork() {
+		private bool DisconnectedJob() {
 			lock (stateLock) {
 				if (state != GClientState.Connected) {
 					return false;
@@ -244,8 +234,9 @@ namespace GKit
 				isSending = false;
 			return false;
 		}
+
 		//Event
-		private void OnConnect(object sender, SocketAsyncEventArgs e) {
+		private void OnConnected(object sender, SocketAsyncEventArgs e) {
 			if (e.SocketError != SocketError.Success) {
 				if (socket != null) {
 					socket.Close();
@@ -255,7 +246,7 @@ namespace GKit
 				lock (stateLock)
 					state = GClientState.Disconnected;
 
-				OnConnectFailed(new SocketException((int)e.SocketError));
+				OnFatalError(new SocketException((int)e.SocketError));
 
 				return;
 			}

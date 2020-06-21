@@ -1,4 +1,5 @@
 
+using GKit.Base.Network.Socket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,12 +58,7 @@ namespace GKit
 		private bool acceptConnection;
 		private int port;
 		private int backLogNum;
-		private bool noDelay;
-		private bool usekeepAlive;
-		private bool useLinger;
-		private int keepAliveTime;
-		private int keepAliveInternal;
-		private int lingerTime;
+		private GSocketArgs socketArgs;
 		private Socket socket;
 		private Thread acceptThread;
 		public HashSet<Socket> ClientSet {
@@ -79,25 +75,13 @@ namespace GKit
 		protected abstract void OnHeaderReceived(Socket client, byte[] header);
 		protected abstract void OnPacketReceived(Socket client, byte[] packet);
 
-		/// <param name="protocol">통신할 때 사용되는 규칙 (null : 기본값)</param>
-		/// <param name="noDelay">패킷을 여러 개 모아 전송할 지 여부</param>
-		/// <param name="useKeepAlive">연결 유지 사용</param>
-		/// <param name="keepAliveTime">연결 유지 시간제한 (밀리초)</param>
-		/// <param name="keepAliveInternal">연결 유지 간격 (밀리초)</param>
-		/// <param name="useLinger">연결 끊김 시 남은 버퍼 전송 여부</param>
-		/// <param name="lingerTime">남은 버퍼 전송 대기시간 (초)</param>
-		public GServerBase(NetProtocol protocol = null, bool noDelay = false, bool useKeepAlive = true, int keepAliveTime = 3000, int keepAliveInternal = 1000, bool useLinger = false, int lingerTime = 3) {
+		public GServerBase(NetProtocol protocol, GSocketArgs args) {
 			if (protocol == null) {
 				protocol = new NetProtocol();
 			}
 
 			this.protocol = protocol;
-			this.noDelay = noDelay;
-			this.usekeepAlive = useKeepAlive;
-			this.useLinger = useLinger;
-			this.keepAliveTime = keepAliveTime;
-			this.keepAliveInternal = keepAliveInternal;
-			this.lingerTime = lingerTime;
+			this.socketArgs = args;
 
 			Init();
 		}
@@ -137,17 +121,17 @@ namespace GKit
 					socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 					socket.Bind(new IPEndPoint(IPAddress.Any, port));
 					socket.Listen(backLogNum);
-					socket.NoDelay = !noDelay;
+					socket.NoDelay = !socketArgs.noDelay;
 
 					byte[] optionBuffer = new byte[12];
-					Array.Copy(BitConverter.GetBytes(usekeepAlive ? 1 : 0), 0, optionBuffer, 0, sizeof(int));
-					Array.Copy(BitConverter.GetBytes(keepAliveTime), 0, optionBuffer, sizeof(int), sizeof(int));
-					Array.Copy(BitConverter.GetBytes(keepAliveInternal), 0, optionBuffer, sizeof(int) * 2, sizeof(int));
+					Array.Copy(BitConverter.GetBytes(socketArgs.useKeepAlive ? 1 : 0), 0, optionBuffer, 0, sizeof(int));
+					Array.Copy(BitConverter.GetBytes(socketArgs.keepAliveTime), 0, optionBuffer, sizeof(int), sizeof(int));
+					Array.Copy(BitConverter.GetBytes(socketArgs.keepAliveInterval), 0, optionBuffer, sizeof(int) * 2, sizeof(int));
 
 					try {
 						socket.IOControl(IOControlCode.KeepAliveValues, optionBuffer, null);
 					} catch {
-						usekeepAlive = false;
+						socketArgs.useKeepAlive = false;
 					}
 
 					acceptThread = new Thread(AcceptClient);
@@ -310,8 +294,8 @@ namespace GKit
 						continue;
 					}
 
-					client.NoDelay = !noDelay;
-					client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Linger, new LingerOption(useLinger, lingerTime));
+					client.NoDelay = socketArgs.noDelay;
+					client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Linger, new LingerOption(socketArgs.useLinger, socketArgs.lingerTime));
 
 					//클라이언트 데이터 생성
 					GClientData data;
