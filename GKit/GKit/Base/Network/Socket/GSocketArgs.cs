@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GKit.Base.Network.Socket {
+﻿
+#if OnUnity
+namespace GKitForUnity
+#elif OnWPF
+namespace GKitForWPF
+#else
+namespace GKit
+#endif
+.Network {
 	public class GSocketArgs {
 		/// <param name="noDelay">패킷을 여러 개 모아 전송할 지 여부</param>
 		/// <param name="useKeepAlive">연결 유지 사용</param>
