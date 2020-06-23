@@ -128,6 +128,7 @@
     <Compile Include="Base\Input\KeyInput\WinKey.cs" />
     <Compile Include="Base\Input\KeyInput\KeyInput.cs" />
     <Compile Include="Base\Input\MouseInput\MouseInput.cs" />
+    <Compile Include="Base\Utility\SearchUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Base\System\OS\ClipBoard.cs" />
     <Compile Include="Base\System\MultiThread\Parallel\ParallelLoop.cs" />

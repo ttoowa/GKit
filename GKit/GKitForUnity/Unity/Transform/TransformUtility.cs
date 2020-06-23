@@ -2,6 +2,20 @@
 
 namespace GKitForUnity {
 	public static class TransformUtility {
+		//Camera
+		public static Vector3 GetProjectionPos(this Camera cam, Vector2 screenPos, float worldZPos) {
+			const float Factor = 1f;
+
+			Vector3 camPos = cam.transform.position;
+
+			Vector3 frontPos = cam.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, Factor));
+			Vector3 vector = frontPos - camPos; //단위벡터
+
+			float length = Mathf.Abs(worldZPos - camPos.z) / vector.z;
+
+			return camPos + vector * length;
+		}
+
 		//Node
 		public static void SetParent(this GameObject child, GameObject parent, bool worldPositionStays = false) {
 			if (parent == null) {

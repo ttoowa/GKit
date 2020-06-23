@@ -60,6 +60,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Unity\Utility\AssetUtility.cs" />
+    <Compile Include="Unity\Utility\ComponentUtility.cs" />
+    <Compile Include="Unity\Utility\TextUtility.cs" />
+    <Compile Include="Unity\Utility\TimeUtility.cs" />
     <Compile Include="Unity\Utility\ToolComponents\AnimatorBoolSetter.cs" />
     <Compile Include="Unity\Cursor\CursorInfo.cs" />
     <Compile Include="Unity\Cursor\CursorManager.cs" />
@@ -73,7 +77,7 @@
     <Compile Include="Unity\Transform\TransformUtility.cs" />
     <Compile Include="Unity\Transform\UiTransform.cs" />
     <Compile Include="Unity\Transform\UiUtility.cs" />
-    <Compile Include="Unity\Utility\UnityUtility.cs" />
+    <Compile Include="Unity\Utility\RendererUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
