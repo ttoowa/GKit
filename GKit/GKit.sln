@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GKit.SQLite", "GKit.SQLite\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E02517D2-A925-45C8-BCF0-FC024424F85C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GKitForWPF.Test", "Tests\GKitForWPF.Test\GKitForWPF.Test.csproj", "{041502F9-2EA4-451B-9F77-EE9EFB8C958A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,12 +55,17 @@ Global
 		{53259183-0444-4256-A993-55E4E3D80409}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53259183-0444-4256-A993-55E4E3D80409}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53259183-0444-4256-A993-55E4E3D80409}.Release|Any CPU.Build.0 = Release|Any CPU
+		{041502F9-2EA4-451B-9F77-EE9EFB8C958A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{041502F9-2EA4-451B-9F77-EE9EFB8C958A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{041502F9-2EA4-451B-9F77-EE9EFB8C958A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{041502F9-2EA4-451B-9F77-EE9EFB8C958A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D95A7ADE-9532-4CDA-9577-F5BBC4B2B3B5} = {E02517D2-A925-45C8-BCF0-FC024424F85C}
+		{041502F9-2EA4-451B-9F77-EE9EFB8C958A} = {E02517D2-A925-45C8-BCF0-FC024424F85C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8F0E0599-3516-40BE-BC8F-80FC14A9ABA0}

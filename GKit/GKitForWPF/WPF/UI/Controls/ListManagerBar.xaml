@@ -10,7 +10,7 @@
 	<UserControl.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="/GKitForWPF;component/WPF/Resources/Themes/FlatTheme.xaml"/>
+				<ResourceDictionary Source="/GKitForWPF;component/WPF/Resources/Themes/GFlatDark.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 			<System:Double x:Key="TitleButtonWidth">36</System:Double>
 			<Thickness x:Key="ListControlButtonSpace" Right="5"></Thickness>

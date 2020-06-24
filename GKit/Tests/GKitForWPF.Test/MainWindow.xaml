@@ -1,0 +1,29 @@
+﻿<Window x:Class="GKitForWPF.Test.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+
+        xmlns:GControls="clr-namespace:GKitForWPF.UI.Controls;assembly=GKitForWPF"
+
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800" Background="{StaticResource Color_Background_D2}">
+    <Grid>
+		<StackPanel Width="300">
+			<Border Height="100"/>
+			<GControls:Vector2Editor/>
+			<Border Height="20"/>
+			<StackPanel Orientation="Horizontal">
+				<GControls:Switch/>
+				<GControls:Switch Value="True" Margin="4, 0, 0, 0"/>
+			</StackPanel>
+			<TextBlock Style="{StaticResource TextBlock_Header1}" Text="Header 1"/>
+			<TextBlock Style="{StaticResource TextBlock_Header2}" Text="Header 2"/>
+			<TextBlock Style="{StaticResource TextBlock_Header3}" Text="Header 3"/>
+			<TextBlock Style="{StaticResource TextBlock_Header4}" Text="Header 4"/>
+			<TextBlock Style="{StaticResource TextBlock_Content}" Text="Content"/>
+			<TextBlock Style="{StaticResource TextBlock_Info1}" Text="Info 1"/>
+			<TextBlock Style="{StaticResource TextBlock_Info2}" Text="Info 2"/>
+		</StackPanel>
+	</Grid>
+</Window>

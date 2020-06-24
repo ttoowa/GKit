@@ -120,6 +120,7 @@
     <Compile Include="Base\System\Struct\Alignment.cs" />
     <Compile Include="Base\System\Struct\AnchorPreset.cs" />
     <Compile Include="Base\System\Struct\MotionValue.cs" />
+    <Compile Include="Base\System\Struct\NumberType.cs" />
     <Compile Include="Base\System\Struct\Property.cs" />
     <Compile Include="Base\System\Time\TimeFormat.cs" />
     <Compile Include="Base\System\OS\TrayIcon.cs" />

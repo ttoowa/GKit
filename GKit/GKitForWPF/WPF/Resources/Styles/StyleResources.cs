@@ -4,16 +4,9 @@ using System.Windows;
 namespace GKitForWPF.Resources {
 	public static class StyleResource {
 		internal const string ThemePath = "pack://application:,,,/GKitForWPF;component/WPF/Resources/Themes/";
-		public const string FlatTheme = ThemePath + "FlatTheme.xaml";
 
 		public static void Apply(ResourceDictionary appResource, ThemeType themeType) {
-			string themeUri;
-			switch (themeType) {
-				default:
-				case ThemeType.FlatTheme:
-					themeUri = FlatTheme;
-					break;
-			}
+			string themeUri = ThemePath + themeType + ".xaml";
 
 			ApplyCustom(appResource, themeUri);
 		}
