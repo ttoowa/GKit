@@ -11,6 +11,8 @@
     <Grid>
 		<StackPanel Width="300">
 			<Border Height="100"/>
+			<GControls:NumberEditor Value="20" MinValue="10" MaxValue="15"/>
+			<Border Height="10"/>
 			<GControls:Vector2Editor/>
 			<Border Height="20"/>
 			<StackPanel Orientation="Horizontal">

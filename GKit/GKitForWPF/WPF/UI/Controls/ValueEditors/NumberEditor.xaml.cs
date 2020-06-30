@@ -102,11 +102,15 @@ namespace GKitForWPF.UI.Controls {
 		public NumberEditor() {
 			InitializeComponent();
 			RegisterEvents();
-
-			UpdateUI();
 		}
 		private void RegisterEvents() {
+			Loaded += OnLoaded;
 			PropertyChanged += ValueEditorElement_NumberBox_PropertyChanged;
+		}
+
+		private void OnLoaded(object sender, RoutedEventArgs e) {
+			UpdateUI();
+			UpdateValue();
 		}
 
 		private void RaisePropertyChanged(string propertyName) {
