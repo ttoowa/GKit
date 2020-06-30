@@ -33,18 +33,18 @@ namespace GKit
 		private void Init(int count) {
 			targetCount = count;
 			objectStack = new Stack<T>(count);
-			CreateObject(count);
+			CreateInstance(count);
 		}
 
-		public T GetObject() {
+		public T GetInstance() {
 			if (objectStack.Count == 0) {
-				CreateObject(1);
+				CreateInstance(1);
 			}
 			T instance = objectStack.Pop();
 			GetTask?.Invoke(instance);
 			return instance;
 		}
-		public void ReleaseObject(T obj) {
+		public void ReturnInstance(T obj) {
 			ReleaseTask?.Invoke(obj);
 			if (objectStack.Count < targetCount) {
 				objectStack.Push(obj);
@@ -53,7 +53,7 @@ namespace GKit
 			}
 		}
 
-		public void CreateObject(int count) {
+		public void CreateInstance(int count) {
 			this.targetCount += count;
 			T item;
 			if (CreateMethod != null) {
@@ -63,17 +63,17 @@ namespace GKit
 			}
 			objectStack.Push(item);
 		}
-		public void DeleteObject(int deleteCount) {
+		public void DeleteInstance(int deleteCount) {
 			deleteCount = Mathf.Min(deleteCount, targetCount);
 			targetCount = Mathf.Max(targetCount - deleteCount, 0);
 
 			int immediateDeleteCount = Mathf.Min(deleteCount, objectStack.Count);
 			for (int i = 0; i < immediateDeleteCount; ++i) {
-				OnDisposeObject(objectStack.Pop());
+				OnDisposeInstance(objectStack.Pop());
 			}
 		}
 
-		private void OnDisposeObject(T obj) {
+		private void OnDisposeInstance(T obj) {
 			DisposeTask?.Invoke(obj);
 		}
 	}
