@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Text;
 #if OnUnity
 using UnityEngine;
@@ -19,6 +20,23 @@ namespace GKit
 		public const float Float2Byte = 255f;
 		public const float Byte2Float = 0.0039215686274f;
 
+		public static int FloorDivision(int a, int b) {
+			return (a / b - Convert.ToInt32(((a < 0) ^ (b < 0)) && (a % b != 0)));
+		}
+		public static int FloorModular(int a, int b) {
+			int c = a % b;
+			if ((c < 0) ^ (b < 0)) {
+				c += b;
+			}
+			return c;
+		}
+		public static float FloorModular(float a, float b) {
+			float c = a % b;
+			if ((c < 0f) ^ (b < 0f)) {
+				c += b;
+			}
+			return c;
+		}
 
 		public static float Diagonal(float x, float y) {
 			return Mathf.Sqrt(DiagonalPow(x, y));
