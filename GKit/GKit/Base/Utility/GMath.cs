@@ -173,7 +173,7 @@ namespace GKit
 		}
 
 		public static Vector2Int IndexToPosition(int index, int stripe) {
-			return new Vector2Int(index / stripe, index % stripe);
+			return new Vector2Int(index % stripe, index / stripe);
 		}
 	}
 }
