@@ -54,14 +54,19 @@ namespace GKit
 		}
 
 		public void CreateInstance(int count) {
+			if (count == 0)
+				return;
+
 			this.targetCount += count;
-			T item;
-			if (CreateInstanceMethod != null) {
-				item = CreateInstanceMethod();
-			} else {
-				item = default(T);
+			for(int i=0; i<count; ++i) {
+				T item;
+				if (CreateInstanceMethod != null) {
+					item = CreateInstanceMethod();
+				} else {
+					item = default(T);
+				}
+				objectStack.Push(item);
 			}
-			objectStack.Push(item);
 		}
 		public void DeleteInstance(int deleteCount) {
 			deleteCount = Mathf.Min(deleteCount, targetCount);
