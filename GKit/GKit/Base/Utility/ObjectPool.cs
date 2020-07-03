@@ -17,16 +17,16 @@ namespace GKit
 		public bool IsFull => objectStack.Count == targetCount;
 		private int targetCount;
 		private Stack<T> objectStack;
-		public ReturnDelegate<T> CreateMethod;
-		public event Arg1Delegate<T> DisposeTask;
-		public event Arg1Delegate<T> GetTask;
-		public event Arg1Delegate<T> ReleaseTask;
+		public ReturnDelegate<T> CreateInstanceMethod;
+		public event Arg1Delegate<T> DisposeInstanceTask;
+		public event Arg1Delegate<T> GetInstanceTask;
+		public event Arg1Delegate<T> ReturnInstanceTask;
 
 		public ObjectPool(int count = 32) {
 			Init(count);
 		}
 		public ObjectPool(ReturnDelegate<T> createObjectMethod, int count = 32) {
-			CreateMethod = createObjectMethod;
+			CreateInstanceMethod = createObjectMethod;
 
 			Init(count);
 		}
@@ -41,23 +41,23 @@ namespace GKit
 				CreateInstance(1);
 			}
 			T instance = objectStack.Pop();
-			GetTask?.Invoke(instance);
+			GetInstanceTask?.Invoke(instance);
 			return instance;
 		}
 		public void ReturnInstance(T obj) {
-			ReleaseTask?.Invoke(obj);
+			ReturnInstanceTask?.Invoke(obj);
 			if (objectStack.Count < targetCount) {
 				objectStack.Push(obj);
 			} else {
-				DisposeTask?.Invoke(obj);
+				DisposeInstanceTask?.Invoke(obj);
 			}
 		}
 
 		public void CreateInstance(int count) {
 			this.targetCount += count;
 			T item;
-			if (CreateMethod != null) {
-				item = CreateMethod();
+			if (CreateInstanceMethod != null) {
+				item = CreateInstanceMethod();
 			} else {
 				item = default(T);
 			}
@@ -74,7 +74,7 @@ namespace GKit
 		}
 
 		private void OnDisposeInstance(T obj) {
-			DisposeTask?.Invoke(obj);
+			DisposeInstanceTask?.Invoke(obj);
 		}
 	}
 }
