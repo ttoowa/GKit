@@ -44,12 +44,12 @@ namespace GKit
 			GetInstanceTask?.Invoke(instance);
 			return instance;
 		}
-		public void ReturnInstance(T obj) {
-			ReturnInstanceTask?.Invoke(obj);
+		public void ReturnInstance(T instance) {
+			ReturnInstanceTask?.Invoke(instance);
 			if (objectStack.Count < targetCount) {
-				objectStack.Push(obj);
+				objectStack.Push(instance);
 			} else {
-				DisposeInstanceTask?.Invoke(obj);
+				DisposeInstanceTask?.Invoke(instance);
 			}
 		}
 
@@ -59,13 +59,14 @@ namespace GKit
 
 			this.targetCount += count;
 			for(int i=0; i<count; ++i) {
-				T item;
+				T instance;
 				if (CreateInstanceMethod != null) {
-					item = CreateInstanceMethod();
+					instance = CreateInstanceMethod();
 				} else {
-					item = default(T);
+					instance = default(T);
 				}
-				objectStack.Push(item);
+				ReturnInstanceTask?.Invoke(instance);
+				objectStack.Push(instance);
 			}
 		}
 		public void DeleteInstance(int deleteCount) {
