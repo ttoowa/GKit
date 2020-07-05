@@ -23,12 +23,35 @@ namespace GKit
 		public static int FloorDivision(int a, int b) {
 			return (a / b - Convert.ToInt32(((a < 0) ^ (b < 0)) && (a % b != 0)));
 		}
+		public static Vector2Int FloorDivision(Vector2Int a, int b) {
+			return new Vector2Int(
+				FloorDivision(a.x, b),
+				FloorDivision(a.y, b));
+		}
+		public static Vector3Int FloorDivision(Vector3Int a, int b) {
+			return new Vector3Int(
+				FloorDivision(a.x, b),
+				FloorDivision(a.y, b),
+				FloorDivision(a.z, b));
+		}
+
 		public static int FloorModular(int a, int b) {
 			int c = a % b;
 			if ((c < 0) ^ (b < 0)) {
 				c += b;
 			}
 			return c;
+		}
+		public static Vector2Int FloorModular(Vector2Int a, int b) {
+			return new Vector2Int(
+				FloorModular(a.x, b),
+				FloorModular(a.y, b));
+		}
+		public static Vector3Int FloorModular(Vector3Int a, int b) {
+			return new Vector3Int(
+				FloorModular(a.x, b),
+				FloorModular(a.y, b),
+				FloorModular(a.z, b));
 		}
 		public static float FloorModular(float a, float b) {
 			float c = a % b;
