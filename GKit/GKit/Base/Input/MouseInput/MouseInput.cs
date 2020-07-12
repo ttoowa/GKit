@@ -66,7 +66,7 @@ namespace GKit
 #endif
 
 #if OnUnity
-		public static ScrollChangedDelegate ScrollChanged;
+		public static event ScrollChangedDelegate ScrollChanged;
 #endif
 
 		static MouseInput() {
