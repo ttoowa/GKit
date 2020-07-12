@@ -59,6 +59,8 @@ namespace GKit
 		public static Vector2 ScrollDelta {
 			get; private set;
 		}
+
+		private static int capturedFrame;
 #else
 		public static Vector2 AbsolutePosition {
 			get; private set;
@@ -76,10 +78,20 @@ namespace GKit
 		}
 		internal static void Update() {
 #if OnUnity
+			bool isDifferenceFrame = capturedFrame != Time.frameCount;
+			capturedFrame = Time.frameCount;
+
 			ScreenPos = Input.mousePosition;
-			ScrollDelta = Input.mouseScrollDelta;
-			if(ScrollDelta != Vector2.zero) {
-				ScrollChanged?.Invoke(ScrollDelta);
+
+			// Scroll
+			if(isDifferenceFrame) {
+				ScrollDelta = Input.mouseScrollDelta;
+
+				if(ScrollDelta != Vector2.zero) {
+					ScrollChanged?.Invoke(ScrollDelta);
+				}
+			} else {
+				ScrollDelta = Vector2.zero;
 			}
 #else
 			POINT nativePos;
@@ -89,7 +101,7 @@ namespace GKit
 #endif
 
 			bool current;
-			//Left
+			// Left
 #if OnUnity
 			current = Input.GetMouseButton((int)MouseButton.Left);
 #elif OnWPF
@@ -100,7 +112,7 @@ namespace GKit
 			Left.UpdateState(current);
 
 
-			//Right
+			// Right
 #if OnUnity
 			current = Input.GetMouseButton((int)MouseButton.Right);
 #elif OnWPF
@@ -110,7 +122,7 @@ namespace GKit
 #endif
 			Right.UpdateState(current);
 
-			//Middle
+			// Middle
 #if OnUnity
 			current = Input.GetMouseButton((int)MouseButton.Middle);
 #elif OnWPF
