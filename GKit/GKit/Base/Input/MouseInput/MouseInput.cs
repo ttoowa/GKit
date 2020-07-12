@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 #if OnUnity
@@ -19,6 +20,22 @@ namespace GKit
 	/// 마우스 입력 정보를 제공하는 클래스입니다.
 	/// </summary>
 	public static class MouseInput {
+		public delegate void ScrollChangedDelegate(Vector2 scrollDelta);
+#if !OnUnity
+		[StructLayout(LayoutKind.Sequential)]
+		public struct POINT {
+			public int X;
+			public int Y;
+
+			public static implicit operator System.Drawing.Point(POINT point) {
+				return new System.Drawing.Point(point.X, point.Y);
+			}
+		}
+		[DllImport("user32.dll")]
+		public static extern bool GetCursorPos(out POINT lpPoint);
+#endif
+
+
 		private enum MouseButton {
 			Left = 0,
 			Right = 1,
@@ -35,20 +52,6 @@ namespace GKit
 			get; private set;
 		}
 
-#if !OnUnity
-		[StructLayout(LayoutKind.Sequential)]
-		public struct POINT {
-			public int X;
-			public int Y;
-
-			public static implicit operator System.Drawing.Point(POINT point) {
-				return new System.Drawing.Point(point.X, point.Y);
-			}
-		}
-		[DllImport("user32.dll")]
-		public static extern bool GetCursorPos(out POINT lpPoint);
-#endif
-
 #if OnUnity
 		public static Vector2 ScreenPos {
 			get; private set;
@@ -62,6 +65,10 @@ namespace GKit
 		}
 #endif
 
+#if OnUnity
+		public static ScrollChangedDelegate ScrollChanged;
+#endif
+
 		static MouseInput() {
 			Left = new InputButton();
 			Right = new InputButton();
@@ -71,6 +78,9 @@ namespace GKit
 #if OnUnity
 			ScreenPos = Input.mousePosition;
 			ScrollDelta = Input.mouseScrollDelta;
+			if(ScrollDelta != Vector2.zero) {
+				ScrollChanged?.Invoke(ScrollDelta);
+			}
 #else
 			POINT nativePos;
 			GetCursorPos(out nativePos);
