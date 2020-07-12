@@ -61,6 +61,7 @@ namespace GKit
 		}
 
 		private static int capturedFrame;
+		private static bool scrollCaptured;
 #else
 		public static Vector2 AbsolutePosition {
 			get; private set;
@@ -78,20 +79,24 @@ namespace GKit
 		}
 		internal static void Update() {
 #if OnUnity
-			bool isDifferenceFrame = capturedFrame != Time.frameCount;
+			bool isCapturedFrame = capturedFrame == Time.frameCount;
 			capturedFrame = Time.frameCount;
 
 			ScreenPos = Input.mousePosition;
 
 			// Scroll
-			if(isDifferenceFrame) {
-				ScrollDelta = Input.mouseScrollDelta;
-
-				if(ScrollDelta != Vector2.zero) {
-					ScrollChanged?.Invoke(ScrollDelta);
-				}
-			} else {
+			ScrollDelta = Input.mouseScrollDelta;
+			if(scrollCaptured && isCapturedFrame) {
 				ScrollDelta = Vector2.zero;
+			}
+			if(!isCapturedFrame) {
+				scrollCaptured = false;
+			}
+
+			if(ScrollDelta != Vector2.zero) {
+				ScrollChanged?.Invoke(ScrollDelta);
+
+				scrollCaptured = true;
 			}
 #else
 			POINT nativePos;
