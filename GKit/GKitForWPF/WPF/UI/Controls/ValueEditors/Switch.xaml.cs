@@ -36,8 +36,6 @@ namespace GKitForWPF.UI.Controls {
 		public Switch() {
 			InitializeComponent();
 			RegisterEvents();
-
-			this.Loaded += Switch_Loaded;
 		}
 
 		private void Switch_Loaded(object sender, RoutedEventArgs e) {
@@ -45,6 +43,7 @@ namespace GKitForWPF.UI.Controls {
 		}
 
 		private void RegisterEvents() {
+			this.Loaded += Switch_Loaded;
 			ValueChanged += OnValueChanged;
 		}
 

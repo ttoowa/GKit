@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Text;
 #if OnUnity
 using UnityEngine;
@@ -19,6 +20,46 @@ namespace GKit
 		public const float Float2Byte = 255f;
 		public const float Byte2Float = 0.0039215686274f;
 
+		public static int FloorDivision(int a, int b) {
+			return (a / b - Convert.ToInt32(((a < 0) ^ (b < 0)) && (a % b != 0)));
+		}
+		public static Vector2Int FloorDivision(Vector2Int a, int b) {
+			return new Vector2Int(
+				FloorDivision(a.x, b),
+				FloorDivision(a.y, b));
+		}
+		public static Vector3Int FloorDivision(Vector3Int a, int b) {
+			return new Vector3Int(
+				FloorDivision(a.x, b),
+				FloorDivision(a.y, b),
+				FloorDivision(a.z, b));
+		}
+
+		public static int FloorModular(int a, int b) {
+			int c = a % b;
+			if ((c < 0) ^ (b < 0)) {
+				c += b;
+			}
+			return c;
+		}
+		public static Vector2Int FloorModular(Vector2Int a, int b) {
+			return new Vector2Int(
+				FloorModular(a.x, b),
+				FloorModular(a.y, b));
+		}
+		public static Vector3Int FloorModular(Vector3Int a, int b) {
+			return new Vector3Int(
+				FloorModular(a.x, b),
+				FloorModular(a.y, b),
+				FloorModular(a.z, b));
+		}
+		public static float FloorModular(float a, float b) {
+			float c = a % b;
+			if ((c < 0f) ^ (b < 0f)) {
+				c += b;
+			}
+			return c;
+		}
 
 		public static float Diagonal(float x, float y) {
 			return Mathf.Sqrt(DiagonalPow(x, y));
@@ -152,6 +193,10 @@ namespace GKit
 		public static float SigmoidDifferential(float value) {
 			float sig = Sigmoid(value);
 			return sig * (1f - sig);
+		}
+
+		public static Vector2Int IndexToPosition(int index, int stripe) {
+			return new Vector2Int(index % stripe, index / stripe);
 		}
 	}
 }

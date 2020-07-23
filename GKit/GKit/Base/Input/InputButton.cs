@@ -9,52 +9,60 @@ namespace GKit
 #endif
 {
 	public class InputButton {
-		public bool Down {
+		public bool IsDown {
 			get; internal set;
 		}
-		public bool Hold {
+		public bool IsHold {
 			get; internal set;
 		}
-		public bool Up {
+		public bool IsUp {
 			get; internal set;
 		}
 
-		public event Action OnDown;
-		public event Action OnUp;
+		public event Action Down;
+		public event Action DownOnce;
 
-		public event Action OnDownOnce;
-		public event Action OnUpOnce;
+		public event Action Up;
+		public event Action UpOnce;
+
+		public event Action Hold;
+		public event Action HoldOnce;
 
 		internal InputButton() {
 
 		}
 		internal void ResetState() {
-			Down = false;
-			Hold = false;
-			Up = false;
+			IsDown = false;
+			IsHold = false;
+			IsUp = false;
 		}
 		internal void UpdateState(bool onHold) {
-			Down = false;
-			Up = false;
+			IsDown = false;
+			IsUp = false;
 
-			if (Hold) {
+			if (IsHold) {
 				if (!onHold) {
-					Up = true;
+					IsUp = true;
 
-					OnUpOnce?.Invoke();
-					OnUpOnce = null;
-					OnUp?.Invoke();
+					UpOnce?.Invoke();
+					UpOnce = null;
+					Up?.Invoke();
 				}
 			} else {
 				if (onHold) {
-					Down = true;
-					OnDownOnce?.Invoke();
-					OnDownOnce = null;
-					OnDown?.Invoke();
+					IsDown = true;
+					DownOnce?.Invoke();
+					DownOnce = null;
+					Down?.Invoke();
 				}
 			}
 
-			Hold = onHold;
+			IsHold = onHold;
+			if(onHold) {
+				HoldOnce?.Invoke();
+				HoldOnce = null;
+				Hold?.Invoke();
+			}
 		}
 	}
 }

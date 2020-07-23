@@ -52,7 +52,7 @@ namespace GKitForWPF {
 
 		public static void RegisterClickEvent(this FrameworkElement control, Action action, bool handled = false) {
 			control.MouseLeftButtonDown += (object sender, MouseButtonEventArgs e) => {
-				MouseInput.Left.OnUpOnce += () => {
+				MouseInput.Left.UpOnce += () => {
 					if (control.IsMouseOver) {
 						action?.Invoke();
 					}
@@ -63,7 +63,7 @@ namespace GKitForWPF {
 		}
 		public static void RegisterRightClickEvent(this FrameworkElement control, Action action, bool handled = false) {
 			control.MouseRightButtonDown += (object sender, MouseButtonEventArgs e) => {
-				MouseInput.Right.OnUpOnce += () => {
+				MouseInput.Right.UpOnce += () => {
 					if (control.IsMouseOver) {
 						action?.Invoke();
 					}

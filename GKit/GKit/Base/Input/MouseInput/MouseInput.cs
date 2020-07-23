@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 #if OnUnity
@@ -19,6 +20,22 @@ namespace GKit
 	/// 마우스 입력 정보를 제공하는 클래스입니다.
 	/// </summary>
 	public static class MouseInput {
+		public delegate void ScrollChangedDelegate(Vector2 scrollDelta);
+#if !OnUnity
+		[StructLayout(LayoutKind.Sequential)]
+		public struct POINT {
+			public int X;
+			public int Y;
+
+			public static implicit operator System.Drawing.Point(POINT point) {
+				return new System.Drawing.Point(point.X, point.Y);
+			}
+		}
+		[DllImport("user32.dll")]
+		public static extern bool GetCursorPos(out POINT lpPoint);
+#endif
+
+
 		private enum MouseButton {
 			Left = 0,
 			Right = 1,
@@ -35,20 +52,6 @@ namespace GKit
 			get; private set;
 		}
 
-#if !OnUnity
-		[StructLayout(LayoutKind.Sequential)]
-		public struct POINT {
-			public int X;
-			public int Y;
-
-			public static implicit operator System.Drawing.Point(POINT point) {
-				return new System.Drawing.Point(point.X, point.Y);
-			}
-		}
-		[DllImport("user32.dll")]
-		public static extern bool GetCursorPos(out POINT lpPoint);
-#endif
-
 #if OnUnity
 		public static Vector2 ScreenPos {
 			get; private set;
@@ -56,10 +59,17 @@ namespace GKit
 		public static Vector2 ScrollDelta {
 			get; private set;
 		}
+
+		private static int capturedFrame;
+		private static bool scrollCaptured;
 #else
 		public static Vector2 AbsolutePosition {
 			get; private set;
 		}
+#endif
+
+#if OnUnity
+		public static event ScrollChangedDelegate ScrollChanged;
 #endif
 
 		static MouseInput() {
@@ -69,8 +79,25 @@ namespace GKit
 		}
 		internal static void Update() {
 #if OnUnity
+			bool isCapturedFrame = capturedFrame == Time.frameCount;
+			capturedFrame = Time.frameCount;
+
 			ScreenPos = Input.mousePosition;
+
+			// Scroll
 			ScrollDelta = Input.mouseScrollDelta;
+			if(scrollCaptured && isCapturedFrame) {
+				ScrollDelta = Vector2.zero;
+			}
+			if(!isCapturedFrame) {
+				scrollCaptured = false;
+			}
+
+			if(ScrollDelta != Vector2.zero) {
+				ScrollChanged?.Invoke(ScrollDelta);
+
+				scrollCaptured = true;
+			}
 #else
 			POINT nativePos;
 			GetCursorPos(out nativePos);
@@ -79,7 +106,7 @@ namespace GKit
 #endif
 
 			bool current;
-			//Left
+			// Left
 #if OnUnity
 			current = Input.GetMouseButton((int)MouseButton.Left);
 #elif OnWPF
@@ -90,7 +117,7 @@ namespace GKit
 			Left.UpdateState(current);
 
 
-			//Right
+			// Right
 #if OnUnity
 			current = Input.GetMouseButton((int)MouseButton.Right);
 #elif OnWPF
@@ -100,7 +127,7 @@ namespace GKit
 #endif
 			Right.UpdateState(current);
 
-			//Middle
+			// Middle
 #if OnUnity
 			current = Input.GetMouseButton((int)MouseButton.Middle);
 #elif OnWPF
