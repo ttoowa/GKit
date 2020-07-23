@@ -486,11 +486,15 @@ namespace GKitForWPF {
 			};
 		}
 
-		public static Vector2 GetAbsolutePosition(this FrameworkElement control, Vector2 point) {
-			return (Vector2)control.PointToScreen(new Point(point.x, point.y));
-		}
 		public static Vector2 GetAbsolutePosition(this FrameworkElement control) {
-			return (Vector2)control.PointToScreen(new Point(0, 0));
+			return GetAbsolutePosition(control, new Vector2(0, 0));
+		}
+		public static Vector2 GetAbsolutePosition(this FrameworkElement control, Vector2 point) {
+			return GetAbsolutePosition(control, new Point(point.x, point.y));	
+		}
+		public static Vector2 GetAbsolutePosition(this FrameworkElement control, Point point) {
+			//return (Vector2)PresentationSource.FromVisual(control).CompositionTarget.TransformToDevice.Transform(point);
+			return (Vector2)control.PointToScreen(point);
 		}
 		public static Vector2 GetPosition(this FrameworkElement control) {
 			UIElement container = VisualTreeHelper.GetParent(control) as UIElement;
