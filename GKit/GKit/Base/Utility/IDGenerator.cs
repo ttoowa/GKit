@@ -19,40 +19,40 @@ namespace GKit
 		public int Capacity {
 			get; private set;
 		}
-		private Stack<int> IDStack;
+		private Queue<int> IDQueue;
 
 		public IDGenerator(int startIndex = 0) {
 			this.StartIndex = startIndex;
-			IDStack = new Stack<int>();
+			IDQueue = new Queue<int>();
 			Expand(16);
 		}
 		public int GetID() {
-			if (IDStack.Count == 0) {
+			if (IDQueue.Count == 0) {
 				Expand(1);
 			}
-			return IDStack.Pop();
+			return IDQueue.Dequeue();
 		}
 		public int GetID(int count) {
 			Expand(count);
 			int ID = -1;
 			for (int i = 0; i < count; ++i) {
-				ID = IDStack.Pop();
+				ID = IDQueue.Dequeue();
 			}
 			return ID;
 		}
 		public void ReturnID(int ID) {
-			IDStack.Push(ID);
+			IDQueue.Enqueue(ID);
 		}
 		public void Clear() {
 			Capacity = 0;
-			IDStack.Clear();
+			IDQueue.Clear();
 		}
 
 		private void Expand(int count) {
-			int i = Math.Max(StartIndex, Capacity);
+			int i = StartIndex + Capacity;
 			Capacity += count;
 			for (; i < Capacity; ++i) {
-				IDStack.Push(i);
+				IDQueue.Enqueue(i);
 			}
 		}
 	}
