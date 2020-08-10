@@ -126,8 +126,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WPF\UI\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="WPF\UI\IgnoreWindow.cs" />
-    <Compile Include="WPF\UI\UIExtension.cs" />
+    <Compile Include="WPF\UI\UIUtility.cs" />
     <Compile Include="WPF\Utility\BitmapUtility.cs" />
+    <Compile Include="WPF\Utility\DPIUtility.cs" />
     <Compile Include="WPF\Utility\FindControlUtility.cs" />
   </ItemGroup>
   <ItemGroup>
