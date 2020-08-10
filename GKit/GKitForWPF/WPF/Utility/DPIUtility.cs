@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
-namespace GKitForWPF.WPF.Utility {
+namespace GKitForWPF {
 	public static class DPIUtility {
 		public const int WindowsDefaultDPI = 96;
 		public const int MacDefaultDPI = 72;
