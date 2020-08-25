@@ -81,9 +81,12 @@ namespace GKit
 			return value.HasValue && value.Value;
 		}
 
-		public static bool IsZeroSizeStruct(this Type t) {
-			return t.IsValueType && !t.IsPrimitive &&
-				   t.GetFields((BindingFlags)0x34).All(fi => IsZeroSizeStruct(fi.FieldType));
+		public static bool IsStruct(this Type type) {
+			return type.IsValueType && !type.IsPrimitive;
+		}
+		public static bool IsZeroSizeStruct(this Type type) {
+			return type.IsStruct() &&
+				   type.GetFields((BindingFlags)0x34).All(fi => IsZeroSizeStruct(fi.FieldType));
 		}
 
 		public static bool IsNumeric(object value) {
