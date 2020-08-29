@@ -21,55 +21,16 @@ namespace GKit
 #endif
 .Graphics {
 	public static class ColorUtility {
+		// Parse
 		public static string ToHex(this ColorB color) {
 #if OnUnity
-			string hex = color.r.ToString("X2") + color.g.ToString("X2") + color.b.ToString("X2");
+			string hex = color.r.ToString("X2") + color.g.ToString("X2") + color.b.ToString("X2") + color.a.ToString("X2");
 #else
-			string hex = color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2");
+			string hex = color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2") + color.A.ToString("X2");
 #endif
 			return hex;
 		}
 
-#if OnUnity
-		public static ColorF Add(this ColorF color, float value) {
-			return new ColorF(
-				Mathf.Clamp01(color.r + value),
-				Mathf.Clamp01(color.g + value),
-				Mathf.Clamp01(color.b + value),
-				color.a);
-		}
-		public static ColorB Add(this ColorB color, float value) {
-			byte byteValue = (byte)(value * 255f);
-#if OnUnity
-			return new ColorB(
-				(byte)(Mathf.Clamp((int)color.r + byteValue, 0, 255)),
-				(byte)(Mathf.Clamp((int)color.g + byteValue, 0, 255)),
-				(byte)(Mathf.Clamp((int)color.b + byteValue, 0, 255)),
-				color.a);
-#else
-			return ColorB.FromArgb(
-				color.A,
-				(byte)(Mathf.Clamp((int)color.R + byteValue, 0, 255)),
-				(byte)(Mathf.Clamp((int)color.G + byteValue, 0, 255)),
-				(byte)(Mathf.Clamp((int)color.B + byteValue, 0, 255)));
-#endif
-		}
-		public static ColorB Add(this ColorB color, byte value) {
-#if OnUnity
-			return new ColorB(
-				(byte)(Mathf.Clamp((int)color.r + value, 0, 255)),
-				(byte)(Mathf.Clamp((int)color.g + value, 0, 255)),
-				(byte)(Mathf.Clamp((int)color.b + value, 0, 255)),
-				color.a);
-#else
-			return ColorB.FromArgb(
-				color.A,
-				(byte)(Mathf.Clamp((int)color.R + value, 0, 255)),
-				(byte)(Mathf.Clamp((int)color.G + value, 0, 255)),
-				(byte)(Mathf.Clamp((int)color.B + value, 0, 255)));
-#endif
-		}
-#endif
 		public static ColorB ToColor(this string hex) {
 			hex = hex.Replace("0x", "");
 			hex = hex.Replace("#", "");
@@ -199,6 +160,49 @@ namespace GKit
 			return new SolidColorBrush(color);
 		}
 #endif
+
+		// Utility
+#if OnUnity
+		public static ColorF Add(this ColorF color, float value) {
+			return new ColorF(
+				Mathf.Clamp01(color.r + value),
+				Mathf.Clamp01(color.g + value),
+				Mathf.Clamp01(color.b + value),
+				color.a);
+		}
+		public static ColorB Add(this ColorB color, float value) {
+			byte byteValue = (byte)(value * 255f);
+#if OnUnity
+			return new ColorB(
+				(byte)(Mathf.Clamp((int)color.r + byteValue, 0, 255)),
+				(byte)(Mathf.Clamp((int)color.g + byteValue, 0, 255)),
+				(byte)(Mathf.Clamp((int)color.b + byteValue, 0, 255)),
+				color.a);
+#else
+			return ColorB.FromArgb(
+				color.A,
+				(byte)(Mathf.Clamp((int)color.R + byteValue, 0, 255)),
+				(byte)(Mathf.Clamp((int)color.G + byteValue, 0, 255)),
+				(byte)(Mathf.Clamp((int)color.B + byteValue, 0, 255)));
+#endif
+		}
+		public static ColorB Add(this ColorB color, byte value) {
+#if OnUnity
+			return new ColorB(
+				(byte)(Mathf.Clamp((int)color.r + value, 0, 255)),
+				(byte)(Mathf.Clamp((int)color.g + value, 0, 255)),
+				(byte)(Mathf.Clamp((int)color.b + value, 0, 255)),
+				color.a);
+#else
+			return ColorB.FromArgb(
+				color.A,
+				(byte)(Mathf.Clamp((int)color.R + value, 0, 255)),
+				(byte)(Mathf.Clamp((int)color.G + value, 0, 255)),
+				(byte)(Mathf.Clamp((int)color.B + value, 0, 255)));
+#endif
+		}
+#endif
+
 		public static float GetHashFloat(this string text) {
 			const float _765To1 = 0.001307f;
 			MD5 md5 = MD5.Create();
