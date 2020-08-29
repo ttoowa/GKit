@@ -103,36 +103,38 @@ namespace GKit
 			byte t = (byte)(hsv.value * (1 - (1 - f) * hsv.saturation));
 
 			int hi = (int)(Math.Floor(hD60)) % 6;
+
+			byte alpha = (byte)GMath.Clamp(hsv.alpha * 255f, 0, 255);
 #if OnUnity
 			if (hi == 0)
-				return new ColorB(v, t, p, 255);
+				return new ColorB(v, t, p, alpha);
 			else if (hi == 1)
-				return new ColorB(q, v, p, 255);
+				return new ColorB(q, v, p, alpha);
 			else if (hi == 2)
-				return new ColorB(p, v, t, 255);
+				return new ColorB(p, v, t, alpha);
 			else if (hi == 3)
-				return new ColorB(p, q, v, 255);
+				return new ColorB(p, q, v, alpha);
 			else if (hi == 4)
-				return new ColorB(t, p, v, 255);
+				return new ColorB(t, p, v, alpha);
 			else
-				return new ColorB(v, p, q, 255);
+				return new ColorB(v, p, q, alpha);
 #else
 			if (hi == 0)
-				return Color.FromArgb(255, v, t, p);
+				return Color.FromArgb(alpha, v, t, p);
 			else if (hi == 1)
-				return Color.FromArgb(255, q, v, p);
+				return Color.FromArgb(alpha, q, v, p);
 			else if (hi == 2)
-				return Color.FromArgb(255, p, v, t);
+				return Color.FromArgb(alpha, p, v, t);
 			else if (hi == 3)
-				return Color.FromArgb(255, p, q, v);
+				return Color.FromArgb(alpha, p, q, v);
 			else if (hi == 4)
-				return Color.FromArgb(255, t, p, v);
+				return Color.FromArgb(alpha, t, p, v);
 			else
-				return Color.FromArgb(255, v, p, q);
+				return Color.FromArgb(alpha, v, p, q);
 #endif
 		}
 		public static HSV ToHSV(this ColorB color) {
-			float hue, saturation, value;
+			float hue, saturation, value, alpha;
 
 #if OnUnity
 			int max = Math.Max(color.r, Math.Max(color.g, color.b));
@@ -158,6 +160,7 @@ namespace GKit
 					hue += 360;
 				}
 			}
+			alpha = color.a / 255f;
 #else
 			int max = Math.Max(color.R, Math.Max(color.G, color.B));
 			int min = Math.Min(color.R, Math.Min(color.G, color.B));
@@ -182,10 +185,11 @@ namespace GKit
 					hue += 360;
 				}
 			}
+			alpha = color.A / 255f;
 #endif
 			value = max / 255f;
 
-			return new HSV(hue, saturation, value);
+			return new HSV(hue, saturation, value, alpha);
 		}
 #if OnWPF
 		public static SolidColorBrush ToBrush(this string hex) {
