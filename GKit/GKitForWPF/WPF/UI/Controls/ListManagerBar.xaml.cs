@@ -4,9 +4,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 
 namespace GKitForWPF.UI.Controls {
-	/// <summary>
-	/// ListManagerBar.xaml에 대한 상호 작용 논리
-	/// </summary>
 	public partial class ListManagerBar : UserControl {
 		public static readonly DependencyProperty CreateItemButtonVisibleProperty = DependencyProperty.RegisterAttached(nameof(CreateItemButtonVisible), typeof(bool), typeof(ListManagerBar), new PropertyMetadata(true));
 		public static readonly DependencyProperty CreateFolderButtonVisibleProperty = DependencyProperty.RegisterAttached(nameof(CreateFolderButtonVisible), typeof(bool), typeof(ListManagerBar), new PropertyMetadata(true));
