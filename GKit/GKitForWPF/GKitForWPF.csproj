@@ -89,6 +89,7 @@
     <Compile Include="WPF\UI\Controls\ItemShadow.xaml.cs">
       <DependentUpon>ItemShadow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WPF\UI\Controls\NinePatchImage.cs" />
     <Compile Include="WPF\UI\Controls\ValueEditors\NumberEditor.xaml.cs">
       <DependentUpon>NumberEditor.xaml</DependentUpon>
     </Compile>
