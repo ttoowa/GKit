@@ -16,9 +16,9 @@ namespace GKit.Json {
 					skip = true;
 			};
 
-			AddAttrFields(jObject, model, preHandler, structHandler, classHandler);
+			AddFields(jObject, model, preHandler, structHandler, classHandler);
 		}
-		public static void AddAttrFields(this JObject jObject, object model, FieldHandlerDelegate preHandler = null, FieldToJTokenDelegate structHandler = null, FieldToJTokenDelegate classHandler = null) {
+		public static void AddFields(this JObject jObject, object model, FieldHandlerDelegate preHandler = null, FieldToJTokenDelegate structHandler = null, FieldToJTokenDelegate classHandler = null) {
 
 			FieldInfo[] fields = model.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
@@ -41,7 +41,7 @@ namespace GKit.Json {
 						jToken = jField;
 					} else {
 						JObject jValue = new JObject();
-						AddAttrFields(jValue, value);
+						AddFields(jValue, value);
 
 						jToken = jValue;
 					}
@@ -72,9 +72,9 @@ namespace GKit.Json {
 					skip = true;
 			};
 
-			LoadAttrFields(model, jObject, preHandler);
+			LoadFields(model, jObject, preHandler);
 		}
-		public static void LoadAttrFields(this object model, JObject jObject, FieldHandlerDelegate preHandler = null) {
+		public static void LoadFields(this object model, JObject jObject, FieldHandlerDelegate preHandler = null) {
 
 			FieldInfo[] fields = model.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
@@ -95,7 +95,7 @@ namespace GKit.Json {
 						continue;
 
 					object field = Activator.CreateInstance(fieldInfo.FieldType);
-					LoadAttrFields(field, jField);
+					LoadFields(field, jField);
 
 					fieldInfo.SetValue(model, field);
 				} else if (fieldInfo.FieldType.IsClass && fieldInfo.FieldType != typeof(string)) {
@@ -106,7 +106,7 @@ namespace GKit.Json {
 						continue;
 
 					object field = Activator.CreateInstance(fieldInfo.FieldType);
-					LoadAttrFields(field, jField);
+					LoadFields(field, jField);
 
 					fieldInfo.SetValue(model, field);
 				} else {
