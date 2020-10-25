@@ -60,6 +60,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Unity\EventHandler\CollisionHandler.cs" />
+    <Compile Include="Unity\EventHandler\CollisionHandler2D.cs" />
     <Compile Include="Unity\Utility\AssetUtility.cs" />
     <Compile Include="Unity\Utility\ComponentUtility.cs" />
     <Compile Include="Unity\Utility\TextUtility.cs" />
