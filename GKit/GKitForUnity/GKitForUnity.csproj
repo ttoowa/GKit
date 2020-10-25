@@ -54,10 +54,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Dependency\UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dependency\UnityEngine.UI.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Unity\EventHandler\CollisionHandler.cs" />
@@ -77,8 +73,8 @@
     <Compile Include="Unity\Input\Event\InputManager.cs" />
     <Compile Include="Unity\Input\Event\InputMask.cs" />
     <Compile Include="Unity\Transform\TransformUtility.cs" />
-    <Compile Include="Unity\Transform\UiTransform.cs" />
-    <Compile Include="Unity\Transform\UiUtility.cs" />
+    <None Include="Unity\Transform\UiTransform.cs" />
+    <None Include="Unity\Transform\UiUtility.cs" />
     <Compile Include="Unity\Utility\RendererUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
