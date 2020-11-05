@@ -33,7 +33,7 @@ namespace GKit.Json {
 
 				if (value == null) {
 					jToken = string.Empty;
-				} else if (fieldInfo.FieldType.IsValueType && !fieldInfo.FieldType.IsPrimitive) {
+				} else if (fieldInfo.FieldType.IsValueType && !fieldInfo.FieldType.IsEnum &&!fieldInfo.FieldType.IsPrimitive) {
 					// Struct
 					if (structHandler != null) {
 						JObject jField = null;
@@ -87,7 +87,7 @@ namespace GKit.Json {
 				if (!jObject.ContainsKey(fieldInfo.Name))
 					continue;
 
-				if (fieldInfo.FieldType.IsValueType && !fieldInfo.FieldType.IsPrimitive) {
+				if (fieldInfo.FieldType.IsValueType && !fieldInfo.FieldType.IsEnum && !fieldInfo.FieldType.IsPrimitive) {
 					// Struct
 					JObject jField = jObject.GetValue(fieldInfo.Name).ToObject<JObject>();
 
@@ -112,7 +112,11 @@ namespace GKit.Json {
 				} else {
 					string stringValue = jObject.GetValue<string>(fieldInfo.Name);
 
-					fieldInfo.SetValue(model, Convert.ChangeType(stringValue, fieldInfo.FieldType));
+					if(fieldInfo.FieldType.IsEnum) {
+						fieldInfo.SetValue(model, Enum.Parse(fieldInfo.FieldType, stringValue));
+					} else {
+						fieldInfo.SetValue(model, Convert.ChangeType(stringValue, fieldInfo.FieldType));
+					}
 				}
 
 			}
