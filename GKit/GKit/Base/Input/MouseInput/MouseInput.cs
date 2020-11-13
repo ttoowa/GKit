@@ -150,5 +150,8 @@ namespace GKit
 			return cam.ScreenToWorldPoint(new Vector3(ScreenPos.x, ScreenPos.y, zDepth));
 		}
 #endif
+
+		[DllImport("User32.dll")]
+		public static extern bool SetCursorPos(int X, int Y);
 	}
 }
