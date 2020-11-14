@@ -99,10 +99,7 @@ namespace GKit
 				scrollCaptured = true;
 			}
 #else
-			POINT nativePos;
-			GetCursorPos(out nativePos);
-
-			AbsolutePosition = new Vector2(nativePos.X, nativePos.Y);
+			UpdateNativePosition();
 #endif
 
 			bool current;
@@ -150,8 +147,22 @@ namespace GKit
 			return cam.ScreenToWorldPoint(new Vector3(ScreenPos.x, ScreenPos.y, zDepth));
 		}
 #endif
+		public static void SetCursorPosition(Vector2 position) {
+			SetCursorPos(position.x, position.y);
+			UpdateNativePosition();
+		}
 
 		[DllImport("User32.dll")]
-		public static extern bool SetCursorPos(int X, int Y);
+		private static extern bool SetCursorPos(int X, int Y);
+
+		private static void UpdateNativePosition() {
+#if !OnUnity
+			POINT nativePos;
+			GetCursorPos(out nativePos);
+
+			AbsolutePosition = new Vector2(nativePos.X, nativePos.Y);
+#endif
+		}
+
 	}
 }
