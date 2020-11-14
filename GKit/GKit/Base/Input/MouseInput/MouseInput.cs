@@ -147,7 +147,7 @@ namespace GKit
 			return cam.ScreenToWorldPoint(new Vector3(ScreenPos.x, ScreenPos.y, zDepth));
 		}
 #endif
-		public static void SetAbsolutePosition(Vector2 position) {
+		public static void SetAbsolutePosition(Vector2Int position) {
 			SetCursorPos(position.x, position.y);
 			UpdateNativePosition();
 		}
