@@ -63,16 +63,18 @@ namespace GKit.Json {
 			}
 		}
 
-		public static void LoadAttrFields<Attr>(this object model, JObject jObject)
+		public static void LoadAttrFields<Attr>(this object model, JObject jObject, FieldHandlerDelegate preHandler = null)
 			where Attr : Attribute {
-			FieldHandlerDelegate preHandler = (object handleModel, FieldInfo fieldInfo, ref bool skip) => {
+			FieldHandlerDelegate attrPreHandler = (object handleModel, FieldInfo fieldInfo, ref bool skip) => {
 				Attr editorAttribute = fieldInfo.GetCustomAttribute(typeof(Attr)) as Attr;
 
 				if (editorAttribute == null)
 					skip = true;
+
+				preHandler?.Invoke(handleModel, fieldInfo, ref skip);
 			};
 
-			LoadFields(model, jObject, preHandler);
+			LoadFields(model, jObject, attrPreHandler);
 		}
 		public static void LoadFields(this object model, JObject jObject, FieldHandlerDelegate preHandler = null) {
 
