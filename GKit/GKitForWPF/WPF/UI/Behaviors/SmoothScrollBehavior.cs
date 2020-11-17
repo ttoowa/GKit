@@ -90,7 +90,14 @@ namespace GKitForWPF.UI.Behaviors {
 
 
 			if (scrollData.OnPlayingVerticalAnim) {
-				//Stop animation
+				// WPF animation trick
+				// https://stackoverflow.com/questions/20298/how-to-stop-an-animation-in-c-sharp-wpf
+
+				// Apply value
+				scrollData.VerticalScrollAnim.BeginTime = null;
+				scrollViewer.BeginAnimation(VerticalOffsetProperty, scrollData.VerticalScrollAnim);
+
+				// Stop animation
 				scrollViewer.BeginAnimation(VerticalOffsetProperty, null);
 			}
 
