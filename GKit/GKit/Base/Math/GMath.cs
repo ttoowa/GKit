@@ -207,7 +207,7 @@ namespace GKit
 			return PerlinNoise.Perlin(x, y, z);
 		}
 		public static double OctavePerlin(double x, double y, double z, int octaves, double persistence) {
-			PerlinNoise.OctavePerlin(x, y, z, octaves, persistence);
+			return PerlinNoise.OctavePerlin(x, y, z, octaves, persistence);
 		}
 	}
 }
