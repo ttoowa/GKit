@@ -31,12 +31,19 @@ namespace GKit
 		static GRandom() {
 			systemRandom = new System.Random();
 		}
-		public static int Range(int minInclusive, int maxInclusive) {
-			return systemRandom.Next(minInclusive, maxInclusive + 1);
+		public static int RangeInclusive(int min, int max) {
+			return systemRandom.Next(min, max + 1);
 		}
-		public static float Range(float minInclusive, float maxInclusive) {
-			float range = maxInclusive - minInclusive;
-			return (float)(systemRandom.NextDouble() * range) + minInclusive;
+		public static float RangeInclusive(float min, float max) {
+			float range = max - min;
+			return (float)(systemRandom.NextDouble() * range) + min;
+		}
+		public static int RangeExclusive(int min, int max) {
+			return systemRandom.Next(min, max + 1);
+		}
+		public static float RangeExclusive(float min, float max) {
+			float range = max - min;
+			return (float)(systemRandom.NextDouble() * range) + min;
 		}
 
 		public static float RandomGauss() {
