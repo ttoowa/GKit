@@ -198,5 +198,16 @@ namespace GKit
 		public static Vector2Int IndexToPosition(int index, int stripe) {
 			return new Vector2Int(index % stripe, index / stripe);
 		}
+
+		// Noise
+		public static double PerlinNoise2D(double x, double y) {
+			return PerlinNoise.Perlin(x, y, 0d);
+		}
+		public static double PerlinNoise3D(double x, double y, double z) {
+			return PerlinNoise.Perlin(x, y, z);
+		}
+		public static double OctavePerlin(double x, double y, double z, int octaves, double persistence) {
+			PerlinNoise.OctavePerlin(x, y, z, octaves, persistence);
+		}
 	}
 }
