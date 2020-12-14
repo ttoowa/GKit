@@ -80,6 +80,8 @@
     <Compile Include="Base\Input\TabletInput\WintabDN\CWintabInfo.cs" />
     <Compile Include="Base\Input\TabletInput\WintabDN\HelpInfo.cs" />
     <Compile Include="Base\Input\TabletInput\WintabDN\MessageEvents.cs" />
+    <Compile Include="Base\Math\PerlinNoise2D.cs" />
+    <Compile Include="Base\Math\PerlinNoise3D.cs" />
     <Compile Include="Base\Network\IPv4\IPv4.cs" />
     <Compile Include="Base\Network\IPv4\IPv4Type.cs" />
     <Compile Include="Base\Network\Pipe\GPipeClient.cs" />
@@ -124,7 +126,7 @@
     <Compile Include="Base\System\Struct\Property.cs" />
     <Compile Include="Base\System\Time\TimeFormat.cs" />
     <Compile Include="Base\System\OS\TrayIcon.cs" />
-    <Compile Include="Base\Utility\GRandom.cs" />
+    <Compile Include="Base\Math\GRandom.cs" />
     <Compile Include="Base\System\Screen\ScreenInfo.cs" />
     <Compile Include="Base\Input\KeyInput\WinKey.cs" />
     <Compile Include="Base\Input\KeyInput\KeyInput.cs" />
@@ -137,7 +139,7 @@
     <Compile Include="Base\System\OS\Startup.cs" />
     <Compile Include="Base\System\OS\SystemInfo.cs" />
     <Compile Include="Base\System\Time\TimeUtility.cs" />
-    <Compile Include="Base\Utility\GMath.cs" />
+    <Compile Include="Base\Math\GMath.cs" />
     <Compile Include="Base\Utility\GSpline.cs" />
     <Compile Include="Base\Graphics\Color\ColorUtility.cs" />
     <Compile Include="Base\Utility\GResourceUtility.cs" />

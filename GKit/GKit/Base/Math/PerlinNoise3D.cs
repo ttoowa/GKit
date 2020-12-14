@@ -12,7 +12,7 @@ namespace GKitForWPF
 namespace GKit
 #endif
 {
-	internal class PerlinNoise {
+	public class PerlinNoise3D {
 		private static readonly int[] permutation = { 151,160,137,91,90,15,					// Hash lookup table as defined by Ken Perlin.  This is a randomly
 		131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,	// arranged array of all numbers from 0-255 inclusive.
 		190, 6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,
@@ -29,13 +29,13 @@ namespace GKit
 	};
 		private static readonly int[] p;                                                    // Doubled permutation to avoid overflow
 
-		static PerlinNoise() {
+		static PerlinNoise3D() {
 			p = new int[512];
 			for (int x = 0; x < 512; x++) {
 				p[x] = permutation[x % 256];
 			}
 		}
-		internal static double OctavePerlin(double x, double y, double z, int octaves, double persistence) {
+		public static double OctavePerlin(double x, double y, double z, int octaves, double persistence) {
 			double total = 0;
 			double frequency = 1;
 			double amplitude = 1;
@@ -48,7 +48,7 @@ namespace GKit
 
 			return total;
 		}
-		internal static double Perlin(double x, double y, double z, double repeat = 0d) {
+		public static double Perlin(double x, double y, double z, double repeat = 0d) {
 			if (repeat > 0) {                                   // If we have any repeat on, change the coordinates to their "local" repetitions
 				x = x % repeat;
 				y = y % repeat;
@@ -93,7 +93,7 @@ namespace GKit
 
 			return (Lerp(y1, y2, w) + 1) / 2;                       // For convenience we bound it to 0 - 1 (theoretical min/max before is -1 - 1)
 		}
-		internal static double Grad(int hash, double x, double y, double z) {
+		public static double Grad(int hash, double x, double y, double z) {
 			int h = hash & 15;                                  // Take the hashed value and take the first 4 bits of it (15 == 0b1111)
 			double u = h < 8 /* 0b1000 */ ? x : y;              // If the most signifigant bit (MSB) of the hash is 0 then set u = x.  Otherwise y.
 
@@ -109,13 +109,13 @@ namespace GKit
 
 			return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v); // Use the last 2 bits to decide if u and v are positive or negative.  Then return their addition.
 		}
-		internal static double Fade(double t) {
+		public static double Fade(double t) {
 			// Fade function as defined by Ken Perlin.  This eases coordinate values
 			// so that they will "ease" towards integral values.  This ends up smoothing
 			// the final output.
 			return t * t * t * (t * (t * 6 - 15) + 10);         // 6t^5 - 15t^4 + 10t^3
 		}
-		internal static double Lerp(double a, double b, double x) {
+		public static double Lerp(double a, double b, double x) {
 			return a + x * (b - a);
 		}
 	}
