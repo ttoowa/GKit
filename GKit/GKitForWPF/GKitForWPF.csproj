@@ -226,8 +226,284 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\GKit\Base\**\*.cs">
-      <Link>Base\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    <Compile Include="..\GKit\Base\Data\NodeDelegates.cs">
+      <Link>Base\Data\NodeDelegates.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\DebugUtility\GDebug.cs">
+      <Link>Base\DebugUtility\GDebug.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\DebugUtility\GLogLevel.cs">
+      <Link>Base\DebugUtility\GLogLevel.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\DebugUtility\GProfile.cs">
+      <Link>Base\DebugUtility\GProfile.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\GLoopEngine\GJob\GJobManager.cs">
+      <Link>Base\GLoopEngine\GJob\GJobManager.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\GLoopEngine\GLoopAction\GLoopAction.cs">
+      <Link>Base\GLoopEngine\GLoopAction\GLoopAction.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\GLoopEngine\GLoopAction\GLoopCycle.cs">
+      <Link>Base\GLoopEngine\GLoopAction\GLoopCycle.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\GLoopEngine\GLoopAction\GLoopGroup.cs">
+      <Link>Base\GLoopEngine\GLoopAction\GLoopGroup.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\GLoopEngine\GLoopAction\GWhen.cs">
+      <Link>Base\GLoopEngine\GLoopAction\GWhen.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\GLoopEngine\GLoopEngine.cs">
+      <Link>Base\GLoopEngine\GLoopEngine.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\GLoopEngine\GLoopSyncMode.cs">
+      <Link>Base\GLoopEngine\GLoopSyncMode.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\GLoopEngine\GRoutine\GRoutine.cs">
+      <Link>Base\GLoopEngine\GRoutine\GRoutine.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\GLoopEngine\GRoutine\GTimeUnit.cs">
+      <Link>Base\GLoopEngine\GRoutine\GTimeUnit.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\GLoopEngine\GRoutine\GWait.cs">
+      <Link>Base\GLoopEngine\GRoutine\GWait.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\GLoopEngine\GScheduler\GScheduler.cs">
+      <Link>Base\GLoopEngine\GScheduler\GScheduler.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\GLoopEngine\GScheduler\GScheduleTask.cs">
+      <Link>Base\GLoopEngine\GScheduler\GScheduleTask.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\GLoopEngine\GScheduler\GScheduleTaskType.cs">
+      <Link>Base\GLoopEngine\GScheduler\GScheduleTaskType.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Graphics\Color\ColorStruct.cs">
+      <Link>Base\Graphics\Color\ColorStruct.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Graphics\Color\ColorUtility.cs">
+      <Link>Base\Graphics\Color\ColorUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Input\InputButton.cs">
+      <Link>Base\Input\InputButton.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Input\KeyInput\KeyInput.cs">
+      <Link>Base\Input\KeyInput\KeyInput.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Input\KeyInput\WinKey.cs">
+      <Link>Base\Input\KeyInput\WinKey.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Input\MouseInput\MouseInput.cs">
+      <Link>Base\Input\MouseInput\MouseInput.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Input\TabletInput\WintabDN\CContextMode.cs">
+      <Link>Base\Input\TabletInput\WintabDN\CContextMode.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Input\TabletInput\WintabDN\CMemUtils.cs">
+      <Link>Base\Input\TabletInput\WintabDN\CMemUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Input\TabletInput\WintabDN\CWintabContext.cs">
+      <Link>Base\Input\TabletInput\WintabDN\CWintabContext.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Input\TabletInput\WintabDN\CWintabData.cs">
+      <Link>Base\Input\TabletInput\WintabDN\CWintabData.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Input\TabletInput\WintabDN\CWintabExtensions.cs">
+      <Link>Base\Input\TabletInput\WintabDN\CWintabExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Input\TabletInput\WintabDN\CWintabFuncs.cs">
+      <Link>Base\Input\TabletInput\WintabDN\CWintabFuncs.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Input\TabletInput\WintabDN\CWintabInfo.cs">
+      <Link>Base\Input\TabletInput\WintabDN\CWintabInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Input\TabletInput\WintabDN\HelpInfo.cs">
+      <Link>Base\Input\TabletInput\WintabDN\HelpInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Input\TabletInput\WintabDN\MessageEvents.cs">
+      <Link>Base\Input\TabletInput\WintabDN\MessageEvents.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Input\TabletInput\WintabInput.cs">
+      <Link>Base\Input\TabletInput\WintabInput.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\IO\ImageFileFormat.cs">
+      <Link>Base\IO\ImageFileFormat.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\IO\IOUtility.cs">
+      <Link>Base\IO\IOUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Math\GMath.cs">
+      <Link>Base\Math\GMath.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Math\GRandom.cs">
+      <Link>Base\Math\GRandom.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Math\PerlinNoise2D.cs">
+      <Link>Base\Math\PerlinNoise2D.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Network\IPv4\IPv4.cs">
+      <Link>Base\Network\IPv4\IPv4.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Network\IPv4\IPv4Type.cs">
+      <Link>Base\Network\IPv4\IPv4Type.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Network\Pipe\GPipeClient.cs">
+      <Link>Base\Network\Pipe\GPipeClient.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Network\Pipe\GPipeServer.cs">
+      <Link>Base\Network\Pipe\GPipeServer.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Network\Socket\Element\GClientData.cs">
+      <Link>Base\Network\Socket\Element\GClientData.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Network\Socket\Element\GClientState.cs">
+      <Link>Base\Network\Socket\Element\GClientState.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Network\Socket\Element\GServerState.cs">
+      <Link>Base\Network\Socket\Element\GServerState.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Network\Socket\Element\NetProtocol.cs">
+      <Link>Base\Network\Socket\Element\NetProtocol.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Network\Socket\GClientBase.cs">
+      <Link>Base\Network\Socket\GClientBase.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Network\Socket\GServerBase.cs">
+      <Link>Base\Network\Socket\GServerBase.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Network\Socket\GSocketArgs.cs">
+      <Link>Base\Network\Socket\GSocketArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Network\Utility\EndianConverter.cs">
+      <Link>Base\Network\Utility\EndianConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Network\Utility\PacketBuilder.cs">
+      <Link>Base\Network\Utility\PacketBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Network\Utility\PacketData.cs">
+      <Link>Base\Network\Utility\PacketData.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Network\Web\Web.cs">
+      <Link>Base\Network\Web\Web.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Security\Encrypt.cs">
+      <Link>Base\Security\Encrypt.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Security\SafeProperty.cs">
+      <Link>Base\Security\SafeProperty.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Security\SecurityEvent.cs">
+      <Link>Base\Security\SecurityEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\AssemblyInfo.cs">
+      <Link>Base\System\AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\Collections\SelectedListItemSet.cs">
+      <Link>Base\System\Collections\SelectedListItemSet.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\Collections\TwoWayDictionary.cs">
+      <Link>Base\System\Collections\TwoWayDictionary.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\EnumUtility.cs">
+      <Link>Base\System\EnumUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\Event\ActionEvent.cs">
+      <Link>Base\System\Event\ActionEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\Event\GRoutineEvent.cs">
+      <Link>Base\System\Event\GRoutineEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\GMathUtility.cs">
+      <Link>Base\System\GMathUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\Interface\INeedInitialization.cs">
+      <Link>Base\System\Interface\INeedInitialization.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\Interface\ISelectable.cs">
+      <Link>Base\System\Interface\ISelectable.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\MultiThread\Channel\ThreadChannel.cs">
+      <Link>Base\System\MultiThread\Channel\ThreadChannel.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\MultiThread\Parallel\ParallelLoop.cs">
+      <Link>Base\System\MultiThread\Parallel\ParallelLoop.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\MultiThread\Parallel\ParallelPriolity.cs">
+      <Link>Base\System\MultiThread\Parallel\ParallelPriolity.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\OS\ClipBoard.cs">
+      <Link>Base\System\OS\ClipBoard.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\OS\Startup.cs">
+      <Link>Base\System\OS\Startup.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\OS\SystemInfo.cs">
+      <Link>Base\System\OS\SystemInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\OS\TrayIcon.cs">
+      <Link>Base\System\OS\TrayIcon.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\OS\WinUtility.cs">
+      <Link>Base\System\OS\WinUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\ProcessUtility.cs">
+      <Link>Base\System\ProcessUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\ReflectionUtility.cs">
+      <Link>Base\System\ReflectionUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\Screen\ScreenInfo.cs">
+      <Link>Base\System\Screen\ScreenInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\Struct\Alignment.cs">
+      <Link>Base\System\Struct\Alignment.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\Struct\AnchorPreset.cs">
+      <Link>Base\System\Struct\AnchorPreset.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\Struct\MotionValue.cs">
+      <Link>Base\System\Struct\MotionValue.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\Struct\NumberType.cs">
+      <Link>Base\System\Struct\NumberType.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\Struct\Property.cs">
+      <Link>Base\System\Struct\Property.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\Struct\Structs.cs">
+      <Link>Base\System\Struct\Structs.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\Time\TimeFormat.cs">
+      <Link>Base\System\Time\TimeFormat.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\System\Time\TimeUtility.cs">
+      <Link>Base\System\Time\TimeUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Utility\GResourceUtility.cs">
+      <Link>Base\Utility\GResourceUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Utility\GSpline.cs">
+      <Link>Base\Utility\GSpline.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Utility\IDGenerator.cs">
+      <Link>Base\Utility\IDGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Utility\Mathf.cs">
+      <Link>Base\Utility\Mathf.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Utility\NativeUtility.cs">
+      <Link>Base\Utility\NativeUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Utility\ObjectPool.cs">
+      <Link>Base\Utility\ObjectPool.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Utility\SearchUtility.cs">
+      <Link>Base\Utility\SearchUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Utility\StringUtility.cs">
+      <Link>Base\Utility\StringUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\GKit\Base\Utility\SystemUtility.cs">
+      <Link>Base\Utility\SystemUtility.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>

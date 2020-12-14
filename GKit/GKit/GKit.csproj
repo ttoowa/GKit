@@ -80,8 +80,7 @@
     <Compile Include="Base\Input\TabletInput\WintabDN\CWintabInfo.cs" />
     <Compile Include="Base\Input\TabletInput\WintabDN\HelpInfo.cs" />
     <Compile Include="Base\Input\TabletInput\WintabDN\MessageEvents.cs" />
-    <Compile Include="Base\Math\PerlinNoise2D.cs" />
-    <Compile Include="Base\Math\PerlinNoise3D.cs" />
+    <Compile Include="Base\Math\PerlinNoise.cs" />
     <Compile Include="Base\Network\IPv4\IPv4.cs" />
     <Compile Include="Base\Network\IPv4\IPv4Type.cs" />
     <Compile Include="Base\Network\Pipe\GPipeClient.cs" />
