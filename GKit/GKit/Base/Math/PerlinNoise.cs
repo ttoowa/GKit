@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 #if OnUnity
 using UnityEngine;
-using Random = System.Random;
 #endif
 
 #if OnUnity
