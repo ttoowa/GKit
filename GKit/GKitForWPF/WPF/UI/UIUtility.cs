@@ -12,7 +12,7 @@ namespace GKitForWPF {
 	/// <summary>
 	/// WPF의 UI 확장 기능을 제공하는 클래스입니다.
 	/// </summary>
-	public static class UIExtension {
+	public static class UIUtility {
 		private const float DefaultCoverValue = 0.1f;
 
 		public static void RegisterLoadedOnce(this FrameworkElement element, RoutedEventHandler handler) {

@@ -99,10 +99,7 @@ namespace GKit
 				scrollCaptured = true;
 			}
 #else
-			POINT nativePos;
-			GetCursorPos(out nativePos);
-
-			AbsolutePosition = new Vector2(nativePos.X, nativePos.Y);
+			UpdateNativePosition();
 #endif
 
 			bool current;
@@ -138,17 +135,34 @@ namespace GKit
 			Middle.UpdateState(current);
 		}
 #if OnWPF
-		public static Vector2 GetWindowPosition(Window window) {
+		public static Vector2 GetPositionFromWindow(Window window) {
 			return (AbsolutePosition - (Vector2)window.PointToScreen(new Point()));
 		}
-		public static Vector2 GetRelativePosition(Visual visual) {
+		public static Vector2 GetPositionFromVisual(Visual visual) {
 			return (AbsolutePosition - (Vector2)visual.PointToScreen(new Point()));
 		}
 #endif
 #if OnUnity
-		public static Vector2 GetWorldPos(Camera cam, float zDepth = 1f) {
+		public static Vector2 GetPositionFromWorld(Camera cam, float zDepth = 1f) {
 			return cam.ScreenToWorldPoint(new Vector3(ScreenPos.x, ScreenPos.y, zDepth));
 		}
 #endif
+		public static void SetAbsolutePosition(Vector2Int position) {
+			SetCursorPos(position.x, position.y);
+			UpdateNativePosition();
+		}
+
+		[DllImport("User32.dll")]
+		private static extern bool SetCursorPos(int X, int Y);
+
+		private static void UpdateNativePosition() {
+#if !OnUnity
+			POINT nativePos;
+			GetCursorPos(out nativePos);
+
+			AbsolutePosition = new Vector2(nativePos.X, nativePos.Y);
+#endif
+		}
+
 	}
 }

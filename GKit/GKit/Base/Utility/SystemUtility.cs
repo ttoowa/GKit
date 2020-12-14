@@ -81,9 +81,44 @@ namespace GKit
 			return value.HasValue && value.Value;
 		}
 
-		public static bool IsZeroSizeStruct(this Type t) {
-			return t.IsValueType && !t.IsPrimitive &&
-				   t.GetFields((BindingFlags)0x34).All(fi => IsZeroSizeStruct(fi.FieldType));
+		public static bool IsStruct(this Type type) {
+			return type.IsValueType && !type.IsPrimitive;
+		}
+		public static bool IsZeroSizeStruct(this Type type) {
+			return type.IsStruct() &&
+				   type.GetFields((BindingFlags)0x34).All(fi => IsZeroSizeStruct(fi.FieldType));
+		}
+
+		public static bool IsNumeric(object value) {
+			return value is sbyte
+				|| value is byte
+				|| value is short
+				|| value is ushort
+				|| value is int
+				|| value is uint
+				|| value is long
+				|| value is ulong
+				|| value is float
+				|| value is double
+				|| value is decimal;
+		}
+		public static bool IsNumericType(this Type type) {
+			switch (Type.GetTypeCode(type)) {
+				case TypeCode.Byte:
+				case TypeCode.SByte:
+				case TypeCode.UInt16:
+				case TypeCode.UInt32:
+				case TypeCode.UInt64:
+				case TypeCode.Int16:
+				case TypeCode.Int32:
+				case TypeCode.Int64:
+				case TypeCode.Decimal:
+				case TypeCode.Double:
+				case TypeCode.Single:
+					return true;
+				default:
+					return false;
+			}
 		}
 
 	}

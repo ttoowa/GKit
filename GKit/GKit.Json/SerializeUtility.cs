@@ -4,47 +4,123 @@ using System.Reflection;
 
 namespace GKit.Json {
 	public static class SerializeUtility {
-		public static void AddAttrFields<Attr>(this JObject jObject, object model)
-			where Attr : Attribute {
+		public delegate void FieldHandlerDelegate(object model, FieldInfo fieldInfo, ref bool skip);
+		public delegate void FieldToJTokenDelegate(object model, FieldInfo fieldInfo, out JObject jField);
+
+		public static void AddAttrFields<Attr>(this JObject jObject, object model, FieldToJTokenDelegate structHandler = null, FieldToJTokenDelegate classHandler = null) 
+			where Attr:Attribute {
+			FieldHandlerDelegate preHandler = (object handleModel, FieldInfo fieldInfo, ref bool skip) => {
+				Attr editorAttribute = fieldInfo.GetCustomAttribute(typeof(Attr)) as Attr;
+
+				if (editorAttribute == null)
+					skip = true;
+			};
+
+			AddFields(jObject, model, preHandler, structHandler, classHandler);
+		}
+		public static void AddFields(this JObject jObject, object model, FieldHandlerDelegate preHandler = null, FieldToJTokenDelegate structHandler = null, FieldToJTokenDelegate classHandler = null) {
 
 			FieldInfo[] fields = model.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
-			foreach (FieldInfo field in fields) {
-				Attr editorAttribute = field.GetCustomAttribute(typeof(Attr)) as Attr;
-
-				if (editorAttribute == null)
+			foreach (FieldInfo fieldInfo in fields) {
+				bool preSkip = false;
+				preHandler?.Invoke(model, fieldInfo, ref preSkip);
+				if (preSkip)
 					continue;
 
-				object value = field.GetValue(model);
-				string stringValue;
+				object value = fieldInfo.GetValue(model);
+				JToken jToken = null;
 
 				if (value == null) {
-					stringValue = string.Empty;
+					jToken = string.Empty;
+				} else if (fieldInfo.FieldType.IsValueType && !fieldInfo.FieldType.IsEnum &&!fieldInfo.FieldType.IsPrimitive) {
+					// Struct
+					if (structHandler != null) {
+						JObject jField = null;
+						structHandler.Invoke(model, fieldInfo, out jField);
+						jToken = jField;
+					} else {
+						JObject jValue = new JObject();
+						AddFields(jValue, value);
+
+						jToken = jValue;
+					}
+				} else if (fieldInfo.FieldType.IsClass && fieldInfo.FieldType != typeof(string)) {
+					// Class
+					if (classHandler != null) {
+						JObject jField = null;
+						classHandler.Invoke(model, fieldInfo, out jField);
+						jToken = jField;
+					}
 				} else {
-					stringValue = value.ToString();
+					jToken = value.ToString();
 				}
 
-				jObject.Add(field.Name, stringValue);
+				if(jToken != null) {
+					jObject.Add(fieldInfo.Name, jToken);
+				}
+
 			}
 		}
 
-		public static void LoadAttrFields<Attr>(this object model, JObject jObject)
+		public static void LoadAttrFields<Attr>(this object model, JObject jObject, FieldHandlerDelegate preHandler = null)
 			where Attr : Attribute {
+			FieldHandlerDelegate attrPreHandler = (object handleModel, FieldInfo fieldInfo, ref bool skip) => {
+				Attr editorAttribute = fieldInfo.GetCustomAttribute(typeof(Attr)) as Attr;
+
+				if (editorAttribute == null)
+					skip = true;
+
+				preHandler?.Invoke(handleModel, fieldInfo, ref skip);
+			};
+
+			LoadFields(model, jObject, attrPreHandler);
+		}
+		public static void LoadFields(this object model, JObject jObject, FieldHandlerDelegate preHandler = null) {
 
 			FieldInfo[] fields = model.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
-			foreach (FieldInfo field in fields) {
-				Attr editorAttribute = field.GetCustomAttribute(typeof(Attr)) as Attr;
-
-				if (editorAttribute == null)
+			foreach (FieldInfo fieldInfo in fields) {
+				bool preSkip = false;
+				preHandler?.Invoke(model, fieldInfo, ref preSkip);
+				if (preSkip)
 					continue;
 
-				if (!jObject.ContainsKey(field.Name))
+				if (!jObject.ContainsKey(fieldInfo.Name))
 					continue;
 
-				string stringValue = jObject.GetValue<string>(field.Name);
+				if (fieldInfo.FieldType.IsValueType && !fieldInfo.FieldType.IsEnum && !fieldInfo.FieldType.IsPrimitive) {
+					// Struct
+					JObject jField = jObject.GetValue(fieldInfo.Name).ToObject<JObject>();
 
-				field.SetValue(model, Convert.ChangeType(stringValue, field.FieldType));
+					if (jField == null)
+						continue;
+
+					object field = Activator.CreateInstance(fieldInfo.FieldType);
+					LoadFields(field, jField);
+
+					fieldInfo.SetValue(model, field);
+				} else if (fieldInfo.FieldType.IsClass && fieldInfo.FieldType != typeof(string)) {
+					// Class
+					JObject jField = jObject.GetValue(fieldInfo.Name).ToObject<JObject>();
+
+					if (jField == null)
+						continue;
+
+					object field = Activator.CreateInstance(fieldInfo.FieldType);
+					LoadFields(field, jField);
+
+					fieldInfo.SetValue(model, field);
+				} else {
+					string stringValue = jObject.GetValue<string>(fieldInfo.Name);
+
+					if(fieldInfo.FieldType.IsEnum) {
+						fieldInfo.SetValue(model, Enum.Parse(fieldInfo.FieldType, stringValue));
+					} else {
+						fieldInfo.SetValue(model, Convert.ChangeType(stringValue, fieldInfo.FieldType));
+					}
+				}
+
 			}
 		}
 	}
