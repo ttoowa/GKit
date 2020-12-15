@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -571,6 +572,9 @@ namespace GKitForWPF {
 			};
 		}
 
+		public static T Duplicate<T>(this T reference) where T : FrameworkElement {
+			return XamlReader.Parse(XamlWriter.Save(reference)) as T;
+		}
 
 	}
 }
