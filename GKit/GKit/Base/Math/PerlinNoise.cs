@@ -61,6 +61,18 @@ namespace GKit
 		public static float Noise(Vector3 coord) {
 			return Noise(coord.x, coord.y, coord.z);
 		}
+		public static float Noise01(float x) {
+			return Noise(x) * 0.5f + 0.5f;
+		}
+		public static float Noise01(float x, float y) {
+			return Noise(x, y) * 0.5f + 0.5f;
+		}
+		public static float Noise01(Vector2 coord) {
+			return Noise(coord) * 0.5f + 0.5f;
+		}
+		public static float Noise01(Vector3 coord) {
+			return Noise(coord) * 0.5f + 0.5f;
+		}
 
 		// fBm functions
 		public static float Fbm(float x, int octave) {

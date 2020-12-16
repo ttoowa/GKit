@@ -34,12 +34,25 @@ namespace GKit
 		public static int RangeInclusiveMax(int min, int max) {
 			return systemRandom.Next(min, max + 1);
 		}
+		public static int RangeInclusiveMax(int min, int max, int seed) {
+			System.Random random = new System.Random(seed);
+			return random.Next(min, max + 1);
+		}
 		public static int RangeExclusiveMax(int min, int max) {
 			return systemRandom.Next(min, max);
+		}
+		public static int RangeExclusiveMax(int min, int max, int seed) {
+			System.Random random = new System.Random(seed);
+			return random.Next(min, max);
 		}
 		public static float RangeExclusiveMax(float min, float max) {
 			float range = max - min;
 			return (float)(systemRandom.NextDouble() * range) + min;
+		}
+		public static float RangeExclusiveMax(float min, float max, int seed) {
+			System.Random random = new System.Random(seed);
+			float range = max - min;
+			return (float)(random.NextDouble() * range) + min;
 		}
 
 		public static float RandomGauss() {

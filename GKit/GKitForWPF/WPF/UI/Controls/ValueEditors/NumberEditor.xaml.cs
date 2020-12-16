@@ -23,6 +23,7 @@ namespace GKitForWPF.UI.Controls {
 		public static readonly DependencyProperty MaxValueProperty = DependencyProperty.RegisterAttached(nameof(MaxValue), typeof(float), typeof(NumberEditor), new PropertyMetadata(float.MaxValue));
 		public static readonly DependencyProperty NumberTypeProperty = DependencyProperty.RegisterAttached(nameof(NumberType), typeof(NumberType), typeof(NumberEditor), new PropertyMetadata(NumberType.Float));
 		public static readonly DependencyProperty NumberFormatProperty = DependencyProperty.RegisterAttached(nameof(NumberFormat), typeof(string), typeof(NumberEditor), new PropertyMetadata());
+		public static readonly DependencyProperty AdjustFactorProperty = DependencyProperty.RegisterAttached(nameof(AdjustFactor), typeof(float), typeof(NumberEditor), new PropertyMetadata());
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		public event Action ValueChanged;
@@ -93,6 +94,15 @@ namespace GKitForWPF.UI.Controls {
 				RaisePropertyChanged(nameof(NumberFormat));
 			}
 		}
+		public float AdjustFactor {
+			get {
+				return (float)GetValue(AdjustFactorProperty);
+			}
+			set {
+				SetValue(AdjustFactorProperty, value);
+				RaisePropertyChanged(nameof(AdjustFactor));
+			}
+		}
 
 		//Cursor drag
 		private bool onDragging;
@@ -101,6 +111,11 @@ namespace GKitForWPF.UI.Controls {
 
 		public NumberEditor() {
 			InitializeComponent();
+
+			// Initialize
+			NumberType = NumberType.Float;
+			AdjustFactor = 0.2f;
+
 			RegisterEvents();
 		}
 		private void RegisterEvents() {
@@ -180,8 +195,6 @@ namespace GKitForWPF.UI.Controls {
 			dragStartCursorPosX = (float)e.GetPosition(AdjustButton).X;
 		}
 		private void AdjustButton_MouseMove(object sender, MouseEventArgs e) {
-			const float AdjustFactor = 0.3f;
-
 			if (!onDragging)
 				return;
 
