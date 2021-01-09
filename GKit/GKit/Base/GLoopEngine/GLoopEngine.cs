@@ -62,7 +62,6 @@ namespace GKit
 		public float DeltaSeconds => DeltaMilliseconds * 0.001f;
 		public int CurrentFrame => currentFrame;
 		public int MaxOverlapFrame { get; set; } = 1;
-		public event Arg1Delegate<string> OnException;
 
 		//TaskList
 		private GLoopGroup[] GLoopGroups = new GLoopGroup[(int)GWhen.NUM];
@@ -325,94 +324,89 @@ namespace GKit
 
 			++currentFrame;
 
-			try {
 			Execute:
-				bool hasNewTask = false;
+			bool hasNewTask = false;
 
-				RunLoopAction();
-				RunGRoutine();
-				ExecWriteTask();
+			RunLoopAction();
+			RunGRoutine();
+			ExecWriteTask();
 
-				void RunLoopAction() {
-					int arrayLength = GLoopGroups.Length;
-					for (int arrayIndex = 0; arrayIndex < arrayLength; ++arrayIndex) {
-						GLoopGroup taskGroup = GetLoopGroup((GWhen)arrayIndex);
+			void RunLoopAction() {
+				int arrayLength = GLoopGroups.Length;
+				for (int arrayIndex = 0; arrayIndex < arrayLength; ++arrayIndex) {
+					GLoopGroup taskGroup = GetLoopGroup((GWhen)arrayIndex);
 
-						switch (taskGroup.RemoveCondition) {
-							case GWhen.MouseUpRemove:
-								if (MouseInput.Left.IsUp) {
-									goto InvokeAndClear;
-								}
-								break;
+					switch (taskGroup.RemoveCondition) {
+						case GWhen.MouseUpRemove:
+							if (MouseInput.Left.IsUp) {
+								goto InvokeAndClear;
+							}
+							break;
 
-							InvokeAndClear:
-								taskGroup.RunImmediately();
-								taskGroup.Clear();
-								continue;
-						}
-
-						taskGroup.RunWithTimer();
-						//Sync Frame
-						taskGroup.SyncFrame();
-					}
-				}
-				void RunGRoutine() {
-					int routineCount = GRoutineList.Count;
-					for (int i = 0; i < routineCount; ++i) {
-						GRoutine routine = GRoutineList[i];
-						if (currentFrame == routine.currentFrame)
+						InvokeAndClear:
+							taskGroup.RunImmediately();
+							taskGroup.Clear();
 							continue;
+					}
 
-						bool result = routine.Run(DeltaMilliseconds);
-						//Sync Frame
-						routine.currentFrame = currentFrame;
+					taskGroup.RunWithTimer();
+					//Sync Frame
+					taskGroup.SyncFrame();
+				}
+			}
+			void RunGRoutine() {
+				int routineCount = GRoutineList.Count;
+				for (int i = 0; i < routineCount; ++i) {
+					GRoutine routine = GRoutineList[i];
+					if (currentFrame == routine.currentFrame)
+						continue;
 
-						if (!result) {
-							RemoveGRoutine(routine);
-						}
+					bool result = routine.Run(DeltaMilliseconds);
+					//Sync Frame
+					routine.currentFrame = currentFrame;
+
+					if (!result) {
+						RemoveGRoutine(routine);
 					}
 				}
-				void ExecWriteTask() {
+			}
+			void ExecWriteTask() {
 
-					int loopCount;
-					lock (GRoutineWriteLock) {
-						hasNewTask = GRoutineAddQueue.Count > 0;
+				int loopCount;
+				lock (GRoutineWriteLock) {
+					hasNewTask = GRoutineAddQueue.Count > 0;
 
-						loopCount = GRoutineRemoveQueue.Count;
-						for (int i = 0; i < loopCount; ++i) {
-							GRoutine routine = GRoutineRemoveQueue.Dequeue();
-							GRoutineList.Remove(routine);
-						}
-						loopCount = GRoutineAddQueue.Count;
-						for (int i = 0; i < loopCount; ++i) {
-							GRoutine routine = GRoutineAddQueue.Dequeue();
-							routine.currentFrame = currentFrame - 1;
-							GRoutineList.Add(routine);
-						}
+					loopCount = GRoutineRemoveQueue.Count;
+					for (int i = 0; i < loopCount; ++i) {
+						GRoutine routine = GRoutineRemoveQueue.Dequeue();
+						GRoutineList.Remove(routine);
 					}
-					lock (loopActionWriteLock) {
-						hasNewTask = hasNewTask || (loopActionAddQueue.Count > 0);
-
-						loopCount = loopActionRemoveQueue.Count;
-						for (int i = 0; i < loopCount; ++i) {
-							GLoopAction task = loopActionRemoveQueue.Dequeue();
-							GetLoopGroup(task.TaskEvent).TaskList.Remove(task);
-						}
-						loopCount = loopActionAddQueue.Count;
-						for (int i = 0; i < loopCount; ++i) {
-							GLoopAction task = loopActionAddQueue.Dequeue();
-							task.currentFrame = currentFrame - 1;
-							GetLoopGroup(task.TaskEvent).TaskList.Add(task);
-						}
+					loopCount = GRoutineAddQueue.Count;
+					for (int i = 0; i < loopCount; ++i) {
+						GRoutine routine = GRoutineAddQueue.Dequeue();
+						routine.currentFrame = currentFrame - 1;
+						GRoutineList.Add(routine);
 					}
 				}
+				lock (loopActionWriteLock) {
+					hasNewTask = hasNewTask || (loopActionAddQueue.Count > 0);
 
-				if (hasNewTask) {
-					goto Execute;
+					loopCount = loopActionRemoveQueue.Count;
+					for (int i = 0; i < loopCount; ++i) {
+						GLoopAction task = loopActionRemoveQueue.Dequeue();
+						GetLoopGroup(task.TaskEvent).TaskList.Remove(task);
+					}
+					loopCount = loopActionAddQueue.Count;
+					for (int i = 0; i < loopCount; ++i) {
+						GLoopAction task = loopActionAddQueue.Dequeue();
+						task.currentFrame = currentFrame - 1;
+						GetLoopGroup(task.TaskEvent).TaskList.Add(task);
+					}
 				}
-			} catch (Exception ex) {
-				GDebug.Log(ex.ToString(), GLogLevel.Error);
-				OnException?.Invoke(ex.ToString());
+			}
+
+			if (hasNewTask) {
+				goto Execute;
 			}
 
 			singleLoopWatch.Stop();
