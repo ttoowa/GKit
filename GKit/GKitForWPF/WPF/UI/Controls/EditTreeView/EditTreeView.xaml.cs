@@ -391,7 +391,7 @@ namespace GKitForWPF.UI.Controls {
 				sortedSelectedItems = sortedSelectedItems.Reverse().ToArray();
 			}
 			foreach (ITreeItem item in sortedSelectedItems) {
-				ITreeFolder oldParent = item.ParentItem;
+				ITreeFolder oldParent = item.ParentItem ?? this;
 				ITreeFolder newParent = null;
 				int index = -1;
 
@@ -413,7 +413,7 @@ namespace GKitForWPF.UI.Controls {
 					index = newParent.ChildItemCollection.Count;
 				} else {
 					//아이템 위아래로
-					newParent = target.node.ParentItem;
+					newParent = target.node.ParentItem ?? this;
 					index = newParent.ChildItemCollection.IndexOf(target.node as UIElement) +
 						(target.direction == NodeDirection.Bottom ? 1 : 0);
 				}
