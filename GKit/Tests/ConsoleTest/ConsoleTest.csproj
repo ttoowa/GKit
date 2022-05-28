@@ -69,17 +69,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\GKit.Json\GKit.Json.csproj">
-      <Project>{0c330c44-8224-463a-a572-a962bd01adbf}</Project>
-      <Name>GKit.Json</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\GKit.SQLite\GKit.SQLite.csproj">
-      <Project>{53259183-0444-4256-a993-55e4e3d80409}</Project>
-      <Name>GKit.SQLite</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\GKit\GKit.csproj">
+    <ProjectReference Include="..\..\Legacy\GKit.Legacy\GKit.Legacy.csproj">
       <Project>{78444ab0-c0f2-4b7a-8f4f-9173011274b0}</Project>
-      <Name>GKit</Name>
+      <Name>GKit.Legacy</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Legacy\GKit.SQLite.Legacy\GKit.SQLite.Legacy.csproj">
+      <Project>{53259183-0444-4256-a993-55e4e3d80409}</Project>
+      <Name>GKit.SQLite.Legacy</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

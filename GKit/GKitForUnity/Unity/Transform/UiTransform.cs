@@ -59,14 +59,14 @@ namespace GKitForUnity {
 			HorizontalAlignment = alignment;
 
 			if (setPivotAuto) {
-				Pivot = new Vector2(UiUtility.GetPivotPosition(alignment), Pivot.y);
+				Pivot = new Vector2(UIUtility.GetPivotPosition(alignment), Pivot.y);
 			}
 		}
 		public void SetVerticalAlignment(VerticalAlignment alignment, bool setPivotAuto = true) {
 			VerticalAlignment = alignment;
 
 			if (setPivotAuto) {
-				Pivot = new Vector2(Pivot.x, UiUtility.GetPivotPosition(alignment));
+				Pivot = new Vector2(Pivot.x, UIUtility.GetPivotPosition(alignment));
 			}
 		}
 	}

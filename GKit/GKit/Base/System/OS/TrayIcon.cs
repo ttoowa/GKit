@@ -22,7 +22,7 @@ namespace GKit
 		public NotifyIcon Notify {
 			get; private set;
 		}
-		public ContextMenu Menu {
+		public ContextMenuStrip Menu {
 			get; private set;
 		}
 
@@ -30,9 +30,9 @@ namespace GKit
 
 		public TrayIcon() {
 			Notify = new NotifyIcon();
-			Menu = new ContextMenu();
+			Menu = new ContextMenuStrip();
 			Notify = new NotifyIcon();
-			Notify.ContextMenu = Menu;
+			Notify.ContextMenuStrip = Menu;
 			Notify.DoubleClick += OnDoubleClick_Notify;
 		}
 
@@ -61,24 +61,24 @@ namespace GKit
 		}
 
 		public void ClearMenu() {
-			Menu.MenuItems.Clear();
+			Menu.Items.Clear();
 		}
 		public void AddMenuSeparator() {
-			Menu.MenuItems.Add("-");
+			Menu.Items.Add("-");
 		}
-		public MenuItem AddMenuItem(string text, Action OnClick = null) {
-			MenuItem item = new MenuItem(text, (object sender, EventArgs e) => { OnClick?.Invoke(); });
-			Menu.MenuItems.Add(item);
+		public ToolStripMenuItem AddMenuItem(string text, Action OnClick = null) {
+			ToolStripMenuItem item = new ToolStripMenuItem(text, null, (object sender, EventArgs e) => { OnClick?.Invoke(); });
+			Menu.Items.Add(item);
 
 			return item;
 		}
-		public MenuItem AddCheckableMenuItem(string text, Arg1Delegate<bool> OnClick = null) {
-			MenuItem item = null;
-			item = new MenuItem(text, (object sender, EventArgs e) => {
+		public ToolStripMenuItem AddCheckableMenuItem(string text, Arg1Delegate<bool> OnClick = null) {
+			ToolStripMenuItem item = null;
+			item = new ToolStripMenuItem(text, null, (object sender, EventArgs e) => {
 				item.Checked = !item.Checked;
 				OnClick?.Invoke(item.Checked);
 			});
-			Menu.MenuItems.Add(item);
+			Menu.Items.Add(item);
 
 			return item;
 		}

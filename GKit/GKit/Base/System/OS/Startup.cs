@@ -1,8 +1,7 @@
-﻿using System;
+﻿#if !OnUnity
+using System;
 using Microsoft.Win32;
-#if OnUnity
-using GKitForUnity.IO;
-#elif OnWPF
+#if OnWPF
 using GKitForWPF.IO;
 #else
 using GKit.IO;
@@ -50,3 +49,4 @@ namespace GKit
 		}
 	}
 }
+#endif

@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 
 namespace GKitForUnity {
-	public static class UiUtility {
+	public static class UIUtility {
 
 		public static void SetHorizontalAlignment(this RectTransform rectTransform, HorizontalAlignment alignment) {
 			GRange anchorRange = GetAnchorRange(alignment);
@@ -94,10 +93,10 @@ namespace GKitForUnity {
 			}
 		}
 
-		public static Vector2 GetPreferredSize(this RectTransform rectTransform) {
-			return new Vector2(
-				LayoutUtility.GetPreferredSize(rectTransform, 0),
-				LayoutUtility.GetPreferredSize(rectTransform, 1));
-		}
+		//public static Vector2 GetPreferredSize(this RectTransform rectTransform) {
+		//	return new Vector2(
+		//		LayoutUtility.GetPreferredSize(rectTransform, 0),
+		//		LayoutUtility.GetPreferredSize(rectTransform, 1));
+		//}
 	}
 }
