@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -219,6 +220,13 @@ namespace GKit
 			FileAttributes attr = File.GetAttributes(path);
 
 			return (attr & FileAttributes.Directory) == FileAttributes.Directory;
+		}
+
+		public static bool IsEmptyDirectory(string dir) {
+			IEnumerable<string> items = Directory.EnumerateFileSystemEntries(dir);
+			using (IEnumerator<string> entry = items.GetEnumerator()) {
+				return !entry.MoveNext();
+			}
 		}
 
 		public static string GetMetadataHash(string filename) {
