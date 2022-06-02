@@ -17,7 +17,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid SnapsToDevicePixels="True">
-        <TextBox Name="ValueTextBox" Style="{StaticResource FlatTextBox}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Center" TextAlignment="Center" VerticalAlignment="Stretch"
+        <TextBox Name="ValueTextBox" Style="{StaticResource FlatTextBox}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" TextAlignment="Center" VerticalAlignment="Stretch"
         PreviewTextInput="ValueTextBox_PreviewTextInput" LostFocus="ValueTextBox_LostFocus" PreviewKeyDown="ValueTextBox_PreviewKeyDown" Margin="0,0,20,0"/>
         <Border Name="AdjustButton" HorizontalAlignment="Right" Width="22" Background="#545454"
             MouseDown="AdjustButton_MouseDown" MouseMove="AdjustButton_MouseMove" MouseUp="AdjustButton_MouseUp" Cursor="SizeWE" CornerRadius="0,4,4,0">
