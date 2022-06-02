@@ -6,7 +6,10 @@ using System.Reflection;
 namespace GKit.Json {
 	public static class SerializeUtility {
 		public delegate void FieldHandlerDelegate(object model, FieldInfo fieldInfo, ref bool skip);
-		public delegate void FieldToJTokenDelegate(object model, FieldInfo fieldInfo, out JObject jField);
+		/// <returns>Returns whether or not handled. Default handling if false is returned.</returns>
+		public delegate bool FieldToJTokenDelegate(object model, FieldInfo fieldInfo, out JObject field);
+		/// <returns>Returns whether or not handled. Default handling if false is returned.</returns>
+		public delegate bool JTokenToFieldDelegate(object model, FieldInfo fieldInfo, out object field);
 
 		public static void AddAttrFields<Attr>(this JObject jObject, object model, FieldToJTokenDelegate structHandler = null, FieldToJTokenDelegate classHandler = null)
 			where Attr : Attribute {
@@ -35,29 +38,34 @@ namespace GKit.Json {
 					jToken = string.Empty;
 				} else if (fieldInfo.FieldType.IsValueType && !fieldInfo.FieldType.IsEnum && !fieldInfo.FieldType.IsPrimitive) {
 					// Struct
+					bool useDefaultHandler = true;
 					if (structHandler != null) {
 						JObject jField = null;
-						structHandler.Invoke(model, fieldInfo, out jField);
+						useDefaultHandler = !structHandler.Invoke(model, fieldInfo, out jField);
 						jToken = jField;
-					} else {
+					}
+					if (useDefaultHandler) {
 						JObject jField = new JObject();
-						AddFields(jField, value);
+						jField.AddFields(value);
 
 						jToken = jField;
 					}
 				} else if (fieldInfo.FieldType.IsClass && fieldInfo.FieldType != typeof(string)) {
 					// Class
+					bool useDefaultHandler = true;
 					if (classHandler != null) {
 						JObject jField = null;
-						classHandler.Invoke(model, fieldInfo, out jField);
+						useDefaultHandler = !classHandler.Invoke(model, fieldInfo, out jField);
 						jToken = jField;
-					} else {
+					}
+					if (useDefaultHandler) {
 						JObject jField = new JObject();
-						AddFields(jField, value, preHandler, structHandler, classHandler);
+						jField.AddFields(value, preHandler, structHandler, classHandler);
 
 						jToken = jField;
 					}
-				} else {
+				} else if (fieldInfo.FieldType == typeof(string) || fieldInfo.FieldType.IsEnum) {
+					// Enumm or String
 					jToken = value.ToString();
 				}
 
@@ -68,7 +76,7 @@ namespace GKit.Json {
 			}
 		}
 
-		public static void LoadAttrFields<Attr>(this object model, JObject jObject, FieldHandlerDelegate preHandler = null)
+		public static void LoadAttrFields<Attr>(this object model, JObject jObject, FieldHandlerDelegate preHandler = null, JTokenToFieldDelegate structHandler = null, JTokenToFieldDelegate classHandler = null)
 			where Attr : Attribute {
 			FieldHandlerDelegate attrPreHandler = (object handleModel, FieldInfo fieldInfo, ref bool skip) => {
 				Attr editorAttribute = fieldInfo.GetCustomAttribute(typeof(Attr)) as Attr;
@@ -81,7 +89,7 @@ namespace GKit.Json {
 
 			LoadFields(model, jObject, attrPreHandler);
 		}
-		public static void LoadFields(this object model, JObject jObject, FieldHandlerDelegate preHandler = null) {
+		public static void LoadFields(this object model, JObject jObject, FieldHandlerDelegate preHandler = null, JTokenToFieldDelegate structHandler = null, JTokenToFieldDelegate classHandler = null) {
 
 			FieldInfo[] fields = model.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
@@ -101,8 +109,15 @@ namespace GKit.Json {
 					if (jField == null)
 						continue;
 
-					object field = Activator.CreateInstance(fieldInfo.FieldType);
-					LoadFields(field, jField);
+					bool useDefaultHandler = true;
+					object field = null;
+					if (structHandler != null) {
+						useDefaultHandler = !structHandler.Invoke(model, fieldInfo, out field);
+					}
+					if (useDefaultHandler) {
+						field = Activator.CreateInstance(fieldInfo.FieldType);
+						field.LoadFields(jField);
+					}
 
 					fieldInfo.SetValue(model, field);
 				} else if (fieldInfo.FieldType.IsClass && fieldInfo.FieldType != typeof(string)) {
@@ -112,11 +127,19 @@ namespace GKit.Json {
 					if (jField == null)
 						continue;
 
-					object field = Activator.CreateInstance(fieldInfo.FieldType);
-					LoadFields(field, jField);
+					bool useDefaultHandler = true;
+					object field = null;
+					if (classHandler != null) {
+						useDefaultHandler = !classHandler.Invoke(model, fieldInfo, out field);
+					}
+					if (useDefaultHandler) {
+						field = Activator.CreateInstance(fieldInfo.FieldType);
+						field.LoadFields(jField);
+					}
 
 					fieldInfo.SetValue(model, field);
-				} else {
+				} else if (fieldInfo.FieldType == typeof(string) || fieldInfo.FieldType.IsEnum) {
+					// Enum or String
 					string stringValue = jObject.GetValue<string>(fieldInfo.Name);
 
 					if (fieldInfo.FieldType.IsEnum) {
