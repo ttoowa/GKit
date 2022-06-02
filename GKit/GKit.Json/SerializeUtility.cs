@@ -23,7 +23,7 @@ namespace GKit.Json {
 		}
 		public static void AddFields(this JObject jObject, object model, FieldHandlerDelegate preHandler = null, FieldToJTokenDelegate structHandler = null, FieldToJTokenDelegate classHandler = null) {
 
-			FieldInfo[] fields = model.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+			FieldInfo[] fields = model.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).OrderBy(field => field.MetadataToken).ToArray(); ;
 
 			foreach (FieldInfo fieldInfo in fields) {
 				bool preSkip = false;
@@ -64,8 +64,8 @@ namespace GKit.Json {
 
 						jToken = jField;
 					}
-				} else if (fieldInfo.FieldType == typeof(string) || fieldInfo.FieldType.IsEnum) {
-					// Enumm or String
+				} else if (fieldInfo.FieldType == typeof(string) || fieldInfo.FieldType.IsEnum || fieldInfo.FieldType.IsPrimitive) {
+					// Enumm or String or Primitive
 					jToken = value.ToString();
 				}
 
@@ -91,7 +91,7 @@ namespace GKit.Json {
 		}
 		public static void LoadFields(this object model, JObject jObject, FieldHandlerDelegate preHandler = null, JTokenToFieldDelegate structHandler = null, JTokenToFieldDelegate classHandler = null) {
 
-			FieldInfo[] fields = model.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+			FieldInfo[] fields = model.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).OrderBy(field => field.MetadataToken).ToArray();
 
 			foreach (FieldInfo fieldInfo in fields) {
 				bool preSkip = false;
@@ -104,7 +104,7 @@ namespace GKit.Json {
 
 				if (fieldInfo.FieldType.IsValueType && !fieldInfo.FieldType.IsEnum && !fieldInfo.FieldType.IsPrimitive) {
 					// Struct
-					JObject jField = jObject.GetValue(fieldInfo.Name).ToObject<JObject>();
+					JObject jField = jObject.GetValue(fieldInfo.Name) as JObject;
 
 					if (jField == null)
 						continue;
@@ -122,7 +122,8 @@ namespace GKit.Json {
 					fieldInfo.SetValue(model, field);
 				} else if (fieldInfo.FieldType.IsClass && fieldInfo.FieldType != typeof(string)) {
 					// Class
-					JObject jField = jObject.GetValue(fieldInfo.Name).ToObject<JObject>();
+
+					JObject jField = jObject.GetValue(fieldInfo.Name) as JObject;
 
 					if (jField == null)
 						continue;
@@ -138,8 +139,8 @@ namespace GKit.Json {
 					}
 
 					fieldInfo.SetValue(model, field);
-				} else if (fieldInfo.FieldType == typeof(string) || fieldInfo.FieldType.IsEnum) {
-					// Enum or String
+				} else if (fieldInfo.FieldType == typeof(string) || fieldInfo.FieldType.IsEnum || fieldInfo.FieldType.IsPrimitive) {
+					// Enum or String or Primitive
 					string stringValue = jObject.GetValue<string>(fieldInfo.Name);
 
 					if (fieldInfo.FieldType.IsEnum) {
