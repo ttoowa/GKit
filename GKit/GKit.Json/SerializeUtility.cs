@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Linq;
 using System.Reflection;
 
 namespace GKit.Json {
@@ -7,12 +8,11 @@ namespace GKit.Json {
 		public delegate void FieldHandlerDelegate(object model, FieldInfo fieldInfo, ref bool skip);
 		public delegate void FieldToJTokenDelegate(object model, FieldInfo fieldInfo, out JObject jField);
 
-		public static void AddAttrFields<Attr>(this JObject jObject, object model, FieldToJTokenDelegate structHandler = null, FieldToJTokenDelegate classHandler = null) 
-			where Attr:Attribute {
+		public static void AddAttrFields<Attr>(this JObject jObject, object model, FieldToJTokenDelegate structHandler = null, FieldToJTokenDelegate classHandler = null)
+			where Attr : Attribute {
 			FieldHandlerDelegate preHandler = (object handleModel, FieldInfo fieldInfo, ref bool skip) => {
-				Attr editorAttribute = fieldInfo.GetCustomAttribute(typeof(Attr)) as Attr;
 
-				if (editorAttribute == null)
+				if (!fieldInfo.GetCustomAttributes<Attr>().Any())
 					skip = true;
 			};
 
@@ -33,17 +33,17 @@ namespace GKit.Json {
 
 				if (value == null) {
 					jToken = string.Empty;
-				} else if (fieldInfo.FieldType.IsValueType && !fieldInfo.FieldType.IsEnum &&!fieldInfo.FieldType.IsPrimitive) {
+				} else if (fieldInfo.FieldType.IsValueType && !fieldInfo.FieldType.IsEnum && !fieldInfo.FieldType.IsPrimitive) {
 					// Struct
 					if (structHandler != null) {
 						JObject jField = null;
 						structHandler.Invoke(model, fieldInfo, out jField);
 						jToken = jField;
 					} else {
-						JObject jValue = new JObject();
-						AddFields(jValue, value);
+						JObject jField = new JObject();
+						AddFields(jField, value);
 
-						jToken = jValue;
+						jToken = jField;
 					}
 				} else if (fieldInfo.FieldType.IsClass && fieldInfo.FieldType != typeof(string)) {
 					// Class
@@ -51,12 +51,17 @@ namespace GKit.Json {
 						JObject jField = null;
 						classHandler.Invoke(model, fieldInfo, out jField);
 						jToken = jField;
+					} else {
+						JObject jField = new JObject();
+						AddFields(jField, value, preHandler, structHandler, classHandler);
+
+						jToken = jField;
 					}
 				} else {
 					jToken = value.ToString();
 				}
 
-				if(jToken != null) {
+				if (jToken != null) {
 					jObject.Add(fieldInfo.Name, jToken);
 				}
 
@@ -114,7 +119,7 @@ namespace GKit.Json {
 				} else {
 					string stringValue = jObject.GetValue<string>(fieldInfo.Name);
 
-					if(fieldInfo.FieldType.IsEnum) {
+					if (fieldInfo.FieldType.IsEnum) {
 						fieldInfo.SetValue(model, Enum.Parse(fieldInfo.FieldType, stringValue));
 					} else {
 						fieldInfo.SetValue(model, Convert.ChangeType(stringValue, fieldInfo.FieldType));
