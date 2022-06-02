@@ -9,20 +9,20 @@
 
              mc:Ignorable="d" 
              d:DesignWidth="100" Height="21">
-	<UserControl.Resources>
-		<ResourceDictionary>
-			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="/GKitForWPF;component/WPF/Resources/Themes/GFlatDark.xaml"/>
-			</ResourceDictionary.MergedDictionaries>
-		</ResourceDictionary>
-	</UserControl.Resources>
-	<DockPanel Background="{StaticResource Color_TextBoxBackground}" SnapsToDevicePixels="True">
-		<Border Name="AdjustButton" DockPanel.Dock="Right" Width="22" Background="#545454"
-            MouseDown="AdjustButton_MouseDown" MouseMove="AdjustButton_MouseMove" MouseUp="AdjustButton_MouseUp" Cursor="SizeWE">
-			<VectorImages:NumberAdjustIcon HorizontalAlignment="Center" VerticalAlignment="Center"/>
-		</Border>
-		<TextBox Name="ValueTextBox" Style="{StaticResource FlatTextBox}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Center" TextAlignment="Center" VerticalAlignment="Center"
-        PreviewTextInput="ValueTextBox_PreviewTextInput" LostFocus="ValueTextBox_LostFocus" PreviewKeyDown="ValueTextBox_PreviewKeyDown"/>
-	</DockPanel>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/GKitForWPF;component/WPF/Resources/Themes/GFlatDark.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid SnapsToDevicePixels="True">
+        <TextBox Name="ValueTextBox" Style="{StaticResource FlatTextBox}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Center" TextAlignment="Center" VerticalAlignment="Stretch"
+        PreviewTextInput="ValueTextBox_PreviewTextInput" LostFocus="ValueTextBox_LostFocus" PreviewKeyDown="ValueTextBox_PreviewKeyDown" Margin="0,0,20,0"/>
+        <Border Name="AdjustButton" HorizontalAlignment="Right" Width="22" Background="#545454"
+            MouseDown="AdjustButton_MouseDown" MouseMove="AdjustButton_MouseMove" MouseUp="AdjustButton_MouseUp" Cursor="SizeWE" CornerRadius="0,4,4,0">
+            <VectorImages:NumberAdjustIcon HorizontalAlignment="Center" VerticalAlignment="Center" />
+        </Border>
+    </Grid>
 </UserControl>
 

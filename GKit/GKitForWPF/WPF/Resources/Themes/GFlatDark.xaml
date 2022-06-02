@@ -115,7 +115,8 @@
                     <Grid>
                         <Border x:Name="border" 
                                 BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
-                                Background="{TemplateBinding Background}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                                Background="{TemplateBinding Background}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                CornerRadius="4">
                             <ScrollViewer x:Name="PART_ContentHost"
 											  VerticalScrollBarVisibility="{TemplateBinding VerticalScrollBarVisibility}"
 											  HorizontalScrollBarVisibility="{TemplateBinding HorizontalScrollBarVisibility}"
