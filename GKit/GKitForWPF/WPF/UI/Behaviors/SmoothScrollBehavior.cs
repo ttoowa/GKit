@@ -36,7 +36,7 @@ namespace GKitForWPF.UI.Behaviors {
 		}
 	}
 	public static class SmoothScrollBehavior {
-		public static TimeSpan DefaultTimeDuration = new TimeSpan(0, 0, 0, 0, 270);
+		public static TimeSpan DefaultTimeDuration = new TimeSpan(0, 0, 0, 0, 100);
 		public static int DefaultPointsToScroll = 6;
 		public static IEasingFunction EasingFuncgion = new PowerEase();
 
