@@ -18,7 +18,7 @@
     </UserControl.Resources>
     <Grid SnapsToDevicePixels="True">
         <TextBox Name="ValueTextBox" Style="{StaticResource FlatTextBox}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" TextAlignment="Center" VerticalAlignment="Stretch"
-        PreviewTextInput="ValueTextBox_PreviewTextInput" LostFocus="ValueTextBox_LostFocus" PreviewKeyDown="ValueTextBox_PreviewKeyDown" Margin="0,0,10,0" Text="0"/>
+        PreviewTextInput="ValueTextBox_PreviewTextInput" LostFocus="ValueTextBox_LostFocus" PreviewKeyDown="ValueTextBox_PreviewKeyDown" Margin="0,0,18,0" Text="0" Padding="3,3,3,3"/>
         <Border Name="AdjustButton" HorizontalAlignment="Right" Width="22" Background="#545454"
             MouseDown="AdjustButton_MouseDown" MouseMove="AdjustButton_MouseMove" MouseUp="AdjustButton_MouseUp" Cursor="SizeWE" CornerRadius="0,4,4,0">
             <VectorImages:NumberAdjustIcon HorizontalAlignment="Center" VerticalAlignment="Center" />
