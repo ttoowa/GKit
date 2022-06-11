@@ -121,9 +121,11 @@
 											  VerticalScrollBarVisibility="{TemplateBinding VerticalScrollBarVisibility}"
 											  HorizontalScrollBarVisibility="{TemplateBinding HorizontalScrollBarVisibility}"
 											  Padding="{TemplateBinding Padding}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
 											  FontFamily="/TaleKitEditor;component/Resources/Fonts/#KoPubDotum_Pro Medium" TextOptions.TextFormattingMode="Display" TextOptions.TextHintingMode="Fixed"/>
                         </Border>
-                        <Border x:Name="Cover" IsHitTestVisible="False"/>
+                        <Border x:Name="Cover" CornerRadius="4" IsHitTestVisible="False"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="False">
