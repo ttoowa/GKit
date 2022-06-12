@@ -27,55 +27,67 @@ namespace GKit
         //단방향 암호화
         public static class SimplexHash {
             public static string ComputeMD4(string text) {
+                byte[] hash = ComputeMD4Binary(Encoding.UTF8.GetBytes(text));
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < hash.Length; ++i) {
+                    sb.Append(hash[i].ToString("x2"));
+                }
+                return sb.ToString();
+            }
+            public static byte[] ComputeMD4Binary(byte[] data) {
                 using (HashAlgorithm cryptor = MD4.Create()) {
-                    byte[] hash = cryptor.ComputeHash(Encoding.UTF8.GetBytes(text));
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < hash.Length; ++i) {
-                        sb.Append(hash[i].ToString("x2"));
-                    }
-                    return sb.ToString();
+                    return cryptor.ComputeHash(data);
                 }
             }
+
             public static string ComputeMD5(string text) {
+                byte[] hash = ComputeMD5Binary(Encoding.UTF8.GetBytes(text));
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < hash.Length; ++i) {
+                    sb.Append(hash[i].ToString("x2"));
+                }
+                return sb.ToString();
+            }
+            public static byte[] ComputeMD5Binary(byte[] data) {
                 using (MD5 cryptor = MD5.Create()) {
-                    byte[] hash = cryptor.ComputeHash(Encoding.UTF8.GetBytes(text));
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < hash.Length; ++i) {
-                        sb.Append(hash[i].ToString("x2"));
-                    }
-                    return sb.ToString();
+                    return cryptor.ComputeHash(data);
                 }
             }
             public static string SHA256(string text) {
+                StringBuilder sb = new StringBuilder();
+                byte[] hash = SHA256Binary(Encoding.UTF8.GetBytes(text));
+                for (int i = 0; i < hash.Length; ++i) {
+                    sb.Append(hash[i].ToString("x2"));
+                }
+                return sb.ToString();
+            }
+            public static byte[] SHA256Binary(byte[] data) {
                 using (SHA256Managed cryptor = new SHA256Managed()) {
-                    StringBuilder sb = new StringBuilder();
-                    byte[] textData = Encoding.UTF8.GetBytes(text);
-                    byte[] hash = cryptor.ComputeHash(textData, 0, textData.Length);
-                    for (int i = 0; i < hash.Length; ++i) {
-                        sb.Append(hash[i].ToString("x2"));
-                    }
-                    return sb.ToString();
+                    return cryptor.ComputeHash(data);
                 }
             }
         }
         //양방향 암호화
         public static class DuplexHash {
             public static string AES256Encrypt(string text, string password) {
+                return Convert.ToBase64String(AES256EncryptBinary(Encoding.UTF8.GetBytes(text), password));
+            }
+            public static byte[] AES256EncryptBinary(byte[] data, string password) {
                 RijndaelManaged rijndaelCipher = new RijndaelManaged();
-                byte[] plainText = Encoding.UTF8.GetBytes(text);
                 byte[] salt = Encoding.UTF8.GetBytes(password.Length.ToString());
                 PasswordDeriveBytes secretKey = new PasswordDeriveBytes(password, salt);
                 ICryptoTransform encryptor = rijndaelCipher.CreateEncryptor(secretKey.GetBytes(32), secretKey.GetBytes(16));
                 byte[] encryptedData;
                 using (MemoryStream memoryStream = new MemoryStream()) {
                     using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write)) {
-                        cryptoStream.Write(plainText, 0, plainText.Length);
+                        cryptoStream.Write(data, 0, data.Length);
                         cryptoStream.FlushFinalBlock();
                         encryptedData = memoryStream.ToArray();
                     }
                 }
-                return Convert.ToBase64String(encryptedData);
+                return encryptedData;
             }
+
             public static string AES256Decrypt(string encryptedText, string password) {
                 RijndaelManaged rijndaelCipher = new RijndaelManaged();
                 byte[] encryptedData = Convert.FromBase64String(encryptedText);
@@ -91,6 +103,21 @@ namespace GKit
                     }
                 }
                 return Encoding.UTF8.GetString(originData, 0, decryptedCount);
+            }
+            public static byte[] AES256DecryptBinary(byte[] encryptedData, string password) {
+                RijndaelManaged rijndaelCipher = new RijndaelManaged();
+                byte[] salt = Encoding.UTF8.GetBytes(password.Length.ToString());
+                PasswordDeriveBytes secretKey = new PasswordDeriveBytes(password, salt);
+                ICryptoTransform decryptor = rijndaelCipher.CreateDecryptor(secretKey.GetBytes(32), secretKey.GetBytes(16));
+                byte[] originData;
+                int decryptedCount;
+                using (MemoryStream memoryStream = new MemoryStream(encryptedData)) {
+                    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read)) {
+                        originData = new byte[encryptedData.Length];
+                        decryptedCount = cryptoStream.Read(originData, 0, originData.Length);
+                    }
+                }
+                return originData;
             }
         }
     }
