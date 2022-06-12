@@ -4,7 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+#if OnUnity
 using GKitForUnity.Security.Algorithm;
+#elif OnWPF
+using GKitForWPF.Security.Algorithm;
+#else
+using GKit.Security.Algorithm;
+#endif
 
 #if OnUnity
 namespace GKitForUnity

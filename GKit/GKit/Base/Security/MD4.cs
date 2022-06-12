@@ -1,8 +1,8 @@
-#if OnUnity
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 
+#if OnUnity
 namespace GKitForUnity
 #elif OnWPF
 namespace GKitForWPF
