@@ -1,4 +1,6 @@
 #if OnUnity
+using System;
+
 namespace GKitForUnity
 #elif OnWPF
 namespace GKitForWPF
@@ -10,5 +12,10 @@ namespace GKit
         public static IPoolable CreateInstance() {
             return null;
         }
+
+        event Action PoolDisposing;
+
+        void PoolInit(object[] args);
+        void PoolDispose();
     }
 }
