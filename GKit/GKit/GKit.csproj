@@ -7,10 +7,10 @@
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-	  <WarningLevel>4</WarningLevel>
+		<WarningLevel>4</WarningLevel>
 	</PropertyGroup>
-	<!--<ItemGroup>
+	<ItemGroup>
 		<FrameworkReference Include="Microsoft.WindowsDesktop.App" />
 		<FrameworkReference Include="Microsoft.WindowsDesktop.App.WPF" />
-	</ItemGroup>-->
+	</ItemGroup>
 </Project>
