@@ -52,7 +52,9 @@ namespace GKit
                 pool = new ObjectPool<IPoolable>();
                 poolDict.Add(type, pool);
 
-                pool.CreateInstanceMethod = CreateInstanceMethod;
+                pool.CreateInstanceMethod = () => {
+                    return CreateInstanceMethod(type);
+                };
                 pool.DisposeInstanceMethod += (IPoolable instance) => {
                     DisposeInstanceMethod?.Invoke(instance);
                 };
