@@ -131,7 +131,7 @@ namespace GKit
 				if (CreateInstanceMethod != null) {
 					instance = CreateInstanceMethod();
 				} else {
-					instance = default(T);
+					instance = (T)Activator.CreateInstance(typeof(T));
 				}
 				ReturnInstanceMethod?.Invoke(instance);
 				objectStack.Push(instance);
