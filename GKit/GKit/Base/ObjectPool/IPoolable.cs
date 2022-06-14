@@ -16,6 +16,6 @@ namespace GKit
 		event Action PoolDisposing;
 
 		void PoolInit(object[] args);
-		void Dispose();
+		void PoolDispose();
 	}
 }
