@@ -1,6 +1,6 @@
-#if OnUnity
 using System;
 
+#if OnUnity
 namespace GKitForUnity
 #elif OnWPF
 namespace GKitForWPF
@@ -8,14 +8,14 @@ namespace GKitForWPF
 namespace GKit
 #endif
 {
-    public interface IPoolable {
-        public static IPoolable CreateInstance() {
-            return null;
-        }
+	public interface IPoolable {
+		public static IPoolable CreateInstance() {
+			return null;
+		}
 
-        event Action PoolDisposing;
+		event Action PoolDisposing;
 
-        void PoolInit(object[] args);
-        void PoolDispose();
-    }
+		void PoolInit(object[] args);
+		void Dispose();
+	}
 }
