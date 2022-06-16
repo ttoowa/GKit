@@ -33,6 +33,7 @@
   - GKit.XInput
   
 ## 기능
+> 이 부분은 추후 작성할 예정입니다.
 ### GKit, GKitForWPF, GKitForUnity
 
 ### GKit.Json
