@@ -79,7 +79,7 @@ namespace GKit
 				return Convert.ToBase64String(AES256EncryptBinary(Encoding.UTF8.GetBytes(text), password));
 			}
 			public static byte[] AES256EncryptBinary(byte[] data, string password) {
-				RijndaelManaged rijndaelCipher = new RijndaelManaged();
+				Aes rijndaelCipher = Aes.Create();
 				byte[] salt = Encoding.UTF8.GetBytes(password.Length.ToString());
 				PasswordDeriveBytes secretKey = new PasswordDeriveBytes(password, salt);
 				ICryptoTransform encryptor = rijndaelCipher.CreateEncryptor(secretKey.GetBytes(32), secretKey.GetBytes(16));
@@ -95,20 +95,9 @@ namespace GKit
 			}
 
 			public static string AES256Decrypt(string encryptedText, string password) {
-				Aes rijndaelCipher = Aes.Create();
 				byte[] encryptedData = Convert.FromBase64String(encryptedText);
-				byte[] salt = Encoding.UTF8.GetBytes(password.Length.ToString());
-				PasswordDeriveBytes secretKey = new PasswordDeriveBytes(password, salt);
-				ICryptoTransform decryptor = rijndaelCipher.CreateDecryptor(secretKey.GetBytes(32), secretKey.GetBytes(16));
-				byte[] originData;
-				int decryptedCount;
-				using (MemoryStream memoryStream = new MemoryStream(encryptedData)) {
-					using (CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read)) {
-						originData = new byte[encryptedData.Length];
-						decryptedCount = cryptoStream.Read(originData, 0, originData.Length);
-					}
-				}
-				return Encoding.UTF8.GetString(originData, 0, decryptedCount);
+				byte[] originData = AES256DecryptBinary(encryptedData, password);
+				return Encoding.UTF8.GetString(originData);
 			}
 			public static byte[] AES256DecryptBinary(byte[] encryptedData, string password) {
 				Aes aes = Aes.Create();
@@ -123,7 +112,7 @@ namespace GKit
 						decryptedCount = cryptoStream.Read(originData, 0, originData.Length);
 					}
 				}
-				return originData;
+				return originData.Take(decryptedCount).ToArray();
 			}
 		}
 	}
