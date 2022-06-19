@@ -22,7 +22,7 @@ namespace GKit
 #endif
 {
 	/// <summary>
-	/// 일정시간 간격으로 함수를 반복호출하는 클래스입니다.
+	/// 루프를 돌며 일정시간 간격으로 함수를 반복호출하는 클래스입니다.
 	/// </summary>
 	public class GLoopEngine
 #if OnUnity
