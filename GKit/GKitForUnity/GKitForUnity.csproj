@@ -28,4 +28,10 @@
 			<HintPath>..\Dependency\UnityEngine.dll</HintPath>
 		</Reference>
 	</ItemGroup>
+	<ItemGroup>
+	  <EditorConfigFiles Remove="X:\Dropbox\WorkDesk\A_Unity\2019\20190209_ProjectV\Develop\TaleKit\Develop\.editorconfig" />
+	</ItemGroup>
+	<ItemGroup>
+	  <EditorConfigFiles Remove="X:\Dropbox\WorkDesk\A_Unity\2019\20190209_ProjectV\Develop\TaleKit\Develop\.editorconfig" />
+	</ItemGroup>
 </Project>
