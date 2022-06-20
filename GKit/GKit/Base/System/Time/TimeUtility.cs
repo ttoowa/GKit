@@ -15,7 +15,7 @@ namespace GKit
 			return GetTimeText(timeTextType, DateTime.Now);
 		}
 		public static string GetTimeText(TimeFormat timeTextType, DateTime time) {
-			return time.ToString(timeTextType.ToStringWithDesc(), CultureInfo.InvariantCulture);
+			return time.ToString(timeTextType.ToStringWithDescAttr(), CultureInfo.InvariantCulture);
 		}
 
 	}
