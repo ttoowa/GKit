@@ -38,10 +38,10 @@ namespace GKit
 
 			return pool.GetInstance();
 		}
-		public IPoolable GetInstance<T>() {
+		public T GetInstance<T>() where T : class, IPoolable {
 			ObjectPool<IPoolable> pool = GetOrCreatePool(typeof(T));
 
-			return pool.GetInstance();
+			return pool.GetInstance() as T;
 		}
 		public void ReturnInstance(IPoolable instance) {
 			Type type = instance.GetType();
