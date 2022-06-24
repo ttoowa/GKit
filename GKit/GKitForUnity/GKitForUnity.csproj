@@ -24,8 +24,33 @@
 		</Compile>
 	</ItemGroup>
 	<ItemGroup>
-		<Reference Include="UnityEngine">
-			<HintPath>..\Dependency\UnityEngine.dll</HintPath>
-		</Reference>
+	  <Reference Include="UnityEngine.AnimationModule">
+	    <HintPath>..\Dependency\Unity2022.1.1f1\UnityEngine.AnimationModule.dll</HintPath>
+	    <Private>False</Private>
+	  </Reference>
+	  <Reference Include="UnityEngine.CoreModule">
+	    <HintPath>..\Dependency\Unity2022.1.1f1\UnityEngine.CoreModule.dll</HintPath>
+	    <Private>False</Private>
+	  </Reference>
+	  <Reference Include="UnityEngine.IMGUIModule">
+	    <HintPath>..\Dependency\Unity2022.1.1f1\UnityEngine.IMGUIModule.dll</HintPath>
+	    <Private>False</Private>
+	  </Reference>
+	  <Reference Include="UnityEngine.InputLegacyModule">
+	    <HintPath>..\Dependency\Unity2022.1.1f1\UnityEngine.InputLegacyModule.dll</HintPath>
+	    <Private>False</Private>
+	  </Reference>
+	  <Reference Include="UnityEngine.Physics2DModule">
+	    <HintPath>..\Dependency\Unity2022.1.1f1\UnityEngine.Physics2DModule.dll</HintPath>
+	    <Private>False</Private>
+	  </Reference>
+	  <Reference Include="UnityEngine.PhysicsModule">
+	    <HintPath>..\Dependency\Unity2022.1.1f1\UnityEngine.PhysicsModule.dll</HintPath>
+	    <Private>False</Private>
+	  </Reference>
+	  <Reference Include="UnityEngine.TextRenderingModule">
+	    <HintPath>..\Dependency\Unity2022.1.1f1\UnityEngine.TextRenderingModule.dll</HintPath>
+	    <Private>False</Private>
+	  </Reference>
 	</ItemGroup>
 </Project>
