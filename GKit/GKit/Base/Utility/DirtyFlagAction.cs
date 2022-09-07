@@ -1,3 +1,5 @@
+using System;
+
 #if OnUnity
 namespace GKitForUnity
 #elif OnWPF
