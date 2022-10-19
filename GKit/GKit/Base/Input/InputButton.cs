@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 #if OnUnity
 namespace GKitForUnity
@@ -8,61 +9,62 @@ namespace GKitForWPF
 namespace GKit
 #endif
 {
-	public class InputButton {
-		public bool IsDown {
-			get; internal set;
-		}
-		public bool IsHold {
-			get; internal set;
-		}
-		public bool IsUp {
-			get; internal set;
-		}
+    public class InputButton {
+        public bool IsDown { get; internal set; }
 
-		public event Action Down;
-		public event Action DownOnce;
+        public bool IsHold { get; internal set; }
 
-		public event Action Up;
-		public event Action UpOnce;
+        public bool IsUp { get; internal set; }
 
-		public event Action Hold;
-		public event Action HoldOnce;
+        public event Action Down;
+        public event Action DownOnce;
 
-		internal InputButton() {
+        public event Action Up;
+        public event Action UpOnce;
 
-		}
-		internal void ResetState() {
-			IsDown = false;
-			IsHold = false;
-			IsUp = false;
-		}
-		internal void UpdateState(bool onHold) {
-			IsDown = false;
-			IsUp = false;
+        public event Action Hold;
+        public event Action HoldOnce;
 
-			if (IsHold) {
-				if (!onHold) {
-					IsUp = true;
+        internal InputButton() {
+        }
 
-					UpOnce?.Invoke();
-					UpOnce = null;
-					Up?.Invoke();
-				}
-			} else {
-				if (onHold) {
-					IsDown = true;
-					DownOnce?.Invoke();
-					DownOnce = null;
-					Down?.Invoke();
-				}
-			}
+        internal void ResetState() {
+            IsDown = false;
+            IsHold = false;
+            IsUp = false;
+        }
 
-			IsHold = onHold;
-			if(onHold) {
-				HoldOnce?.Invoke();
-				HoldOnce = null;
-				Hold?.Invoke();
-			}
-		}
-	}
+        internal void UpdateState(bool onHold) {
+            IsDown = false;
+            IsUp = false;
+
+            if (IsHold) {
+                if (!onHold) {
+                    IsUp = true;
+
+                    Action currentEvent = UpOnce;
+                    UpOnce = null;
+                    currentEvent?.Invoke();
+                    Up?.Invoke();
+                }
+            } else {
+                if (onHold) {
+                    IsDown = true;
+
+                    Action currentEvent = DownOnce;
+                    DownOnce = null;
+                    currentEvent?.Invoke();
+                    Down?.Invoke();
+                }
+            }
+
+            IsHold = onHold;
+            if (onHold) {
+                Action currentEvent = HoldOnce;
+                HoldOnce = null;
+                currentEvent?.Invoke();
+                Hold?.Invoke();
+            }
+        }
+    }
 }
