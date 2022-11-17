@@ -1,57 +1,57 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>netstandard2.1</TargetFramework>
-		<Nullable>disable</Nullable>
-		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-		<LangVersion>10</LangVersion>
-	</PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <Nullable>disable</Nullable>
+        <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+        <LangVersion>10</LangVersion>
+    </PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<DefineConstants>$(DefineConstants)TRACE;OnUnity</DefineConstants>
-	</PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <DefineConstants>$(DefineConstants)TRACE;OnUnity</DefineConstants>
+    </PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-		<DefineConstants>$(DefineConstants)TRACE;OnUnity</DefineConstants>
-	</PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <DefineConstants>$(DefineConstants)TRACE;OnUnity</DefineConstants>
+    </PropertyGroup>
 
-	<!--<ItemGroup>
-		<FrameworkReference Include="Microsoft.WindowsDesktop.App" />
-		<FrameworkReference Include="Microsoft.WindowsDesktop.App.WPF" />
-	</ItemGroup>-->
-	<ItemGroup>
-		<Compile Include="..\GKit\Base\**\*.cs">
-			<Link>Base\%(RecursiveDir)%(Filename)%(Extension)</Link>
-		</Compile>
-	</ItemGroup>
-	<ItemGroup>
-	  <Reference Include="UnityEngine.AnimationModule">
-	    <HintPath>..\Dependency\Unity2022.1.1f1\UnityEngine.AnimationModule.dll</HintPath>
-	    <Private>False</Private>
-	  </Reference>
-	  <Reference Include="UnityEngine.CoreModule">
-	    <HintPath>..\Dependency\Unity2022.1.1f1\UnityEngine.CoreModule.dll</HintPath>
-	    <Private>False</Private>
-	  </Reference>
-	  <Reference Include="UnityEngine.IMGUIModule">
-	    <HintPath>..\Dependency\Unity2022.1.1f1\UnityEngine.IMGUIModule.dll</HintPath>
-	    <Private>False</Private>
-	  </Reference>
-	  <Reference Include="UnityEngine.InputLegacyModule">
-	    <HintPath>..\Dependency\Unity2022.1.1f1\UnityEngine.InputLegacyModule.dll</HintPath>
-	    <Private>False</Private>
-	  </Reference>
-	  <Reference Include="UnityEngine.Physics2DModule">
-	    <HintPath>..\Dependency\Unity2022.1.1f1\UnityEngine.Physics2DModule.dll</HintPath>
-	    <Private>False</Private>
-	  </Reference>
-	  <Reference Include="UnityEngine.PhysicsModule">
-	    <HintPath>..\Dependency\Unity2022.1.1f1\UnityEngine.PhysicsModule.dll</HintPath>
-	    <Private>False</Private>
-	  </Reference>
-	  <Reference Include="UnityEngine.TextRenderingModule">
-	    <HintPath>..\Dependency\Unity2022.1.1f1\UnityEngine.TextRenderingModule.dll</HintPath>
-	    <Private>False</Private>
-	  </Reference>
-	</ItemGroup>
+    <!--<ItemGroup>
+        <FrameworkReference Include="Microsoft.WindowsDesktop.App" />
+        <FrameworkReference Include="Microsoft.WindowsDesktop.App.WPF" />
+    </ItemGroup>-->
+    <ItemGroup>
+        <Compile Include="..\GKit\Base\**\*.cs">
+            <Link>Base\%(RecursiveDir)%(Filename)%(Extension)</Link>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup>
+        <Reference Include="UnityEngine.AnimationModule">
+            <HintPath>..\Dependency\Unity2022.1.1f1\UnityEngine.AnimationModule.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.CoreModule">
+            <HintPath>..\Dependency\Unity2022.1.1f1\UnityEngine.CoreModule.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.IMGUIModule">
+            <HintPath>..\Dependency\Unity2022.1.1f1\UnityEngine.IMGUIModule.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.InputLegacyModule">
+            <HintPath>..\Dependency\Unity2022.1.1f1\UnityEngine.InputLegacyModule.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.Physics2DModule">
+            <HintPath>..\Dependency\Unity2022.1.1f1\UnityEngine.Physics2DModule.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.PhysicsModule">
+            <HintPath>..\Dependency\Unity2022.1.1f1\UnityEngine.PhysicsModule.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.TextRenderingModule">
+            <HintPath>..\Dependency\Unity2022.1.1f1\UnityEngine.TextRenderingModule.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+    </ItemGroup>
 </Project>

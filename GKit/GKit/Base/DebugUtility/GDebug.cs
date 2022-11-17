@@ -14,45 +14,48 @@ namespace GKitForWPF
 namespace GKit
 #endif
 {
-	public static class GDebug {
+    public static class GDebug {
+        private static readonly bool onConsole;
 
-		[DllImport("kernel32.dll")]
-		private static extern IntPtr GetConsoleWindow();
+        public static bool LogMode { get; set; } = true;
 
-		private static bool onConsole;
+        static GDebug() {
+            onConsole = GetConsoleWindow() != IntPtr.Zero;
+        }
 
-		static GDebug() {
-			onConsole = GetConsoleWindow() != IntPtr.Zero;
-		}
-		public static bool LogMode {
-			get; set;
-		} = true;
-		public static void Log(object text, GLogLevel logLevel = 0) {
-			if (!LogMode)
-				return;
-			switch (logLevel) {
-				default:
-				case GLogLevel.Log:
-					LogPlatform($"GDebug_Log :: {text}");
-					break;
-				case GLogLevel.Warnning:
-					LogPlatform($"GDebug_Warning :: {text}");
-					break;
-				case GLogLevel.Error:
-					LogPlatform($"GDebug_Error :: {text}");
-					throw new Exception($"GLog_Error :: {text}");
-			}
-		}
-		private static void LogPlatform(string text) {
+        [DllImport("kernel32.dll")]
+        private static extern IntPtr GetConsoleWindow();
+
+        public static void Log(object text, GLogLevel logLevel = 0) {
+            if (!LogMode) {
+                return;
+            }
+
+            switch (logLevel) {
+                default:
+                case GLogLevel.Log:
+                    LogPlatform($"GDebug_Log :: {text}");
+                    break;
+                case GLogLevel.Warnning:
+                    LogPlatform($"GDebug_Warning :: {text}");
+                    break;
+                case GLogLevel.Error:
+                    LogPlatform($"GDebug_Error :: {text}");
+                    throw new Exception($"GLog_Error :: {text}");
+            }
+        }
+
+        private static void LogPlatform(string text) {
 #if OnUnity
-			Debug.Log(
+            Debug.Log(
 #else
-			if (onConsole) {
-				Console.WriteLine(text);
-			}
-			Debug.WriteLine(
+            if (onConsole) {
+                Console.WriteLine(text);
+            }
+
+            Debug.WriteLine(
 #endif
-						text);
-		}
-	}
+                text);
+        }
+    }
 }

@@ -6,9 +6,9 @@ namespace GKitForWPF
 namespace GKit
 #endif
 {
-	public enum GLogLevel {
-		Log,
-		Warnning,
-		Error,
-	}
+    public enum GLogLevel {
+        Log,
+        Warnning,
+        Error
+    }
 }

@@ -1,26 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>netstandard2.1</TargetFramework>
-		<ImplicitUsings>disable</ImplicitUsings>
-		<Nullable>disable</Nullable>
-		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-		<LangVersion>10</LangVersion>
-	</PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+        <LangVersion>10</LangVersion>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<Reference Include="XInputDotNetPure">
-			<HintPath>Plugins\XInputDotNetPure.dll</HintPath>
-		</Reference>
-	</ItemGroup>
+    <ItemGroup>
+        <Reference Include="XInputDotNetPure">
+            <HintPath>Plugins\XInputDotNetPure.dll</HintPath>
+        </Reference>
+    </ItemGroup>
 
-	<ItemGroup>
-		<None Update="Plugins\x86\XInputInterface.dll">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Update="Plugins\x86_64\XInputInterface.dll">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-	</ItemGroup>
+    <ItemGroup>
+        <None Update="Plugins\x86\XInputInterface.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Plugins\x86_64\XInputInterface.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
 
 </Project>

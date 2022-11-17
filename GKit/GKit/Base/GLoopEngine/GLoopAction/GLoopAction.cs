@@ -8,48 +8,54 @@ namespace GKitForWPF
 namespace GKit
 #endif
 {
-	/// <summary>
-	/// 코어에서 실행하는 작업 단위입니다.
-	/// </summary>
-	public class GLoopAction {
-		public int Timer => timer;
-		public Action Action => action;
-		public int DelayTime => delayTime;
-		public GWhen TaskEvent => taskEvent;
+    /// <summary>
+    ///     코어에서 실행하는 작업 단위입니다.
+    /// </summary>
+    public class GLoopAction {
+        public int Timer { get; private set; }
 
-		private GLoopEngine ownerCore;
-		private int timer;
-		private Action action;
-		private int delayTime;
-		private GWhen taskEvent;
-		internal int currentFrame;
+        public Action Action { get; }
 
-		internal GLoopAction(GLoopEngine ownerCore, Action action, int delayTime, GWhen taskEvent) {
-			this.ownerCore = ownerCore;
-			this.action = action;
-			this.timer = delayTime;
-			this.delayTime = delayTime;
-			this.taskEvent = taskEvent;
-		}
-		public void Stop() {
-			ownerCore.RemoveLoopAction(this);
-		}
-		internal void RunTimer() {
-			if (UpdateTimer()) {
-				action();
-			}
-		}
-		internal void RunImmediately() {
-			action();
-		}
-		private bool UpdateTimer() {
-			if (delayTime <= 0)
-				return false;
-			if (++timer >= delayTime) {
-				timer = 0;
-				return true;
-			}
-			return false;
-		}
-	}
+        public int DelayTime { get; }
+
+        public GWhen TaskEvent { get; }
+
+        private readonly GLoopEngine ownerCore;
+        internal int currentFrame;
+
+        internal GLoopAction(GLoopEngine ownerCore, Action action, int delayTime, GWhen taskEvent) {
+            this.ownerCore = ownerCore;
+            Action = action;
+            Timer = delayTime;
+            DelayTime = delayTime;
+            TaskEvent = taskEvent;
+        }
+
+        public void Stop() {
+            ownerCore.RemoveLoopAction(this);
+        }
+
+        internal void RunTimer() {
+            if (UpdateTimer()) {
+                Action();
+            }
+        }
+
+        internal void RunImmediately() {
+            Action();
+        }
+
+        private bool UpdateTimer() {
+            if (DelayTime <= 0) {
+                return false;
+            }
+
+            if (++Timer >= DelayTime) {
+                Timer = 0;
+                return true;
+            }
+
+            return false;
+        }
+    }
 }

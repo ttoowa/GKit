@@ -29,29 +29,29 @@ public static class GSerializer {
     }
 
     public static void SerializeFields(this JObject jObject, object model, GSerializeSettings settings = null) {
-        var fields = model.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).OrderBy(field => field.MetadataToken).ToArray();
+        FieldInfo[] fields = model.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).OrderBy(field => field.MetadataToken).ToArray();
 
-        foreach (var fieldInfo in fields) {
+        foreach (FieldInfo fieldInfo in fields) {
             if (settings?.requiredAttributeType != null) {
                 if (!fieldInfo.GetCustomAttributes(settings.requiredAttributeType, true).Any()) {
                     continue;
                 }
             }
 
-            var preSkip = false;
+            bool preSkip = false;
             settings?.preHandler?.Invoke(model, fieldInfo, ref preSkip);
             if (preSkip) {
                 continue;
             }
 
-            var value = fieldInfo.GetValue(model);
+            object value = fieldInfo.GetValue(model);
             JToken jToken = null;
 
             if (value == null) {
                 jToken = string.Empty;
             } else if (fieldInfo.FieldType.IsValueType && !fieldInfo.FieldType.IsEnum && !fieldInfo.FieldType.IsPrimitive) {
                 // Struct
-                var useDefaultHandler = true;
+                bool useDefaultHandler = true;
                 if (settings?.memberHandler != null) {
                     JObject jField = null;
                     useDefaultHandler = !settings.memberHandler.Invoke(model, fieldInfo, out jField);
@@ -59,14 +59,14 @@ public static class GSerializer {
                 }
 
                 if (useDefaultHandler) {
-                    var jField = new JObject();
+                    JObject jField = new();
                     jField.SerializeFields(value);
 
                     jToken = jField;
                 }
             } else if (fieldInfo.FieldType.IsClass && fieldInfo.FieldType != typeof(string)) {
                 // Class
-                var useDefaultHandler = true;
+                bool useDefaultHandler = true;
                 if (settings?.memberHandler != null) {
                     JObject jField = null;
                     useDefaultHandler = !settings.memberHandler.Invoke(model, fieldInfo, out jField);
@@ -75,15 +75,15 @@ public static class GSerializer {
 
                 if (useDefaultHandler) {
                     if (typeof(IEnumerable).IsAssignableFrom(fieldInfo.FieldType)) {
-                        var jSettings = new JsonSerializerSettings();
+                        JsonSerializerSettings jSettings = new();
                         if (settings?.requiredAttributeType != null) {
                             jSettings.ContractResolver = new RequireAttributeResolver(settings.requiredAttributeType);
                         }
 
-                        var jString = JsonConvert.SerializeObject(fieldInfo.GetValue(model), jSettings);
+                        string jString = JsonConvert.SerializeObject(fieldInfo.GetValue(model), jSettings);
                         jToken = JToken.Parse(jString);
                     } else {
-                        var jField = new JObject();
+                        JObject jField = new();
                         jField.SerializeFields(value, settings);
 
                         jToken = jField;
@@ -106,7 +106,7 @@ public static class GSerializer {
         }
 
         settings.preHandler += (object handleModel, FieldInfo fieldInfo, ref bool skip) => {
-            var editorAttribute = fieldInfo.GetCustomAttribute(typeof(Attr)) as Attr;
+            Attr editorAttribute = fieldInfo.GetCustomAttribute(typeof(Attr)) as Attr;
 
             if (editorAttribute == null) {
                 skip = true;
@@ -121,10 +121,10 @@ public static class GSerializer {
             return;
         }
 
-        var fields = model.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).OrderBy(field => field.MetadataToken).ToArray();
+        FieldInfo[] fields = model.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).OrderBy(field => field.MetadataToken).ToArray();
 
-        foreach (var fieldInfo in fields) {
-            var preSkip = false;
+        foreach (FieldInfo fieldInfo in fields) {
+            bool preSkip = false;
             settings?.preHandler?.Invoke(model, fieldInfo, ref preSkip);
             if (preSkip) {
                 continue;
@@ -136,13 +136,13 @@ public static class GSerializer {
 
             if (fieldInfo.FieldType.IsValueType && !fieldInfo.FieldType.IsEnum && !fieldInfo.FieldType.IsPrimitive) {
                 // Struct
-                var jField = jObject.GetValue(fieldInfo.Name) as JObject;
+                JObject jField = jObject.GetValue(fieldInfo.Name) as JObject;
 
                 if (jField == null) {
                     continue;
                 }
 
-                var useDefaultHandler = true;
+                bool useDefaultHandler = true;
                 object field = null;
                 if (settings?.memberHandler != null) {
                     useDefaultHandler = !settings.memberHandler.Invoke(model, fieldInfo, out field);
@@ -156,13 +156,13 @@ public static class GSerializer {
                 fieldInfo.SetValue(model, field);
             } else if (fieldInfo.FieldType.IsClass && fieldInfo.FieldType != typeof(string)) {
                 // Class
-                var jFieldToken = jObject.GetValue(fieldInfo.Name);
+                JToken jFieldToken = jObject.GetValue(fieldInfo.Name);
 
                 if (jFieldToken == null) {
                     continue;
                 }
 
-                var useDefaultHandler = true;
+                bool useDefaultHandler = true;
                 object field = null;
                 if (settings?.memberHandler != null) {
                     useDefaultHandler = !settings.memberHandler.Invoke(model, fieldInfo, out field);
@@ -182,7 +182,7 @@ public static class GSerializer {
                 }
             } else if (fieldInfo.FieldType == typeof(string) || fieldInfo.FieldType.IsEnum || fieldInfo.FieldType.IsPrimitive) {
                 // Enum or String or Primitive
-                var stringValue = jObject.GetValue<string>(fieldInfo.Name);
+                string stringValue = jObject.GetValue<string>(fieldInfo.Name);
 
                 if (fieldInfo.FieldType.IsEnum) {
                     fieldInfo.SetValue(model, Enum.Parse(fieldInfo.FieldType, stringValue));
@@ -201,7 +201,7 @@ public static class GSerializer {
         }
 
         protected override List<MemberInfo> GetSerializableMembers(Type objectType) {
-            var members = base.GetSerializableMembers(objectType);
+            List<MemberInfo> members = base.GetSerializableMembers(objectType);
 
             if (objectType.IsClass && objectType != typeof(string)) {
                 members = members.Where(x => x.GetCustomAttributes(AttributeType, true).Any()).ToList();

@@ -15,98 +15,97 @@ namespace GKitForWPF
 namespace GKit
 #endif
 {
-	public class GJobManager {
-		/// <summary>
-		/// 한 프레임 당 작업을 실행할 수 있는 최대 경과 시간 (기본 : 4)
-		/// </summary>
-		public float MaxWorkMillisec {
-			get {
-				return maxWorkMillisec;
-			}
-			set {
-				if (value == 0f) {
-					maxWorkMillisec = 100000f;
-				} else {
-					maxWorkMillisec = Mathf.Max(1f, value);
-				}
-			}
-		}
-		public int JobCount {
-			get {
-				return jobList.Count;
-			}
-		}
-		public float ElapsedMillisec => elapsedMillisec;
+    public class GJobManager {
+        /// <summary>
+        ///     한 프레임 당 작업을 실행할 수 있는 최대 경과 시간 (기본 : 4)
+        /// </summary>
+        public float MaxWorkMillisec {
+            get => maxWorkMillisec;
+            set {
+                if (value == 0f) {
+                    maxWorkMillisec = 100000f;
+                } else {
+                    maxWorkMillisec = Mathf.Max(1f, value);
+                }
+            }
+        }
 
-		private float maxWorkMillisec;
-		private float elapsedMillisec;
-		private List<GJob> jobList = new List<GJob>();
-		private Stopwatch jobWatch = new Stopwatch();
+        public int JobCount => jobList.Count;
 
-		public GJobManager() {
-			MaxWorkMillisec = 0f;
-		}
-		public void AddJob(Action action, float delaySec = 0f) {
-			Task pushTask = Task.Factory.StartNew(() => {
-				lock (jobList) {
-					jobList.Add(new GJob(this, action, delaySec * 1000f));
-				}
-			});
-		}
+        public float ElapsedMillisec { get; private set; }
+        private readonly List<GJob> jobList = new();
+        private readonly Stopwatch jobWatch = new();
 
-		public void ExecuteJob() {
-			jobWatch.Start();
+        private float maxWorkMillisec;
 
-			GJob job;
-			for (int i = 0; i < jobList.Count; ++i) {
-				lock (jobList) {
-					job = jobList[i];
-					if (job.Execute()) {
-						jobList.RemoveAt(i);
-					}
-				}
-				if (jobWatch.GetElapsedMilliseconds() > maxWorkMillisec) {
-					break;
-				}
-			}
-			jobWatch.Stop();
-			elapsedMillisec = jobWatch.GetElapsedMilliseconds();
-			jobWatch.Reset();
-		}
+        public GJobManager() {
+            MaxWorkMillisec = 0f;
+        }
 
-		private class GJob {
-			public GJobManager ownerJobManager;
-			public Action action;
-			public float delayMillisec;
-			public Stopwatch watch;
-			public float DeltaMillisec => watch.GetElapsedMilliseconds();
+        public void AddJob(Action action, float delaySec = 0f) {
+            Task pushTask = Task.Factory.StartNew(() => {
+                lock (jobList) {
+                    jobList.Add(new GJob(this, action, delaySec * 1000f));
+                }
+            });
+        }
 
-			public GJob(GJobManager ownerJobManager, Action action, float delayMillisec = 0f) {
-				this.ownerJobManager = ownerJobManager;
-				this.action = action;
-				this.delayMillisec = delayMillisec;
-				this.watch = new Stopwatch();
-				if (delayMillisec > 0f) {
-					watch.Start();
-				}
-			}
-			public bool Execute() {
-				if (delayMillisec <= 0f) {
-					try {
-						action();
-					} catch (Exception ex) {
-						GDebug.Log($"{nameof(GJobManager)} ::{Environment.NewLine}{ex.ToString()}");
-					}
+        public void ExecuteJob() {
+            jobWatch.Start();
 
-					watch.Stop();
-					watch = null;
-					return true;
-				} else {
-					delayMillisec -= DeltaMillisec;
-					watch.Restart();
-					return false;
-				}
-			}
-		}
-	}
+            GJob job;
+            for (int i = 0; i < jobList.Count; ++i) {
+                lock (jobList) {
+                    job = jobList[i];
+                    if (job.Execute()) {
+                        jobList.RemoveAt(i);
+                    }
+                }
+
+                if (jobWatch.GetElapsedMilliseconds() > maxWorkMillisec) {
+                    break;
+                }
+            }
+
+            jobWatch.Stop();
+            ElapsedMillisec = jobWatch.GetElapsedMilliseconds();
+            jobWatch.Reset();
+        }
+
+        private class GJob {
+            public float DeltaMillisec => watch.GetElapsedMilliseconds();
+            public readonly Action action;
+            public GJobManager ownerJobManager;
+            public float delayMillisec;
+            public Stopwatch watch;
+
+            public GJob(GJobManager ownerJobManager, Action action, float delayMillisec = 0f) {
+                this.ownerJobManager = ownerJobManager;
+                this.action = action;
+                this.delayMillisec = delayMillisec;
+                watch = new Stopwatch();
+                if (delayMillisec > 0f) {
+                    watch.Start();
+                }
+            }
+
+            public bool Execute() {
+                if (delayMillisec <= 0f) {
+                    try {
+                        action();
+                    } catch (Exception ex) {
+                        GDebug.Log($"{nameof(GJobManager)} ::{Environment.NewLine}{ex.ToString()}");
+                    }
+
+                    watch.Stop();
+                    watch = null;
+                    return true;
+                } else {
+                    delayMillisec -= DeltaMillisec;
+                    watch.Restart();
+                    return false;
+                }
+            }
+        }
+    }
 }

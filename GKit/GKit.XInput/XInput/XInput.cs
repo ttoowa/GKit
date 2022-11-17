@@ -1,31 +1,30 @@
 ﻿using XInputDotNetPure;
 
-namespace GKit.XInput {
-	public static class XInput {
-		public static float AxisThreshold = 0.05f;
-		public const int MaxPlayerCount = 4;
+namespace GKit.XInput;
 
-		public static XInputPlayer[] Players {
-			get; private set;
-		}
-		public static XInputPlayer FirstPlayer => Players[0];
+public static class XInput {
+    public const int MaxPlayerCount = 4;
+    public static float AxisThreshold = 0.05f;
 
-		static XInput() {
-			Players = new XInputPlayer[MaxPlayerCount];
+    public static XInputPlayer[] Players { get; }
 
-			for (int playerI = 0; playerI < Players.Length; ++playerI) {
-				XInputPlayer player = Players[playerI] = new XInputPlayer();
+    public static XInputPlayer FirstPlayer => Players[0];
 
-				player.Index = (PlayerIndex)playerI;
-			}
-		}
+    static XInput() {
+        Players = new XInputPlayer[MaxPlayerCount];
 
-		public static void Update() {
-			for (int playerI = 0; playerI < Players.Length; ++playerI) {
-				XInputPlayer player = Players[playerI];
+        for (int playerI = 0; playerI < Players.Length; ++playerI) {
+            XInputPlayer player = Players[playerI] = new XInputPlayer();
 
-				player.Update();
-			}
-		}
-	}
+            player.Index = (PlayerIndex)playerI;
+        }
+    }
+
+    public static void Update() {
+        for (int playerI = 0; playerI < Players.Length; ++playerI) {
+            XInputPlayer player = Players[playerI];
+
+            player.Update();
+        }
+    }
 }

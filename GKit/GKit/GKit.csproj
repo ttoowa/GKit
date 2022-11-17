@@ -1,23 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>netcoreapp3.1</TargetFramework>
-		<ImplicitUsings>disable</ImplicitUsings>
-		<Nullable>disable</Nullable>
-		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-		<LangVersion>10</LangVersion>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-		<WarningLevel>4</WarningLevel>
-	</PropertyGroup>
-	<ItemGroup>
-		<FrameworkReference Include="Microsoft.WindowsDesktop.App" />
-		<FrameworkReference Include="Microsoft.WindowsDesktop.App.WPF" />
-	</ItemGroup>
-	<ItemGroup>
-	  <EditorConfigFiles Remove="X:\Dropbox\WorkDesk\A_Unity\2019\20190209_ProjectV\Develop\TaleKit\Develop\.editorconfig" />
-	</ItemGroup>
-	<ItemGroup>
-	  <EditorConfigFiles Remove="X:\Dropbox\WorkDesk\A_Unity\2019\20190209_ProjectV\Develop\TaleKit\Develop\.editorconfig" />
-	</ItemGroup>
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+        <LangVersion>10</LangVersion>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.WindowsDesktop.App"/>
+        <FrameworkReference Include="Microsoft.WindowsDesktop.App.WPF"/>
+    </ItemGroup>
+    <ItemGroup>
+        <EditorConfigFiles Remove="X:\Dropbox\WorkDesk\A_Unity\2019\20190209_ProjectV\Develop\TaleKit\Develop\.editorconfig"/>
+    </ItemGroup>
+    <ItemGroup>
+        <EditorConfigFiles Remove="X:\Dropbox\WorkDesk\A_Unity\2019\20190209_ProjectV\Develop\TaleKit\Develop\.editorconfig"/>
+    </ItemGroup>
 </Project>
