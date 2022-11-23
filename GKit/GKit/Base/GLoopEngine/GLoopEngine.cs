@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using Debug = System.Diagnostics.Debug;
 #if OnUnity
-using Debug = UnityEngine.Debug;
+using UDebug = UnityEngine.Debug;
 using UnityEngine;
 using GKitForUnity.Core.Component;
 #elif OnWPF
 using GKitForWPF.Core.Component;
+
 #else
 using GKit.Core.Component;
 #endif
@@ -21,415 +23,443 @@ namespace GKitForWPF
 namespace GKit
 #endif
 {
-	/// <summary>
-	/// 루프를 돌며 일정시간 간격으로 함수를 반복호출하는 클래스입니다.
-	/// </summary>
-	public class GLoopEngine
+    /// <summary>
+    ///     루프를 돌며 일정시간 간격으로 함수를 반복호출하는 클래스입니다.
+    /// </summary>
+    public class GLoopEngine
 #if OnUnity
-	: MonoBehaviour
+        : MonoBehaviour
 #else
-	: IDisposable
+        : IDisposable
 #endif
-	{
-		public static GLoopEngine MainEngine {
-			get; internal set;
-		}
-		public bool IsRunning {
-			get; private set;
-		}
+    {
+        public static GLoopEngine MainEngine { get; internal set; }
+        public bool IsRunning { get; private set; }
 #if OnUnity
-		public int FPS {
-			get {
-				return Application.targetFrameRate;
-			}
-			set {
-				Application.targetFrameRate = value;
-			}
-		}
+        public int FPS {
+            get => Application.targetFrameRate;
+            set => Application.targetFrameRate = value;
+        }
 #else
-		public int FPS {
-			get {
-				return fps;
-			}
-			set {
-				fps = value;
-			}
-		}
+        public int FPS { get; set; } = 60;
 #endif
-		public float LoopElapsedMilliseconds => singleLoopMs;
-		public float LoopElapsedSeconds => LoopElapsedMilliseconds * 0.001f;
-		public float DeltaMilliseconds => sleepMs + globalLoopMs;
-		public float DeltaSeconds => DeltaMilliseconds * 0.001f;
-		public int CurrentFrame => currentFrame;
-		public int MaxOverlapFrame { get; set; } = 1;
+        public float LoopElapsedMilliseconds { get; private set; }
 
-		//TaskList
-		private GLoopGroup[] GLoopGroups = new GLoopGroup[(int)GWhen.NUM];
-		private List<GRoutine> GRoutineList = new List<GRoutine>();
-		//Write
-		private Queue<GLoopAction> loopActionAddQueue = new Queue<GLoopAction>();
-		private Queue<GLoopAction> loopActionRemoveQueue = new Queue<GLoopAction>();
-		private Queue<GRoutine> GRoutineAddQueue = new Queue<GRoutine>();
-		private Queue<GRoutine> GRoutineRemoveQueue = new Queue<GRoutine>();
-		private object loopActionWriteLock = new object();
-		private object GRoutineWriteLock = new object();
-		//Time
-		private Stopwatch globalLoopWatch = new Stopwatch();
-		private Stopwatch singleLoopWatch = new Stopwatch();
-		private Stopwatch sleepWatch = new Stopwatch();
-		internal int currentFrame;
-		private float singleLoopMs;
-		private float globalLoopMs;
-		private float sleepMs;
-		//InvokerParam
-		private float tickMs;
-		private float overTime;
-		//Job
-		private GJobManager jobManager;
+        public float LoopElapsedSeconds => LoopElapsedMilliseconds * 0.001f;
+        public float DeltaMilliseconds => sleepMs + globalLoopMs;
+        public float DeltaSeconds => DeltaMilliseconds * 0.001f;
+        public int CurrentFrame => currentFrame;
+        public int MaxOverlapFrame { get; set; } = 1;
+
+        public bool IsErrorOccurred { get; private set; }
+
+        //TaskList
+        private readonly GLoopGroup[] GLoopGroups = new GLoopGroup[(int)GWhen.NUM];
+
+        private readonly List<GRoutine> GRoutineList = new();
+
+        //Write
+        private readonly Queue<GLoopAction> loopActionAddQueue = new();
+        private readonly Queue<GLoopAction> loopActionRemoveQueue = new();
+        private readonly Queue<GRoutine> GRoutineAddQueue = new();
+        private readonly Queue<GRoutine> GRoutineRemoveQueue = new();
+        private readonly object loopActionWriteLock = new();
+
+        private readonly object GRoutineWriteLock = new();
+
+        //Time
+        private readonly Stopwatch globalLoopWatch = new();
+        private readonly Stopwatch singleLoopWatch = new();
+        private readonly Stopwatch sleepWatch = new();
+        internal int currentFrame;
+        private float globalLoopMs;
+
+        private float sleepMs;
+
+        //InvokerParam
+        private float tickMs;
+
+        private float overTime;
+
+        //Job
+        private GJobManager jobManager;
 
 
 #if OnUnity
-		public GLoopSyncMode syncMode;
-		public bool registerInput = true;
-		public bool autoStart = true;
+        public GLoopSyncMode syncMode;
+        public bool registerInput = true;
+        public bool autoStart = true;
 #else
-		public Task MainLoopTask {
-			get; private set;
-		}
-		private int fps = 60;
+        public Task MainLoopTask { get; private set; }
 
-		public GLoopEngine(int FPS = 60, bool registInput = true) {
-			this.fps = FPS;
+        public GLoopEngine(int FPS = 60, bool registInput = true) {
+            this.FPS = FPS;
 
-			Init(registInput);
-		}
-		public void Dispose() {
-			StopLoop();
-		}
-		private void Init(bool registInput) {
-			jobManager = new GJobManager();
-			AddLoopAction(jobManager.ExecuteJob);
+            Init(registInput);
+        }
 
-			for (int i = 0; i < GLoopGroups.Length; i++) {
-				GLoopGroups[i] = new GLoopGroup(this, (GWhen)i);
-			}
-			if (registInput) {
-				RegistInput();
-			}
-		}
+        public void Dispose() {
+            StopLoop();
+        }
+
+        private void Init(bool registInput) {
+            jobManager = new GJobManager();
+            AddLoopAction(jobManager.ExecuteJob);
+
+            for (int i = 0; i < GLoopGroups.Length; i++) {
+                GLoopGroups[i] = new GLoopGroup(this, (GWhen)i);
+            }
+
+            if (registInput) {
+                RegistInput();
+            }
+        }
 #endif
 
-		//Add tasks
+        //Add tasks
 #if OnUnity
-		private void Awake() {
-			Init();
-		}
-		private void Start() {
-			if (registerInput) {
-				RegistInput();
-			}
-			if (autoStart) {
-				StartLoop();
-			}
-		}
-		private void Init() {
-			jobManager = new GJobManager();
-			AddLoopAction(jobManager.ExecuteJob);
+        private void Awake() {
+            Init();
+        }
 
-			for (int i = 0; i < GLoopGroups.Length; i++) {
-				GLoopGroups[i] = new GLoopGroup(this, (GWhen)i);
-			}
+        private void Start() {
+            if (registerInput) {
+                RegistInput();
+            }
 
-		}
+            if (autoStart) {
+                StartLoop();
+            }
+        }
+
+        private void Init() {
+            jobManager = new GJobManager();
+            AddLoopAction(jobManager.ExecuteJob);
+
+            for (int i = 0; i < GLoopGroups.Length; i++) {
+                GLoopGroups[i] = new GLoopGroup(this, (GWhen)i);
+            }
+        }
 #endif
-		public GRoutine AddGRoutine(IEnumerator routine) {
-			//메인 스레드에서 같은 락이 두 번 걸릴 수 있어 이렇게 처리했다.
-			//아래 함수들에서도 같은 이유.
-			GRoutine coroutine = new GRoutine(this, routine);
-			Task pushTask = Task.Factory.StartNew(() => {
-				lock (GRoutineWriteLock) {
-					GRoutineAddQueue.Enqueue(coroutine);
-				}
-			});
-			pushTask.Wait();
-			return coroutine;
-		}
-		public void RemoveGRoutine(GRoutine routince) {
-			Task pushTask = Task.Factory.StartNew(() => {
-				lock (GRoutineWriteLock) {
-					GRoutineRemoveQueue.Enqueue(routince);
-				}
-			});
-			pushTask.Wait();
-		}
-		public GLoopAction AddLoopAction(Action action, GLoopCycle cycle = GLoopCycle.EveryFrame, GWhen removeCondition = GWhen.None) {
-			return AddLoopAction(action, (int)cycle, removeCondition);
-		}
-		public GLoopAction AddLoopAction(Action action, int cycleDelay, GWhen removeCondition = GWhen.None) {
-			GLoopAction task = new GLoopAction(this, action, cycleDelay, removeCondition);
-			Task pushTask = Task.Factory.StartNew(() => {
-				lock (loopActionWriteLock) {
-					loopActionAddQueue.Enqueue(task);
-				}
-			});
-			pushTask.Wait();
-			return task;
-		}
-		public void RemoveLoopAction(GLoopAction task) {
-			Task pushTask = Task.Factory.StartNew(() => {
-				lock (loopActionWriteLock) {
-					loopActionRemoveQueue.Enqueue(task);
-				}
-			});
-			pushTask.Wait();
-		}
+        public GRoutine AddGRoutine(IEnumerator routine) {
+            //메인 스레드에서 같은 락이 두 번 걸릴 수 있어 이렇게 처리했다.
+            //아래 함수들에서도 같은 이유.
+            GRoutine coroutine = new(this, routine);
+            Task pushTask = Task.Factory.StartNew(() => {
+                lock (GRoutineWriteLock) {
+                    GRoutineAddQueue.Enqueue(coroutine);
+                }
+            });
+            pushTask.Wait();
+            return coroutine;
+        }
 
-		public void AddJob(Action action, float delaySec = 0f) {
-			jobManager.AddJob(action, delaySec);
-		}
+        public void RemoveGRoutine(GRoutine routince) {
+            Task pushTask = Task.Factory.StartNew(() => {
+                lock (GRoutineWriteLock) {
+                    GRoutineRemoveQueue.Enqueue(routince);
+                }
+            });
+            pushTask.Wait();
+        }
 
-		//Start
+        public GLoopAction AddLoopAction(Action action, GLoopCycle cycle = GLoopCycle.EveryFrame, GWhen removeCondition = GWhen.None) {
+            return AddLoopAction(action, (int)cycle, removeCondition);
+        }
+
+        public GLoopAction AddLoopAction(Action action, int cycleDelay, GWhen removeCondition = GWhen.None) {
+            GLoopAction task = new(this, action, cycleDelay, removeCondition);
+            Task pushTask = Task.Factory.StartNew(() => {
+                lock (loopActionWriteLock) {
+                    loopActionAddQueue.Enqueue(task);
+                }
+            });
+            pushTask.Wait();
+            return task;
+        }
+
+        public void RemoveLoopAction(GLoopAction task) {
+            Task pushTask = Task.Factory.StartNew(() => {
+                lock (loopActionWriteLock) {
+                    loopActionRemoveQueue.Enqueue(task);
+                }
+            });
+            pushTask.Wait();
+        }
+
+        public void AddJob(Action action, float delaySec = 0f) {
+            jobManager.AddJob(action, delaySec);
+        }
+
+        //Start
 #if OnUnity
-		public void StartLoop() {
-			if (IsRunning)
-				return;
+        public void StartLoop() {
+            if (IsRunning) {
+                return;
+            }
 
-			IsRunning = true;
-		}
-		public void StopLoop(bool clearTask = true) {
-			if (!IsRunning)
-				return;
+            IsRunning = true;
+        }
 
-			IsRunning = false;
+        public void StopLoop(bool clearTask = true) {
+            if (!IsRunning) {
+                return;
+            }
 
-			if (clearTask) {
-				ClearTask();
-				loopActionAddQueue.Clear();
-				loopActionRemoveQueue.Clear();
-				GRoutineAddQueue.Clear();
-				GRoutineRemoveQueue.Clear();
-			}
-		}
+            IsRunning = false;
+
+            if (clearTask) {
+                ClearTask();
+                loopActionAddQueue.Clear();
+                loopActionRemoveQueue.Clear();
+                GRoutineAddQueue.Clear();
+                GRoutineRemoveQueue.Clear();
+            }
+        }
 #else
-		public void StartLoop() {
-			if (IsRunning)
-				return;
+        public void StartLoop() {
+            if (IsRunning) {
+                return;
+            }
 
-			IsRunning = true;
-			MainLoopTask = LoopInvokeRoutine();
-		}
-		public async void StopLoop(bool clearTask = false) {
-			if (!IsRunning)
-				return;
+            IsRunning = true;
+            MainLoopTask = LoopInvokeRoutine();
+        }
 
-			IsRunning = false;
+        public async void StopLoop(bool clearTask = false) {
+            if (!IsRunning) {
+                return;
+            }
 
-			if (MainLoopTask != null) {
-				await MainLoopTask;
-			}
-			if (clearTask) {
-				ClearTask();
-				loopActionAddQueue.Clear();
-				loopActionRemoveQueue.Clear();
-				GRoutineAddQueue.Clear();
-				GRoutineRemoveQueue.Clear();
-			}
-		}
+            IsRunning = false;
+
+            if (MainLoopTask != null) {
+                await MainLoopTask;
+            }
+
+            if (clearTask) {
+                ClearTask();
+                loopActionAddQueue.Clear();
+                loopActionRemoveQueue.Clear();
+                GRoutineAddQueue.Clear();
+                GRoutineRemoveQueue.Clear();
+            }
+        }
 #endif
 
-		//Update
-		public void UpdateLoopManual() {
-			UpdateLoop();
-		}
+        //Update
+        public void UpdateLoopManual() {
+            UpdateLoop();
+        }
 #if OnUnity
-		private void Update() {
-			if (syncMode != GLoopSyncMode.Update)
-				return;
+        private void Update() {
+            if (syncMode != GLoopSyncMode.Update) {
+                return;
+            }
 
-			LoopInvoke(false);
-		}
-		private void FixedUpdate() {
-			if (syncMode != GLoopSyncMode.FixedUpdate)
-				return;
+            LoopInvoke(false);
+        }
 
-			LoopInvoke(false);
-		}
-		private void LoopInvoke(bool useAutoSync = true) {
-			sleepWatch.Stop();
-			sleepMs = sleepWatch.GetElapsedMilliseconds();
+        private void FixedUpdate() {
+            if (syncMode != GLoopSyncMode.FixedUpdate) {
+                return;
+            }
 
-			UpdateTimeInfo();
+            LoopInvoke(false);
+        }
 
+        private void LoopInvoke(bool useAutoSync = true) {
+            sleepWatch.Stop();
+            sleepMs = sleepWatch.GetElapsedMilliseconds();
+
+            UpdateTimeInfo();
+
+//#if OnUnity
+            int loopCount = 1;
+//#else
+//			int loopCount = GetLoopCount(overTime, globalLoopWatch.GetElapsedMilliseconds(), sleepMs);
+//#endif
+            ExecLoops(loopCount);
+
+            sleepWatch.Restart();
+        }
+#else
+        private async Task LoopInvokeRoutine() {
+            for (;;) {
+                UpdateTimeInfo();
+                int loopCount = GetLoopCount(overTime, globalLoopWatch.GetElapsedMilliseconds(), sleepMs);
+                ExecLoops(loopCount);
+
+                sleepWatch.Restart();
+                await Task.Delay((int)Mathf.Max(1f, tickMs - overTime));
+                sleepWatch.Stop();
+                sleepMs = sleepWatch.GetElapsedMilliseconds();
+            }
+        }
+#endif
+        private void UpdateTimeInfo() {
 #if OnUnity
-			int loopCount = 1;
+            tickMs = 1000f / Application.targetFrameRate;
 #else
-			int loopCount = GetLoopCount(overTime, globalLoopWatch.GetElapsedMilliseconds(), sleepMs);
+            FPS = GMath.Clamp(FPS, 1, 1000);
+            tickMs = Mathf.Max(0.001f, 1000f / FPS);
 #endif
-			ExecLoops(loopCount);
-
-			sleepWatch.Restart();
-		}
-#else
-		private async Task LoopInvokeRoutine() {
-			for (; ; )
-			{
-				UpdateTimeInfo();
-				int loopCount = GetLoopCount(overTime, globalLoopWatch.GetElapsedMilliseconds(), sleepMs);
-				ExecLoops(loopCount);
-
-				sleepWatch.Restart();
-				await Task.Delay((int)Mathf.Max(1f, tickMs - overTime));
-				sleepWatch.Stop();
-				sleepMs = sleepWatch.GetElapsedMilliseconds();
-			}
-		}
-#endif
-		private void UpdateTimeInfo() {
-#if OnUnity
-			tickMs = 1000f / Application.targetFrameRate;
-#else
-			fps = GMath.Clamp(fps, 1, 1000);
-			tickMs = Mathf.Max(0.001f, 1000f / fps);
-#endif
-		}
+        }
 #if !OnUnity
-		private int GetLoopCount(float leftOverTime, float globalLoopMs, float sleepMs) {
-			overTime = Mathf.Max(0f, leftOverTime + globalLoopMs + sleepMs - tickMs);
-			int loopCount;
-			if (overTime > tickMs) {
-				loopCount = Mathf.Min(1 + (int)(overTime / tickMs), MaxOverlapFrame);
-				overTime -= (loopCount - 1) * tickMs;
-			} else {
-				loopCount = 1;
-			}
-			return loopCount;
-		}
+        private int GetLoopCount(float leftOverTime, float globalLoopMs, float sleepMs) {
+            overTime = Mathf.Max(0f, leftOverTime + globalLoopMs + sleepMs - tickMs);
+            int loopCount;
+            if (overTime > tickMs) {
+                loopCount = Mathf.Min(1 + (int)(overTime / tickMs), MaxOverlapFrame);
+                overTime -= (loopCount - 1) * tickMs;
+            } else {
+                loopCount = 1;
+            }
+
+            return loopCount;
+        }
 #endif
-		private void ExecLoops(int loopCount) {
-			globalLoopWatch.Restart();
-			if (IsRunning) {
-				for (int i = 0; i < loopCount; ++i) {
-					UpdateLoop();
-				}
-			}
-			globalLoopWatch.Stop();
-			globalLoopMs = globalLoopWatch.GetElapsedMilliseconds();
-		}
+        private void ExecLoops(int loopCount) {
+            globalLoopWatch.Restart();
+            if (IsRunning) {
+                for (int i = 0; i < loopCount; ++i) {
+                    UpdateLoop();
+                }
+            }
 
-		private void UpdateLoop() {
-			if (!IsRunning) {
-				return;
-			}
-			singleLoopWatch.Restart();
+            globalLoopWatch.Stop();
+            globalLoopMs = globalLoopWatch.GetElapsedMilliseconds();
+        }
 
-			++currentFrame;
+        private void UpdateLoop() {
+            if (!IsRunning) {
+                return;
+            }
 
-			Execute:
-			bool hasNewTask = false;
+            singleLoopWatch.Restart();
 
-			RunLoopAction();
-			RunGRoutine();
-			ExecWriteTask();
+            ++currentFrame;
 
-			void RunLoopAction() {
-				int arrayLength = GLoopGroups.Length;
-				for (int arrayIndex = 0; arrayIndex < arrayLength; ++arrayIndex) {
-					GLoopGroup taskGroup = GetLoopGroup((GWhen)arrayIndex);
+            Execute:
+            bool hasNewTask = false;
 
-					switch (taskGroup.RemoveCondition) {
-						case GWhen.MouseUpRemove:
-							if (MouseInput.Left.IsUp) {
-								goto InvokeAndClear;
-							}
-							break;
+            try {
+                RunLoopAction();
+                RunGRoutine();
+                ExecWriteTask();
+            } catch (Exception ex) {
+                Debug.WriteLine($"[GLoopEngine] An exception has occurred. {ex}");
+                IsErrorOccurred = true;
+                StopLoop();
+            }
 
-						InvokeAndClear:
-							taskGroup.RunImmediately();
-							taskGroup.Clear();
-							continue;
-					}
+            void RunLoopAction() {
+                int arrayLength = GLoopGroups.Length;
+                for (int arrayIndex = 0; arrayIndex < arrayLength; ++arrayIndex) {
+                    GLoopGroup taskGroup = GetLoopGroup((GWhen)arrayIndex);
 
-					taskGroup.RunWithTimer();
-					//Sync Frame
-					taskGroup.SyncFrame();
-				}
-			}
-			void RunGRoutine() {
-				int routineCount = GRoutineList.Count;
-				for (int i = 0; i < routineCount; ++i) {
-					GRoutine routine = GRoutineList[i];
-					if (currentFrame == routine.currentFrame)
-						continue;
+                    switch (taskGroup.RemoveCondition) {
+                        case GWhen.MouseUpRemove:
+                            if (MouseInput.Left.IsUp) {
+                                goto InvokeAndClear;
+                            }
 
-					bool result = routine.Run(DeltaMilliseconds);
-					//Sync Frame
-					routine.currentFrame = currentFrame;
+                            break;
 
-					if (!result) {
-						RemoveGRoutine(routine);
-					}
-				}
-			}
-			void ExecWriteTask() {
+                            InvokeAndClear:
+                            taskGroup.RunImmediately();
+                            taskGroup.Clear();
+                            continue;
+                    }
 
-				int loopCount;
-				lock (GRoutineWriteLock) {
-					hasNewTask = GRoutineAddQueue.Count > 0;
+                    taskGroup.RunWithTimer();
+                    //Sync Frame
+                    taskGroup.SyncFrame();
+                }
+            }
 
-					loopCount = GRoutineRemoveQueue.Count;
-					for (int i = 0; i < loopCount; ++i) {
-						GRoutine routine = GRoutineRemoveQueue.Dequeue();
-						GRoutineList.Remove(routine);
-					}
-					loopCount = GRoutineAddQueue.Count;
-					for (int i = 0; i < loopCount; ++i) {
-						GRoutine routine = GRoutineAddQueue.Dequeue();
-						routine.currentFrame = currentFrame - 1;
-						GRoutineList.Add(routine);
-					}
-				}
-				lock (loopActionWriteLock) {
-					hasNewTask = hasNewTask || (loopActionAddQueue.Count > 0);
+            void RunGRoutine() {
+                int routineCount = GRoutineList.Count;
+                for (int i = 0; i < routineCount; ++i) {
+                    GRoutine routine = GRoutineList[i];
+                    if (currentFrame == routine.currentFrame) {
+                        continue;
+                    }
 
-					loopCount = loopActionRemoveQueue.Count;
-					for (int i = 0; i < loopCount; ++i) {
-						GLoopAction task = loopActionRemoveQueue.Dequeue();
-						GetLoopGroup(task.TaskEvent).TaskList.Remove(task);
-					}
-					loopCount = loopActionAddQueue.Count;
-					for (int i = 0; i < loopCount; ++i) {
-						GLoopAction task = loopActionAddQueue.Dequeue();
-						task.currentFrame = currentFrame - 1;
-						GetLoopGroup(task.TaskEvent).TaskList.Add(task);
-					}
-				}
-			}
+                    bool result = routine.Run(DeltaMilliseconds);
+                    //Sync Frame
+                    routine.currentFrame = currentFrame;
 
-			if (hasNewTask) {
-				goto Execute;
-			}
+                    if (!result) {
+                        RemoveGRoutine(routine);
+                    }
+                }
+            }
 
-			singleLoopWatch.Stop();
+            void ExecWriteTask() {
+                int loopCount;
+                lock (GRoutineWriteLock) {
+                    hasNewTask = GRoutineAddQueue.Count > 0;
 
-			singleLoopMs = singleLoopWatch.GetElapsedMilliseconds();
-		}
+                    loopCount = GRoutineRemoveQueue.Count;
+                    for (int i = 0; i < loopCount; ++i) {
+                        GRoutine routine = GRoutineRemoveQueue.Dequeue();
+                        GRoutineList.Remove(routine);
+                    }
 
-		private void RegistInput() {
-			KeyInput.SetCore(this);
-			AddLoopAction(MouseInput.Update);
+                    loopCount = GRoutineAddQueue.Count;
+                    for (int i = 0; i < loopCount; ++i) {
+                        GRoutine routine = GRoutineAddQueue.Dequeue();
+                        routine.currentFrame = currentFrame - 1;
+                        GRoutineList.Add(routine);
+                    }
+                }
+
+                lock (loopActionWriteLock) {
+                    hasNewTask = hasNewTask || loopActionAddQueue.Count > 0;
+
+                    loopCount = loopActionRemoveQueue.Count;
+                    for (int i = 0; i < loopCount; ++i) {
+                        GLoopAction task = loopActionRemoveQueue.Dequeue();
+                        GetLoopGroup(task.TaskEvent).TaskList.Remove(task);
+                    }
+
+                    loopCount = loopActionAddQueue.Count;
+                    for (int i = 0; i < loopCount; ++i) {
+                        GLoopAction task = loopActionAddQueue.Dequeue();
+                        task.currentFrame = currentFrame - 1;
+                        GetLoopGroup(task.TaskEvent).TaskList.Add(task);
+                    }
+                }
+            }
+
+            if (hasNewTask) {
+                goto Execute;
+            }
+
+            singleLoopWatch.Stop();
+
+            LoopElapsedMilliseconds = singleLoopWatch.GetElapsedMilliseconds();
+        }
+
+        private void RegistInput() {
+            KeyInput.SetCore(this);
+            AddLoopAction(MouseInput.Update);
 #if OnUnity
-			AddLoopAction(InputManager.Update);
+            AddLoopAction(InputManager.Update);
 #endif
-		}
+        }
 
-		private GLoopGroup GetLoopGroup(GWhen taskEvent) {
-			return GLoopGroups[(int)taskEvent];
-		}
-		private void ClearTask() {
-			for (int i = 0; i < GLoopGroups.Length; i++) {
-				GLoopGroups[i].Clear();
-			}
-			GRoutineList.Clear();
-		}
-	}
+        private GLoopGroup GetLoopGroup(GWhen taskEvent) {
+            return GLoopGroups[(int)taskEvent];
+        }
+
+        private void ClearTask() {
+            for (int i = 0; i < GLoopGroups.Length; i++) {
+                GLoopGroups[i].Clear();
+            }
+
+            GRoutineList.Clear();
+        }
+    }
 }
