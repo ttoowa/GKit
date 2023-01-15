@@ -9,8 +9,8 @@ using UDebug = UnityEngine.Debug;
 using UnityEngine;
 using GKitForUnity.Core.Component;
 #elif OnWPF
+using System.Windows.Forms;
 using GKitForWPF.Core.Component;
-
 #else
 using GKit.Core.Component;
 #endif
@@ -348,9 +348,15 @@ namespace GKit
                 RunGRoutine();
                 ExecWriteTask();
             } catch (Exception ex) {
-                Debug.WriteLine($"[GLoopEngine] An exception has occurred. {ex}");
+                string message = $"[GLoopEngine.UpdateLoop] An exception has occurred.\n{ex}";
+                Debug.WriteLine(message);
                 IsErrorOccurred = true;
                 StopLoop();
+#if OnWPF
+                MessageBox.Show(message);
+#elif OnUnity
+                UDebug.LogError(message);
+#endif
             }
 
             void RunLoopAction() {
