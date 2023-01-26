@@ -105,7 +105,8 @@ namespace GKit
 #if OnUnity
                 current = Input.GetMouseButton((int)MouseButton.Left);
 #elif OnWPF
-                current = Mouse.LeftButton == MouseButtonState.Pressed;
+                current = KeyInput.GetKeyHold(WinKey.MouseLeft);
+                //current = Mouse.LeftButton == MouseButtonState.Pressed;
 #else
                 current = KeyInput.GetKeyHold(WinKey.MouseLeft);
 #endif
@@ -116,7 +117,8 @@ namespace GKit
 #if OnUnity
                 current = Input.GetMouseButton((int)MouseButton.Right);
 #elif OnWPF
-                current = Mouse.RightButton == MouseButtonState.Pressed;
+                current = KeyInput.GetKeyHold(WinKey.MouseRight);
+                //current = Mouse.RightButton == MouseButtonState.Pressed;
 #else
                 current = KeyInput.GetKeyHold(WinKey.MouseRight);
 #endif
@@ -126,7 +128,8 @@ namespace GKit
 #if OnUnity
                 current = Input.GetMouseButton((int)MouseButton.Middle);
 #elif OnWPF
-                current = Mouse.MiddleButton == MouseButtonState.Pressed;
+                current = KeyInput.GetKeyHold(WinKey.MouseMiddle);
+                //current = Mouse.MiddleButton == MouseButtonState.Pressed;
 #else
                 current = KeyInput.GetKeyHold(WinKey.MouseMiddle);
 #endif
