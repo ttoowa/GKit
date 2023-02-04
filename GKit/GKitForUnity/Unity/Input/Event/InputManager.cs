@@ -2,78 +2,76 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GKitForUnity {
-	/// <summary>
-	/// 입력 레이어를 관리하는 클래스입니다.
-	/// </summary>
-	public static class InputManager {
-		private static List<InputLayer> layerList;
+namespace GKitForUnity;
 
-		public delegate void MouseOverlapDelegate(int layer, ref bool handleFlag, ref bool isLastHandle);
-		public static event MouseOverlapDelegate OnMouseOverlap;
+/// <summary>
+///     입력 레이어를 관리하는 클래스입니다.
+/// </summary>
+public static class InputManager {
+    private static readonly List<InputLayer> layerList;
 
-		static InputManager() {
-			layerList = new List<InputLayer>();
-		}
-		public static void RegistLayer(InputLayer layer) {
-			layerList.Add(layer);
-		}
-		public static void RemoveLayer(InputLayer layer) {
-			layerList.Remove(layer);
-		}
-		internal static void Update() {
-			InputMask.Clear();
+    public delegate void MouseOverlapDelegate(int layer, ref bool handleFlag, ref bool isLastHandle);
 
-			int setCount = layerList.Count;
-			for (int setIndex = 0; setIndex < setCount; ++setIndex) {
-				InputLayer layer = layerList[setIndex];
+    public static event MouseOverlapDelegate OnMouseOverlap;
 
-				Camera cam = layer.camera;
-				Vector3 originPos = cam.ScreenToWorldPoint(new Vector3(MouseInput.ScreenPos.x, MouseInput.ScreenPos.y, cam.nearClipPlane));
-				Vector3 destPos = cam.ScreenToWorldPoint(new Vector3(MouseInput.ScreenPos.x, MouseInput.ScreenPos.y, cam.farClipPlane));
+    static InputManager() {
+        layerList = new List<InputLayer>();
+    }
 
-				//레이캐스트
-				int hitMask = 1 << layer.layer;
+    public static void RegistLayer(InputLayer layer) {
+        layerList.Add(layer);
+    }
 
-				RaycastHit[] hitInfos =
-				Physics.RaycastAll(
-					originPos,
-					destPos - originPos,
-					cam.farClipPlane - cam.nearClipPlane,
-					hitMask);
-				Array.Sort<RaycastHit>(hitInfos, (x, y) => x.distance.CompareTo(y.distance));
+    public static void RemoveLayer(InputLayer layer) {
+        layerList.Remove(layer);
+    }
 
-				//포커스 작업
-				layer.StartUpdate();
+    internal static void Update() {
+        InputMask.Clear();
 
-				if (hitInfos.Length > 0) {
-					for (int i = 0; i < hitInfos.Length; ++i) {
-						RaycastHit hitInfo = hitInfos[i];
-						InputHandler inputHandler = hitInfo.collider.GetComponent<InputHandler>();
+        int setCount = layerList.Count;
+        for (int setIndex = 0; setIndex < setCount; ++setIndex) {
+            InputLayer layer = layerList[setIndex];
 
-						if (inputHandler != null) {
-							InputMask.Mark(inputHandler.writeMask);
-							if (InputMask.Check(inputHandler.readMask)) {
-								//마스크 통과
-								bool handleFlag = true;
-								bool isLastHandle = true;
-								OnMouseOverlap?.Invoke(layer.layer, ref handleFlag, ref isLastHandle);
+            Camera cam = layer.camera;
+            Vector3 originPos = cam.ScreenToWorldPoint(new Vector3(MouseInput.ScreenPos.x, MouseInput.ScreenPos.y, cam.nearClipPlane));
+            Vector3 destPos = cam.ScreenToWorldPoint(new Vector3(MouseInput.ScreenPos.x, MouseInput.ScreenPos.y, cam.farClipPlane));
 
-								if (handleFlag) {
-									layer.Update(inputHandler);
-								}
-								if (isLastHandle) {
-									break;
-								}
-							}
-						}
-					}
-				}
+            //레이캐스트
+            int hitMask = 1 << layer.layer;
 
-				layer.EndUpdate();
-			}
+            RaycastHit[] hitInfos = Physics.RaycastAll(originPos, destPos - originPos, cam.farClipPlane - cam.nearClipPlane, hitMask);
+            Array.Sort<RaycastHit>(hitInfos, (x, y) => x.distance.CompareTo(y.distance));
 
-		}
-	}
+            //포커스 작업
+            layer.StartUpdate();
 
+            if (hitInfos.Length > 0) {
+                for (int i = 0; i < hitInfos.Length; ++i) {
+                    RaycastHit hitInfo = hitInfos[i];
+                    InputHandler inputHandler = hitInfo.collider.GetComponent<InputHandler>();
+
+                    if (inputHandler != null) {
+                        InputMask.Mark(inputHandler.writeMask);
+                        if (InputMask.Check(inputHandler.readMask)) {
+                            //마스크 통과
+                            bool handleFlag = true;
+                            bool isLastHandle = true;
+                            OnMouseOverlap?.Invoke(layer.layer, ref handleFlag, ref isLastHandle);
+
+                            if (handleFlag) {
+                                layer.Update(inputHandler);
+                            }
+
+                            if (isLastHandle) {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            layer.EndUpdate();
+        }
+    }
 }

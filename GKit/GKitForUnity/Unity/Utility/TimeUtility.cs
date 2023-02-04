@@ -5,16 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace GKitForUnity.Unity.Utility {
-	public static class TimeUtility {
-		public static float DeltaTimePerTargetFps {
-			get {
-				return Time.deltaTime / Application.targetFrameRate;
-			}
-		}
+namespace GKitForUnity.Unity.Utility;
 
-		public static float GetDeltaTimePer(float targetFrameRate = 60) {
-			return Time.deltaTime / Application.targetFrameRate;
-		}
-	}
+public static class TimeUtility {
+    public static float DeltaTimePerTargetFps => Time.deltaTime / Application.targetFrameRate;
+
+    public static float GetDeltaTimePer(float targetFrameRate = 60) {
+        return Time.deltaTime / Application.targetFrameRate;
+    }
 }
