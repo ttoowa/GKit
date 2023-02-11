@@ -124,7 +124,7 @@ public partial class EditTreeView : UserControl, ITreeFolder {
     }
 
     private void InitBindings() {
-        BoolToVisibilityConverter boolToVisibilityConverter = new BoolToVisibilityConverter();
+        BoolToVisibilityConverter boolToVisibilityConverter = new();
 
         ItemShadow.SetBinding(VisibilityProperty, new Binding(nameof(ItemShadowVisible)) { Source = this, Mode = BindingMode.OneWay, Converter = boolToVisibilityConverter });
         DraggingCursor.SetBinding(Border.BackgroundProperty, new Binding(nameof(DraggingCursorBrush)) { Source = this });
@@ -176,6 +176,9 @@ public partial class EditTreeView : UserControl, ITreeFolder {
 
     private void ItemContext_MouseMove(object sender, MouseEventArgs e) {
         if (isPressed && e.LeftButton != MouseButtonState.Pressed) {
+            isPressed = false;
+            onMouseCapture = false;
+
             ItemContext_MouseUp(sender, null);
             return;
         }
@@ -217,6 +220,10 @@ public partial class EditTreeView : UserControl, ITreeFolder {
     }
 
     private void ItemContext_MouseUp(object sender, MouseButtonEventArgs e) {
+        if (!isPressed || !onMouseCapture) {
+            return;
+        }
+
         if ((e != null && e.ChangedButton != MouseButton.Left) || !onMouseCapture) {
             return;
         }
@@ -462,7 +469,7 @@ public partial class EditTreeView : UserControl, ITreeFolder {
     }
 
     private ITreeItem[] CollectSelectedItems() {
-        List<ITreeItem> resultList = new List<ITreeItem>();
+        List<ITreeItem> resultList = new();
 
         CollectSelectedItemsRecursion(this);
 
@@ -484,7 +491,7 @@ public partial class EditTreeView : UserControl, ITreeFolder {
     }
 
     private ITreeItem[] CollectItems() {
-        List<ITreeItem> resultList = new List<ITreeItem>();
+        List<ITreeItem> resultList = new();
 
         CollectItemsRecursion(this);
 
