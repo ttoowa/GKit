@@ -29,22 +29,29 @@ namespace GKit
             itemSet = new HashSet<ISelectable>();
         }
 
-        //Control
-        public void AddSelectedItem(ISelectable item) {
+        public void Clear() {
+            foreach (ISelectable item in itemSet.ToArray()) {
+                Remove(item);
+            }
+
+            itemSet.Clear();
+        }
+
+        public void Add(ISelectable item) {
             itemSet.Add(item);
             item.SetSelected(true);
 
             SelectionAdded?.Invoke(item);
         }
 
-        public void RemoveSelectedItem(ISelectable item) {
+        public void Remove(ISelectable item) {
             itemSet.Remove(item);
             item.SetSelected(false);
 
             SelectionRemoved?.Invoke(item);
         }
 
-        public void SetSelectedItem(ISelectable item) {
+        public void SetSingle(ISelectable item) {
             if (itemSet.Count == 0 && item == null) {
                 return;
             }
@@ -53,16 +60,8 @@ namespace GKit
                 return;
             }
 
-            UnselectItems();
-            AddSelectedItem(item);
-        }
-
-        public void UnselectItems() {
-            foreach (ISelectable item in itemSet.ToArray()) {
-                RemoveSelectedItem(item);
-            }
-
-            itemSet.Clear();
+            Clear();
+            Add(item);
         }
 
         public bool Contains(ISelectable item) {
