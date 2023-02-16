@@ -76,8 +76,8 @@ public partial class EditTreeView : UserControl, ITreeFolder {
 
     public ITreeFolder SelectedItemParent {
         get {
-            if (SelectedItemSet.Count == 1) {
-                ITreeItem item = SelectedItemSet.First as ITreeItem;
+            if (SelectedItemSet.Count > 0) {
+                ITreeItem item = SelectedItemSet.Last() as ITreeItem;
                 if (item is ITreeFolder) {
                     return item as ITreeFolder;
                 }
@@ -146,9 +146,9 @@ public partial class EditTreeView : UserControl, ITreeFolder {
             if ((CanMultiSelect && Keyboard.IsKeyDown(Key.LeftCtrl)) || Keyboard.IsKeyDown(Key.RightCtrl)) {
                 //Control select
                 if (SelectedItemSet.Contains(item)) {
-                    SelectedItemSet.RemoveSelectedItem(item);
+                    SelectedItemSet.Remove(item);
                 } else {
-                    SelectedItemSet.AddSelectedItem(item);
+                    SelectedItemSet.Add(item);
                 }
 
                 pressedItem = SelectedItemSet.Count > 0 ? SelectedItemSet.Last as ITreeItem : null;
@@ -199,10 +199,10 @@ public partial class EditTreeView : UserControl, ITreeFolder {
 
             //Select item
             if (SelectedItemSet.Contains(pressedItem)) {
-                SelectedItemSet.RemoveSelectedItem(pressedItem);
-                SelectedItemSet.AddSelectedItem(pressedItem);
+                SelectedItemSet.Remove(pressedItem);
+                SelectedItemSet.Add(pressedItem);
             } else {
-                SelectedItemSet.SetSelectedItem(pressedItem);
+                SelectedItemSet.SetSingle(pressedItem);
             }
 
             //Start drag
@@ -234,7 +234,7 @@ public partial class EditTreeView : UserControl, ITreeFolder {
         Mouse.Capture(null);
 
         if (!onDragging) {
-            SelectedItemSet.SetSelectedItem(pressedItem);
+            SelectedItemSet.SetSingle(pressedItem);
             return;
         }
 
@@ -251,15 +251,15 @@ public partial class EditTreeView : UserControl, ITreeFolder {
     }
 
     private void Background_MouseDown(object sender, MouseButtonEventArgs e) {
-        SelectedItemSet.UnselectItems();
+        SelectedItemSet.Clear();
     }
 
     private void ShiftSelectItems(ITreeItem startItem, ITreeItem endItem) {
         //Unselect
-        SelectedItemSet.UnselectItems();
+        SelectedItemSet.Clear();
 
         //Select
-        SelectedItemSet.AddSelectedItem(startItem);
+        SelectedItemSet.Add(startItem);
 
         ITreeItem[] items = CollectItems();
         int startIndex = Array.IndexOf(items, startItem);
@@ -274,9 +274,9 @@ public partial class EditTreeView : UserControl, ITreeFolder {
             ITreeItem targetItem = items[i];
             if (targetItem != startItem) {
                 if (SelectedItemSet.Contains(targetItem)) {
-                    SelectedItemSet.RemoveSelectedItem(targetItem);
+                    SelectedItemSet.Remove(targetItem);
                 } else {
-                    SelectedItemSet.AddSelectedItem(targetItem);
+                    SelectedItemSet.Add(targetItem);
                 }
             }
         }
@@ -284,7 +284,7 @@ public partial class EditTreeView : UserControl, ITreeFolder {
 
     //Notify
     public void NotifyItemRemoved(ITreeItem item) {
-        SelectedItemSet.RemoveSelectedItem(item);
+        SelectedItemSet.Remove(item);
     }
 
     //TreeSearch
