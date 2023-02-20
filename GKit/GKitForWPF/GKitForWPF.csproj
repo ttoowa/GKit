@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0-windows</TargetFramework>
+        <TargetFramework>net7.0-windows</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
         <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
@@ -16,7 +16,7 @@
         <DefineConstants>$(DefineConstants)TRACE;OnWPF</DefineConstants>
     </PropertyGroup>
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.WindowsDesktop.App"/>
+        <FrameworkReference Include="Microsoft.WindowsDesktop.App" />
     </ItemGroup>
     <ItemGroup>
         <Compile Include="..\GKit\Base\**\*.cs">
