@@ -121,6 +121,7 @@
                                           VerticalScrollBarVisibility="{TemplateBinding VerticalScrollBarVisibility}"
                                           HorizontalScrollBarVisibility="{TemplateBinding HorizontalScrollBarVisibility}"
                                           Padding="{TemplateBinding Padding}"
+                                          PanningMode="Both"
                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                           FontFamily="/TaleKitEditor;component/Resources/Fonts/#KoPubDotum_Pro Medium" TextOptions.TextFormattingMode="Display"
