@@ -282,12 +282,12 @@ public partial class EditTreeView : UserControl, ITreeFolder {
         }
     }
 
-    //Notify
+    // Notify
     public void NotifyItemRemoved(ITreeItem item) {
         SelectedItemSet.Remove(item);
     }
 
-    //TreeSearch
+    // TreeSearch
     public void ForeachItems(ItemLoopDelegate nodeItemDelegate) {
         ForeachItemsRecursion(this);
 
@@ -345,7 +345,48 @@ public partial class EditTreeView : UserControl, ITreeFolder {
         }
     }
 
-    //DraggingStates
+    public bool MoveItem(ITreeItem item, ITreeFolder newParent, int index) {
+        if (item == null || newParent == null) {
+            return false;
+        }
+
+        if (item == newParent) {
+            return false;
+        }
+
+        if (index < 0 || index > newParent.ChildItemCollection.Count) {
+            return false;
+        }
+
+        if (item is ITreeFolder && IsContainsChildRecursive(item as ITreeFolder, newParent)) {
+            MessageOccured?.Invoke("자신의 하위 폴더로 이동할 수 없습니다.");
+            return false;
+        }
+
+        ITreeFolder oldParent = item.ParentItem;
+        if (oldParent == null) {
+            return false;
+        }
+
+        if (oldParent == newParent) {
+            int oldIndex = oldParent.ChildItemCollection.IndexOf(item as UIElement);
+            if (oldIndex == index) {
+                return false;
+            } else if (oldIndex < index) {
+                --index;
+            }
+        }
+
+        oldParent.ChildItemCollection.Remove(item as UIElement);
+        newParent.ChildItemCollection.Insert(index, item as UIElement);
+        item.ParentItem = newParent;
+
+        ItemMoved?.Invoke(item, oldParent, newParent, index);
+
+        return true;
+    }
+
+    // DraggingStates
     private void CreateDraggingClone(FrameworkElement refItem) {
         if (draggingClone != null) {
             return;
@@ -450,7 +491,7 @@ public partial class EditTreeView : UserControl, ITreeFolder {
         return true;
     }
 
-    //Utility
+    // Utility
     private bool IsContainsChildRecursive(ITreeFolder folder, ITreeItem target) {
         foreach (ITreeItem childItem in folder.ChildItemCollection) {
             if (childItem == target) {
