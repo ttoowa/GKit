@@ -11,13 +11,13 @@
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.WindowsDesktop.App"/>
-        <FrameworkReference Include="Microsoft.WindowsDesktop.App.WPF"/>
+        <FrameworkReference Include="Microsoft.WindowsDesktop.App" />
+        <FrameworkReference Include="Microsoft.WindowsDesktop.App.WPF" />
     </ItemGroup>
     <ItemGroup>
-        <EditorConfigFiles Remove="X:\Dropbox\WorkDesk\A_Unity\2019\20190209_ProjectV\Develop\TaleKit\Develop\.editorconfig"/>
+        <EditorConfigFiles Remove="X:\Dropbox\WorkDesk\A_Unity\2019\20190209_ProjectV\Develop\TaleKit\Develop\.editorconfig" />
     </ItemGroup>
     <ItemGroup>
-        <EditorConfigFiles Remove="X:\Dropbox\WorkDesk\A_Unity\2019\20190209_ProjectV\Develop\TaleKit\Develop\.editorconfig"/>
+        <EditorConfigFiles Remove="X:\Dropbox\WorkDesk\A_Unity\2019\20190209_ProjectV\Develop\TaleKit\Develop\.editorconfig" />
     </ItemGroup>
 </Project>
