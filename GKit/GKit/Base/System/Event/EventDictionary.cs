@@ -10,6 +10,8 @@ public class EventDictionary {
 
     public void Clear() { eventDictionary.Clear(); }
 
+    public bool HasListener(string eventName) { return eventDictionary.ContainsKey(eventName); }
+
     public void AddListener(string eventName, Action listener) {
         if (!eventDictionary.ContainsKey(eventName))
             eventDictionary.Add(eventName, new List<Action>());
@@ -45,6 +47,8 @@ public class EventDictionary<T> {
     public EventDictionary() { }
 
     public void Clear() { eventDictionary.Clear(); }
+
+    public bool HasListener(string eventName) { return eventDictionary.ContainsKey(eventName); }
 
     public void AddListener(string eventName, Action<T> listener) {
         if (!eventDictionary.ContainsKey(eventName))
