@@ -167,11 +167,32 @@ namespace GKitForWPF.UI.Behaviors {
 			}
 		}
 
-		private static void SetEventHandlersForScrollViewer(ScrollViewer scrollViewer) {
-			scrollViewer.PreviewMouseWheel += new MouseWheelEventHandler(ScrollViewerPreviewMouseWheel);
-			scrollViewer.PreviewKeyDown += new KeyEventHandler(ScrollViewerPreviewKeyDown);
-			scrollViewer.PreviewMouseLeftButtonUp += Scroller_PreviewMouseLeftButtonUp;
-			scrollViewer.ScrollChanged += Scroller_ScrollChanged;
+    private static void SetEventHandlersForScrollViewer(ScrollViewer scrollViewer) {
+        {
+            // 2023.06.25: Implemented by AcryilcShrimp.
+            // This implements arrow-key based element item navigation.
+
+            FrameworkElement element = scrollViewer;
+
+            while (element != null) {
+                ListItemPageProvider pageProvider = element as ListItemPageProvider;
+
+                if (pageProvider != null) {
+                    ListItemPager.ApplyListItemPager(scrollViewer, pageProvider);
+                    break;
+                }
+
+                if (element.Parent == null)
+                    element = null;
+                else
+                    element = element.Parent as FrameworkElement;
+            }
+        }
+
+        scrollViewer.PreviewMouseWheel += new MouseWheelEventHandler(ScrollViewerPreviewMouseWheel);
+        scrollViewer.PreviewKeyDown += new KeyEventHandler(ScrollViewerPreviewKeyDown);
+        scrollViewer.PreviewMouseLeftButtonUp += Scroller_PreviewMouseLeftButtonUp;
+        scrollViewer.ScrollChanged += Scroller_ScrollChanged;
 
 			SetTimeDuration(scrollViewer, DefaultTimeDuration);
 			SetPointsToScroll(scrollViewer, DefaultPointsToScroll);

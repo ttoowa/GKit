@@ -4,11 +4,12 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using GKitForWPF.Graphics;
+using GKitForWPF.UI.Behaviors;
 using GKitForWPF.UI.Converters;
 
 namespace GKitForWPF.UI.Controls;
 
-public partial class EditTreeView : UserControl, ITreeFolder {
+public partial class EditTreeView : UserControl, ITreeFolder, ListItemPageProvider {
     public delegate void ItemDelegate(ITreeItem item);
 
     public delegate void ItemLoopDelegate(ITreeItem item, ref bool breakFlag);
@@ -34,6 +35,10 @@ public partial class EditTreeView : UserControl, ITreeFolder {
 
     private FrameworkElement draggingClone;
     private float dragStartOffset;
+
+    //ListItemPageProvider
+    private Dictionary<ITreeItem, int> itemIndexMap = new();
+    private Dictionary<int, ITreeItem> itemReverseIndexMap = new();
 
     //Drag
     private bool isPressed;
@@ -634,5 +639,32 @@ public partial class EditTreeView : UserControl, ITreeFolder {
         }
 
         return null;
+    }
+
+    public int GetCurrentIndex() {
+        RebuildItemIndexMaps();
+        return itemIndexMap.GetValueOrDefault(SelectedItemSet.First as ITreeItem, -1);
+    }
+
+    public int GetPageCount() {
+        return CollectItems().Length;
+    }
+
+    public void SetCurrentIndex(int index) {
+        RebuildItemIndexMaps();
+        ITreeItem item = itemReverseIndexMap.GetValueOrDefault(index, null);
+        if (item == null) return;
+        SelectedItemSet.SetSingle(item);
+    }
+
+    private void RebuildItemIndexMaps() {
+        ITreeItem[] items = CollectItems();
+        itemIndexMap = new Dictionary<ITreeItem, int>();
+        itemReverseIndexMap = new Dictionary<int, ITreeItem>();
+
+        foreach (ITreeItem item in items) {
+            itemIndexMap.Add(item, itemIndexMap.Count);
+            itemReverseIndexMap.Add(itemReverseIndexMap.Count, item);
+        }
     }
 }
