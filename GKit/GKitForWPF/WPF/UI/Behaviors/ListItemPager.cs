@@ -1,16 +1,18 @@
 using System.Windows.Controls;
 using System.Windows.Input;
+using GKitForWPF.UI.Controls;
 
 namespace GKitForWPF.UI.Behaviors;
 
-public interface ListItemPageProvider {
+public interface IListItemPageProvider {
     public int GetCurrentIndex();
     public int GetPageCount();
     public void SetCurrentIndex(int index);
+    public TwoWayDictionary<int, ITreeItem> GetIndexMap();
 }
 
 public class ListItemPager {
-    public static void ApplyListItemPager(ScrollViewer viewer, ListItemPageProvider element) {
+    public static void ApplyListItemPager(ScrollViewer viewer, IListItemPageProvider element) {
         viewer.PreviewKeyDown += (sender, args) => {
             switch (args.Key) {
                 case Key.Up: {
