@@ -645,7 +645,6 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
             });
         }
 
-
         SetDraggingCursorVisible(target != null);
 
         return target;
