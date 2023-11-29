@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -22,16 +23,20 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
     private const float CenterEventRatio = 1f - SideEventRatio * 2f;
 
     public static readonly DependencyProperty DraggingCursorBrushProperty =
-        DependencyProperty.RegisterAttached(nameof(DraggingCursorBrush), typeof(Brush), typeof(EditTreeView), new PropertyMetadata("4DFFEF".ToBrush()));
+        DependencyProperty.RegisterAttached(nameof(DraggingCursorBrush), typeof(Brush), typeof(EditTreeView),
+            new PropertyMetadata("4DFFEF".ToBrush()));
 
     public static readonly DependencyProperty AutoApplyItemMoveProperty =
-        DependencyProperty.RegisterAttached(nameof(AutoApplyItemMove), typeof(bool), typeof(EditTreeView), new PropertyMetadata(true));
+        DependencyProperty.RegisterAttached(nameof(AutoApplyItemMove), typeof(bool), typeof(EditTreeView),
+            new PropertyMetadata(true));
 
     public static readonly DependencyProperty CanMultiSelectProperty =
-        DependencyProperty.RegisterAttached(nameof(CanMultiSelect), typeof(bool), typeof(EditTreeView), new PropertyMetadata(true));
+        DependencyProperty.RegisterAttached(nameof(CanMultiSelect), typeof(bool), typeof(EditTreeView),
+            new PropertyMetadata(true));
 
     public static readonly DependencyProperty ItemShadowVisibleProperty =
-        DependencyProperty.RegisterAttached(nameof(ItemShadowVisible), typeof(bool), typeof(EditTreeView), new PropertyMetadata(false));
+        DependencyProperty.RegisterAttached(nameof(ItemShadowVisible), typeof(bool), typeof(EditTreeView),
+            new PropertyMetadata(false));
 
     private FrameworkElement draggingClone;
     private float dragStartOffset;
@@ -79,8 +84,9 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
         get {
             if (SelectedItemSet.Count > 0) {
                 ITreeItem item = SelectedItemSet.Last() as ITreeItem;
-                if (item is ITreeFolder)
+                if (item is ITreeFolder) {
                     return item as ITreeFolder;
+                }
 
                 return item.ParentItem;
             }
@@ -126,30 +132,37 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
     private void InitBindings() {
         BoolToVisibilityConverter boolToVisibilityConverter = new();
 
-        ItemShadow.SetBinding(VisibilityProperty, new Binding(nameof(ItemShadowVisible)) { Source = this, Mode = BindingMode.OneWay, Converter = boolToVisibilityConverter });
-        DraggingCursor.SetBinding(Border.BackgroundProperty, new Binding(nameof(DraggingCursorBrush)) { Source = this });
+        ItemShadow.SetBinding(VisibilityProperty,
+            new Binding(nameof(ItemShadowVisible))
+                { Source = this, Mode = BindingMode.OneWay, Converter = boolToVisibilityConverter });
+        DraggingCursor.SetBinding(Border.BackgroundProperty,
+            new Binding(nameof(DraggingCursorBrush)) { Source = this });
     }
 
     //Events
     private void ItemContext_MouseDown(object sender, MouseButtonEventArgs e) {
-        if (e.ChangedButton != MouseButton.Left)
+        if (e.ChangedButton != MouseButton.Left) {
             return;
+        }
 
         ITreeItem item = null;
-        if (e.OriginalSource is FrameworkElement)
+        if (e.OriginalSource is FrameworkElement) {
             item = GetPressedItem((FrameworkElement)e.OriginalSource);
+        }
 
         //Control 혹은 Shift를 누른 상태에선 Pressed에서 이벤트를 종료한다.
         if (item != null) {
             if ((CanMultiSelect && Keyboard.IsKeyDown(Key.LeftCtrl)) || Keyboard.IsKeyDown(Key.RightCtrl)) {
                 //Control select
-                if (SelectedItemSet.Contains(item))
+                if (SelectedItemSet.Contains(item)) {
                     SelectedItemSet.Remove(item);
-                else
+                } else {
                     SelectedItemSet.Add(item);
+                }
 
                 pressedItem = SelectedItemSet.Count > 0 ? SelectedItemSet.Last as ITreeItem : null;
-            } else if (CanMultiSelect && pressedItem != null && (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))) {
+            } else if (CanMultiSelect && pressedItem != null &&
+                       (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))) {
                 //Shift select
                 //pressedItem(Exclusive) ~ Item(Inclusive) 까지 선택한다.
                 ShiftSelectItems(pressedItem, item);
@@ -180,8 +193,9 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
             return;
         }
 
-        if (!onMouseCapture)
+        if (!onMouseCapture) {
             return;
+        }
 
         Point cursorPos = e.GetPosition(ChildItemScrollViewer);
         Point absoluteCursorPos = e.GetPosition(ChildItemStackPanel);
@@ -189,8 +203,9 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
         if (!onDragging) {
             float distance = Mathf.Abs(dragStartOffset - (float)e.GetPosition((IInputElement)pressedItem).Y);
 
-            if (distance < 10)
+            if (distance < 10) {
                 return;
+            }
 
             //Select item
             if (SelectedItemSet.Contains(pressedItem)) {
@@ -215,11 +230,13 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
     }
 
     private void ItemContext_MouseUp(object sender, MouseButtonEventArgs e) {
-        if (!isPressed || !onMouseCapture)
+        if (!isPressed || !onMouseCapture) {
             return;
+        }
 
-        if ((e != null && e.ChangedButton != MouseButton.Left) || !onMouseCapture)
+        if ((e != null && e.ChangedButton != MouseButton.Left) || !onMouseCapture) {
             return;
+        }
 
         isPressed = false;
         onMouseCapture = false;
@@ -266,10 +283,11 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
         for (int i = startIndex; i <= endIndex; ++i) {
             ITreeItem targetItem = items[i];
             if (targetItem != startItem) {
-                if (SelectedItemSet.Contains(targetItem))
+                if (SelectedItemSet.Contains(targetItem)) {
                     SelectedItemSet.Remove(targetItem);
-                else
+                } else {
                     SelectedItemSet.Add(targetItem);
+                }
             }
         }
     }
@@ -289,12 +307,15 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
             foreach (ITreeItem item in folder.ChildItemCollection) {
                 nodeItemDelegate(item, ref breakFlag);
 
-                if (item is ITreeFolder)
-                    if (!ForeachItemsRecursion(item as ITreeFolder))
+                if (item is ITreeFolder) {
+                    if (!ForeachItemsRecursion(item as ITreeFolder)) {
                         return false;
+                    }
+                }
 
-                if (breakFlag)
+                if (breakFlag) {
                     return false;
+                }
             }
 
             return true;
@@ -302,6 +323,7 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
     }
 
     public void ForeachItemsOptimize(ItemLoopDelegate nodeItemDelegate) {
+        // 보이는 영역의 item만 탐색해 nodeItemDelegate 함수를 실행합니다.
         float childContextHeight = (float)ChildItemScrollViewer.ActualHeight;
 
         ForeachItemsRecursion(this);
@@ -310,20 +332,25 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
             bool breakFlag = false;
 
             foreach (ITreeItem item in folder.ChildItemCollection) {
-                //화면 영역 밖에 벗어나면 스킵
                 FrameworkElement itemView = (FrameworkElement)item;
+
+                //화면 영역 밖에 벗어나면 continue
                 float itemTop = (float)item.TranslatePoint(new Point(), ChildItemScrollViewer).Y;
-                if (itemTop < -itemView.ActualHeight || itemTop > childContextHeight)
+                if (itemTop < -itemView.ActualHeight || itemTop > childContextHeight) {
                     continue;
+                }
 
                 nodeItemDelegate(item, ref breakFlag);
 
-                if (item is ITreeFolder)
-                    if (!ForeachItemsRecursion(item as ITreeFolder))
+                if (item is ITreeFolder) {
+                    if (!ForeachItemsRecursion(item as ITreeFolder)) {
                         return false;
+                    }
+                }
 
-                if (breakFlag)
+                if (breakFlag) {
                     return false;
+                }
             }
 
             return true;
@@ -331,14 +358,17 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
     }
 
     public bool MoveItem(ITreeItem item, ITreeFolder newParent, int index) {
-        if (item == null || newParent == null)
+        if (item == null || newParent == null) {
             return false;
+        }
 
-        if (item == newParent)
+        if (item == newParent) {
             return false;
+        }
 
-        if (index < 0 || index > newParent.ChildItemCollection.Count)
+        if (index < 0 || index > newParent.ChildItemCollection.Count) {
             return false;
+        }
 
         if (item is ITreeFolder && IsContainsChildRecursive(item as ITreeFolder, newParent)) {
             MessageOccured?.Invoke("자신의 하위 폴더로 이동할 수 없습니다.");
@@ -346,15 +376,17 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
         }
 
         ITreeFolder oldParent = item.ParentItem;
-        if (oldParent == null)
+        if (oldParent == null) {
             return false;
+        }
 
         if (oldParent == newParent) {
             int oldIndex = oldParent.ChildItemCollection.IndexOf(item as UIElement);
-            if (oldIndex == index)
+            if (oldIndex == index) {
                 return false;
-            else if (oldIndex < index)
+            } else if (oldIndex < index) {
                 --index;
+            }
         }
 
         oldParent.ChildItemCollection.Remove(item as UIElement);
@@ -368,8 +400,9 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
 
     // DraggingStates
     private void CreateDraggingClone(FrameworkElement refItem) {
-        if (draggingClone != null)
+        if (draggingClone != null) {
             return;
+        }
 
         draggingClone = (FrameworkElement)Activator.CreateInstance(pressedItem.GetType());
         draggingClone.IsHitTestVisible = false;
@@ -379,8 +412,9 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
     }
 
     private void RemoveDraggingClone() {
-        if (draggingClone == null)
+        if (draggingClone == null) {
             return;
+        }
 
         ContentGrid.Children.Remove(draggingClone);
         draggingClone = null;
@@ -400,15 +434,18 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
     }
 
     private bool MoveSelectedItems(SelectedItemSet selectedItemSet, NodeTarget target) {
-        if (target == null)
+        if (target == null) {
             return false;
+        }
 
-        ITreeFolder[] selectedFolders = selectedItemSet.Where(item => item is ITreeFolder).Select(item => item as ITreeFolder).ToArray();
+        ITreeFolder[] selectedFolders = selectedItemSet.Where(item => item is ITreeFolder)
+            .Select(item => item as ITreeFolder).ToArray();
 
         //자신 내부에 이동시도시 Reject
         foreach (ITreeFolder folder in selectedFolders) {
-            if (folder == target.node)
+            if (folder == target.node) {
                 return false;
+            }
 
             if (IsContainsChildRecursive(folder, target.node)) {
                 MessageOccured?.Invoke("자신의 하위 폴더로 이동할 수 없습니다.");
@@ -420,11 +457,14 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
         ITreeItem[] sortedSelectedItems = CollectSelectedItems();
 
         //이동
-        if (target.node is ITreeFolder && target.direction == NodeDirection.Bottom && ((ITreeFolder)target.node).ChildItemCollection.Count > 0)
+        if (target.node is ITreeFolder && target.direction == NodeDirection.Bottom &&
+            ((ITreeFolder)target.node).ChildItemCollection.Count > 0) {
             target.direction = NodeDirection.InnerTop;
+        }
 
-        if (target.direction == NodeDirection.Bottom || target.direction == NodeDirection.InnerTop)
+        if (target.direction == NodeDirection.Bottom || target.direction == NodeDirection.InnerTop) {
             sortedSelectedItems = sortedSelectedItems.Reverse().ToArray();
+        }
 
         foreach (ITreeItem item in sortedSelectedItems) {
             ITreeFolder oldParent = item.ParentItem ?? this;
@@ -433,10 +473,11 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
 
             FrameworkElement uiItem = (FrameworkElement)item;
 
-            if (oldParent != null)
+            if (oldParent != null) {
                 oldParent.ChildItemCollection.Remove(item as UIElement);
-            else if (uiItem.Parent != null)
+            } else if (uiItem.Parent != null) {
                 ((Panel)uiItem.Parent).Children.Remove(uiItem);
+            }
 
             if (target.direction == NodeDirection.InnerTop) {
                 //폴더 내부로
@@ -449,11 +490,13 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
             } else {
                 //아이템 위아래로
                 newParent = target.node.ParentItem ?? this;
-                index = newParent.ChildItemCollection.IndexOf(target.node as UIElement) + (target.direction == NodeDirection.Bottom ? 1 : 0);
+                index = newParent.ChildItemCollection.IndexOf(target.node as UIElement) +
+                        (target.direction == NodeDirection.Bottom ? 1 : 0);
             }
 
-            if (AutoApplyItemMove)
+            if (AutoApplyItemMove) {
                 newParent.ChildItemCollection.Insert(index, item as UIElement);
+            }
 
             item.ParentItem = newParent;
 
@@ -466,13 +509,17 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
     // Utility
     private bool IsContainsChildRecursive(ITreeFolder folder, ITreeItem target) {
         foreach (ITreeItem childItem in folder.ChildItemCollection) {
-            if (childItem == target)
+            if (childItem == target) {
                 return true;
+            }
 
             if (childItem is ITreeFolder)
                 //Recursion
-                if (IsContainsChildRecursive(childItem as ITreeFolder, target))
+            {
+                if (IsContainsChildRecursive(childItem as ITreeFolder, target)) {
                     return true;
+                }
+            }
         }
 
         return false;
@@ -487,14 +534,16 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
 
         void CollectSelectedItemsRecursion(ITreeItem item) {
             //Collect
-            if (SelectedItemSet.Contains(item))
+            if (SelectedItemSet.Contains(item)) {
                 resultList.Add(item);
+            }
 
             //Recursion
-            if (item is ITreeFolder)
+            if (item is ITreeFolder) {
                 foreach (ITreeItem childItem in ((ITreeFolder)item).ChildItemCollection) {
                     CollectSelectedItemsRecursion(childItem);
                 }
+            }
         }
     }
 
@@ -510,17 +559,19 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
             resultList.Add(item);
 
             //Recursion
-            if (item is ITreeFolder)
+            if (item is ITreeFolder) {
                 foreach (ITreeItem childItem in ((ITreeFolder)item).ChildItemCollection) {
                     CollectItemsRecursion(childItem);
                 }
+            }
         }
     }
 
     private NodeTarget GetNodeTarget(float cursorPosY) {
         NodeTarget target = null;
 
-        float bottom = (float)ChildItemStackPanel.TranslatePoint(new Point(0f, ChildItemStackPanel.ActualHeight), ChildItemScrollViewer).Y;
+        float bottom = (float)ChildItemStackPanel
+            .TranslatePoint(new Point(0f, ChildItemStackPanel.ActualHeight), ChildItemScrollViewer).Y;
 
         //최하단으로 이동
         const float ClippingBias = 2f;
@@ -533,52 +584,66 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
 
         if (target == null)
             //성능을 위해 탐색하면서 SetDraggingCursorPosition을 같이 호출합니다.
+        {
             ForeachItemsOptimize((ITreeItem item, ref bool breakFlag) => {
                 if (item != pressedItem) {
+                    // 보이지 않는 상태면 제외
+                    FrameworkElement frameworkItem = item as FrameworkElement;
+                    if (frameworkItem != null) {
+                        // 부모를 포함해서 Visibility가 Visible이 아니면 제외
+                        if (!frameworkItem.IsUserVisible()) {
+                            Debug.WriteLine(item.DisplayName);
+                            return;
+                        }
+                    }
+
                     float top = (float)item.TranslatePoint(new Point(0, 0), ChildItemScrollViewer).Y;
                     float diff = cursorPosY - top;
 
                     float itemHeight = (float)item.ItemContext.ActualHeight;
-                    if (diff > 0f && diff < itemHeight) {
-                        target = new NodeTarget(item);
-
-                        if (item is ITreeFolder) {
-                            //Folder
-                            float sideEventHeight = itemHeight * SideEventRatio;
-                            float centerEventHeight = itemHeight * CenterEventRatio;
-
-                            if (diff < sideEventHeight) {
-                                //Top
-                                target.direction = NodeDirection.Top;
-                                SetDraggingCursorPosition(top, sideEventHeight);
-                            } else if (diff > itemHeight - sideEventHeight) {
-                                //Bottom
-                                target.direction = NodeDirection.Bottom;
-                                SetDraggingCursorPosition(top + itemHeight - sideEventHeight, sideEventHeight);
-                            } else {
-                                //Center
-                                target.direction = NodeDirection.InnerBottom;
-                                SetDraggingCursorPosition(top + sideEventHeight, centerEventHeight);
-                            }
-                        } else {
-                            //Item
-                            float sideEventHeight = itemHeight * 0.5f;
-
-                            if (diff < sideEventHeight) {
-                                //Top
-                                target.direction = NodeDirection.Top;
-                                SetDraggingCursorPosition(top, sideEventHeight);
-                            } else {
-                                //Bottom
-                                target.direction = NodeDirection.Bottom;
-                                SetDraggingCursorPosition(top + sideEventHeight, sideEventHeight);
-                            }
-                        }
-
-                        breakFlag = true;
+                    if (diff <= 0f || diff >= itemHeight) {
+                        return;
                     }
+
+                    target = new NodeTarget(item);
+
+                    if (item is ITreeFolder) {
+                        //Folder
+                        float sideEventHeight = itemHeight * SideEventRatio;
+                        float centerEventHeight = itemHeight * CenterEventRatio;
+
+                        if (diff < sideEventHeight) {
+                            //Top
+                            target.direction = NodeDirection.Top;
+                            SetDraggingCursorPosition(top, sideEventHeight);
+                        } else if (diff > itemHeight - sideEventHeight) {
+                            //Bottom
+                            target.direction = NodeDirection.Bottom;
+                            SetDraggingCursorPosition(top + itemHeight - sideEventHeight, sideEventHeight);
+                        } else {
+                            //Center
+                            target.direction = NodeDirection.InnerBottom;
+                            SetDraggingCursorPosition(top + sideEventHeight, centerEventHeight);
+                        }
+                    } else {
+                        //Item
+                        float sideEventHeight = itemHeight * 0.5f;
+
+                        if (diff < sideEventHeight) {
+                            //Top
+                            target.direction = NodeDirection.Top;
+                            SetDraggingCursorPosition(top, sideEventHeight);
+                        } else {
+                            //Bottom
+                            target.direction = NodeDirection.Bottom;
+                            SetDraggingCursorPosition(top + sideEventHeight, sideEventHeight);
+                        }
+                    }
+
+                    breakFlag = true;
                 }
             });
+        }
 
 
         SetDraggingCursorVisible(target != null);
@@ -590,21 +655,27 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
         //부모 트리로 Item이 나올 때까지 탐색하는 함수이다.
         DependencyObject parent = pressedElement.Parent;
 
-        if (pressedElement is ITreeItem)
+        if (pressedElement is ITreeItem) {
             return pressedElement as ITreeItem;
+        }
 
-        if (parent != null && !(parent is Window) && parent is FrameworkElement)
+        if (parent != null && !(parent is Window) && parent is FrameworkElement) {
             return GetPressedItem((FrameworkElement)parent);
+        }
 
         return null;
     }
 
     public int GetCurrentIndex() {
         ISelectable selectedItem = SelectedItemSet.LastOrDefault();
-        if (selectedItem == null) return -1;
+        if (selectedItem == null) {
+            return -1;
+        }
 
         TwoWayDictionary<int, ITreeItem> map = GetIndexMap();
-        if (!map.Reverse.ContainsKey(selectedItem as ITreeItem)) return -1;
+        if (!map.Reverse.ContainsKey(selectedItem as ITreeItem)) {
+            return -1;
+        }
 
         return map.Reverse[selectedItem as ITreeItem];
         ;
@@ -617,7 +688,9 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
     public void SetCurrentIndex(int index) {
         TwoWayDictionary<int, ITreeItem> map = GetIndexMap();
 
-        if (!map.Forward.ContainsKey(index)) return;
+        if (!map.Forward.ContainsKey(index)) {
+            return;
+        }
 
         ITreeItem item = map.Forward[index];
         SelectedItemSet.SetSingle(item);
