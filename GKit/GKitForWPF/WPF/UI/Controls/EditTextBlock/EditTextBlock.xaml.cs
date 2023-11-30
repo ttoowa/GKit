@@ -6,21 +6,25 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace GKitForWPF.UI.Controls; 
+namespace GKitForWPF.UI.Controls;
 
 public delegate void TextEditedDelegate(string oldText, string newText, ref bool cancelEdit);
 
 public partial class EditTextBlock : UserControl {
     public static readonly DependencyProperty IsEditingProperty =
-        DependencyProperty.RegisterAttached(nameof(IsEditing), typeof(bool), typeof(EditTextBlock), new PropertyMetadata(false));
+        DependencyProperty.RegisterAttached(nameof(IsEditing), typeof(bool), typeof(EditTextBlock),
+            new PropertyMetadata(false));
 
-    public static readonly DependencyProperty TextProperty = DependencyProperty.RegisterAttached(nameof(Text), typeof(string), typeof(EditTextBlock), new PropertyMetadata(null));
+    public static readonly DependencyProperty TextProperty = DependencyProperty.RegisterAttached(nameof(Text),
+        typeof(string), typeof(EditTextBlock), new PropertyMetadata(null));
 
     public static readonly DependencyProperty EditingBackgroundProperty =
-        DependencyProperty.RegisterAttached(nameof(EditingBackground), typeof(Brush), typeof(EditTextBlock), new PropertyMetadata("FFFFFF".ToBrush()));
+        DependencyProperty.RegisterAttached(nameof(EditingBackground), typeof(Brush), typeof(EditTextBlock),
+            new PropertyMetadata("FFFFFF".ToBrush()));
 
     public static readonly DependencyProperty EditingForegroundProperty =
-        DependencyProperty.RegisterAttached(nameof(EditingForeground), typeof(Brush), typeof(EditTextBlock), new PropertyMetadata("666666".ToBrush()));
+        DependencyProperty.RegisterAttached(nameof(EditingForeground), typeof(Brush), typeof(EditTextBlock),
+            new PropertyMetadata("666666".ToBrush()));
 
     public event TextEditedDelegate TextEdited;
 
@@ -50,18 +54,30 @@ public partial class EditTextBlock : UserControl {
     }
 
     private void InitBindings() {
-        StaticTextBlock.SetBinding(TextBlock.FontSizeProperty, new Binding(nameof(FontSize)) { Source = this, Mode = BindingMode.OneWay });
-        StaticTextBlock.SetBinding(TextBlock.FontFamilyProperty, new Binding(nameof(FontFamily)) { Source = this, Mode = BindingMode.OneWay });
-        StaticTextBlock.SetBinding(TextBlock.TextProperty, new Binding(nameof(Text)) { Source = this, Mode = BindingMode.OneWay });
-        StaticTextBlock.SetBinding(TextBlock.ForegroundProperty, new Binding(nameof(Foreground)) { Source = this, Mode = BindingMode.OneWay });
+        StaticTextBlock.SetBinding(TextBlock.FontSizeProperty,
+            new Binding(nameof(FontSize)) { Source = this, Mode = BindingMode.OneWay });
+        StaticTextBlock.SetBinding(TextBlock.FontFamilyProperty,
+            new Binding(nameof(FontFamily)) { Source = this, Mode = BindingMode.OneWay });
+        StaticTextBlock.SetBinding(TextBlock.TextProperty,
+            new Binding(nameof(Text)) { Source = this, Mode = BindingMode.OneWay });
+        StaticTextBlock.SetBinding(TextBlock.ForegroundProperty,
+            new Binding(nameof(Foreground)) { Source = this, Mode = BindingMode.OneWay });
 
-        EditingTextBox.SetBinding(FontSizeProperty, new Binding(nameof(FontSize)) { Source = this, Mode = BindingMode.OneWay });
-        EditingTextBox.SetBinding(FontFamilyProperty, new Binding(nameof(FontFamily)) { Source = this, Mode = BindingMode.OneWay });
-        EditingTextBox.SetBinding(BackgroundProperty, new Binding(nameof(EditingBackground)) { Source = this, Mode = BindingMode.OneWay });
-        EditingTextBox.SetBinding(ForegroundProperty, new Binding(nameof(EditingForeground)) { Source = this, Mode = BindingMode.OneWay });
-        EditingTextBox.SetBinding(VisibilityProperty, new Binding(nameof(IsEditing)) { Source = this, Mode = BindingMode.OneWay, Converter = new BoolToVisibilityConverter() });
+        EditingTextBox.SetBinding(FontSizeProperty,
+            new Binding(nameof(FontSize)) { Source = this, Mode = BindingMode.OneWay });
+        EditingTextBox.SetBinding(FontFamilyProperty,
+            new Binding(nameof(FontFamily)) { Source = this, Mode = BindingMode.OneWay });
+        EditingTextBox.SetBinding(BackgroundProperty,
+            new Binding(nameof(EditingBackground)) { Source = this, Mode = BindingMode.OneWay });
+        EditingTextBox.SetBinding(ForegroundProperty,
+            new Binding(nameof(EditingForeground)) { Source = this, Mode = BindingMode.OneWay });
+        EditingTextBox.SetBinding(VisibilityProperty,
+            new Binding(nameof(IsEditing))
+                { Source = this, Mode = BindingMode.OneWay, Converter = new BoolToVisibilityConverter() });
 
-        EventArea.SetBinding(IsHitTestVisibleProperty, new Binding(nameof(IsEditing)) { Source = this, Mode = BindingMode.OneWay, Converter = new BoolInvertConverter() });
+        EventArea.SetBinding(IsHitTestVisibleProperty,
+            new Binding(nameof(IsEditing))
+                { Source = this, Mode = BindingMode.OneWay, Converter = new BoolInvertConverter() });
     }
 
     public void StartEditing() {
@@ -69,7 +85,7 @@ public partial class EditTextBlock : UserControl {
         StartCaptureMouse();
 
 
-        EditingTextBox.Text = Text;
+        EditingTextBox.SetTextOptimize(Text);
         EditingTextBox.Focus();
         EditingTextBox.CaretIndex = EditingTextBox.Text.Length;
     }
@@ -90,8 +106,13 @@ public partial class EditTextBlock : UserControl {
         Text = EditingTextBox.Text;
     }
 
-    private void StartCaptureMouse() { InputManager.Current.PreProcessInput += InputManager_PreProcessInput; }
-    private void StopCaptureMouse() { InputManager.Current.PreProcessInput -= InputManager_PreProcessInput; }
+    private void StartCaptureMouse() {
+        InputManager.Current.PreProcessInput += InputManager_PreProcessInput;
+    }
+
+    private void StopCaptureMouse() {
+        InputManager.Current.PreProcessInput -= InputManager_PreProcessInput;
+    }
 
     private void EventArea_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
         if (e.ChangedButton == MouseButton.Left) {
@@ -104,7 +125,8 @@ public partial class EditTextBlock : UserControl {
         if (e.StagingItem.Input is MouseButtonEventArgs) {
             MouseButtonEventArgs clickEventArgs = (MouseButtonEventArgs)e.StagingItem.Input;
 
-            if (clickEventArgs.ChangedButton == MouseButton.Left && clickEventArgs.LeftButton == MouseButtonState.Pressed)
+            if (clickEventArgs.ChangedButton == MouseButton.Left &&
+                clickEventArgs.LeftButton == MouseButtonState.Pressed)
                 if (IsEditing && !EditingTextBox.IsMouseOver)
                     EndEditing();
         } else if (e.StagingItem.Input is KeyEventArgs) {

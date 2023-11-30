@@ -16,196 +16,206 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace GKitForWPF.UI.Controls {
-	public partial class NumberEditor : UserControl, INotifyPropertyChanged {
-		public static readonly DependencyProperty ValueProperty = DependencyProperty.RegisterAttached(nameof(Value), typeof(float), typeof(NumberEditor), new PropertyMetadata(0f));
-		public static readonly DependencyProperty MinValueProperty = DependencyProperty.RegisterAttached(nameof(MinValue), typeof(float), typeof(NumberEditor), new PropertyMetadata(float.MinValue));
-		public static readonly DependencyProperty MaxValueProperty = DependencyProperty.RegisterAttached(nameof(MaxValue), typeof(float), typeof(NumberEditor), new PropertyMetadata(float.MaxValue));
-		public static readonly DependencyProperty NumberTypeProperty = DependencyProperty.RegisterAttached(nameof(NumberType), typeof(NumberType), typeof(NumberEditor), new PropertyMetadata(NumberType.Float));
-		public static readonly DependencyProperty NumberFormatProperty = DependencyProperty.RegisterAttached(nameof(NumberFormat), typeof(string), typeof(NumberEditor), new PropertyMetadata());
-		public static readonly DependencyProperty AdjustFactorProperty = DependencyProperty.RegisterAttached(nameof(AdjustFactor), typeof(float), typeof(NumberEditor), new PropertyMetadata());
+namespace GKitForWPF.UI.Controls; 
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		public event Action ValueChanged;
+public partial class NumberEditor : UserControl, INotifyPropertyChanged {
+    public static readonly DependencyProperty ValueProperty =
+        DependencyProperty.RegisterAttached(nameof(Value), typeof(float), typeof(NumberEditor),
+            new PropertyMetadata(0f));
 
-		public string DisplayValue {
-			get {
-				if (NumberType == NumberType.Float) {
-					if (string.IsNullOrWhiteSpace(NumberFormat)) {
-						return Value.ToString();
-					} else {
-						return Value.ToString(NumberFormat);
-					}
-				} else {
-					return IntValue.ToString();
-				}
-			}
-		}
-		public int IntValue {
-			get {
-				return Mathf.RoundToInt(Value);
-			}
-		}
+    public static readonly DependencyProperty MinValueProperty = DependencyProperty.RegisterAttached(nameof(MinValue),
+        typeof(float), typeof(NumberEditor), new PropertyMetadata(float.MinValue));
 
-		public float Value {
-			get {
-				return (float)GetValue(ValueProperty);
-			}
-			set {
-				float newValue = Mathf.Clamp(value, MinValue, MaxValue);
+    public static readonly DependencyProperty MaxValueProperty = DependencyProperty.RegisterAttached(nameof(MaxValue),
+        typeof(float), typeof(NumberEditor), new PropertyMetadata(float.MaxValue));
 
-				SetValue(ValueProperty, newValue);
-				RaisePropertyChanged(nameof(Value));
-			}
-		}
-		public float MinValue {
-			get {
-				return (float)GetValue(MinValueProperty);
-			}
-			set {
-				SetValue(MinValueProperty, value);
-				RaisePropertyChanged(nameof(MinValue));
-			}
-		}
-		public float MaxValue {
-			get {
-				return (float)GetValue(MaxValueProperty);
-			}
-			set {
-				SetValue(MaxValueProperty, value);
-				RaisePropertyChanged(nameof(MaxValue));
-			}
-		}
-		public NumberType NumberType {
-			get {
-				return (NumberType)GetValue(NumberTypeProperty);
-			}
-			set {
-				SetValue(NumberTypeProperty, value);
-				RaisePropertyChanged(nameof(NumberType));
-			}
-		}
-		public string NumberFormat {
-			get {
-				return (string)GetValue(NumberFormatProperty);
-			}
-			set {
-				SetValue(NumberFormatProperty, value);
-				RaisePropertyChanged(nameof(NumberFormat));
-			}
-		}
-		public float AdjustFactor {
-			get {
-				return (float)GetValue(AdjustFactorProperty);
-			}
-			set {
-				SetValue(AdjustFactorProperty, value);
-				RaisePropertyChanged(nameof(AdjustFactor));
-			}
-		}
+    public static readonly DependencyProperty NumberTypeProperty =
+        DependencyProperty.RegisterAttached(nameof(NumberType), typeof(NumberType), typeof(NumberEditor),
+            new PropertyMetadata(NumberType.Float));
 
-		//Cursor drag
-		private bool onDragging;
-		private float dragStartValue;
-		private float dragStartCursorPosX;
+    public static readonly DependencyProperty NumberFormatProperty =
+        DependencyProperty.RegisterAttached(nameof(NumberFormat), typeof(string), typeof(NumberEditor),
+            new PropertyMetadata());
 
-		public NumberEditor() {
-			InitializeComponent();
+    public static readonly DependencyProperty AdjustFactorProperty =
+        DependencyProperty.RegisterAttached(nameof(AdjustFactor), typeof(float), typeof(NumberEditor),
+            new PropertyMetadata());
 
-			// Initialize
-			NumberType = NumberType.Float;
-			AdjustFactor = 0.2f;
+    public event PropertyChangedEventHandler PropertyChanged;
+    public event Action ValueChanged;
 
-			RegisterEvents();
-		}
-		private void RegisterEvents() {
-			Loaded += OnLoaded;
-			PropertyChanged += ValueEditorElement_NumberBox_PropertyChanged;
-		}
+    public string DisplayValue {
+        get {
+            if (NumberType == NumberType.Float) {
+                if (string.IsNullOrWhiteSpace(NumberFormat))
+                    return Value.ToString();
+                else
+                    return Value.ToString(NumberFormat);
+            } else {
+                return IntValue.ToString();
+            }
+        }
+    }
 
-		private void OnLoaded(object sender, RoutedEventArgs e) {
-			UpdateUI();
-			UpdateValue();
-		}
+    public int IntValue => Mathf.RoundToInt(Value);
 
-		private void RaisePropertyChanged(string propertyName) {
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-		}
-		private void ValueTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e) {
-			string numPattern;
-			if (NumberType == NumberType.Int) {
-				numPattern = "[^0-9\\-]+";
-			} else {
-				numPattern = "[^0-9.\\-]+";
-			}
+    public float Value {
+        get => (float)GetValue(ValueProperty);
+        set {
+            float newValue = Mathf.Clamp(value, MinValue, MaxValue);
 
-			Regex regex = new Regex(numPattern);
-			e.Handled = regex.IsMatch(e.Text);
-		}
-		private void ValueTextBox_LostFocus(object sender, RoutedEventArgs e) {
-			UpdateValue();
-		}
-		private void ValueTextBox_PreviewKeyDown(object sender, KeyEventArgs e) {
-			if (e.Key == Key.Return) {
-				UpdateValue();
+            SetValue(ValueProperty, newValue);
+            RaisePropertyChanged(nameof(Value));
+        }
+    }
 
-				e.Handled = true;
-			}
-		}
-		private void ValueEditorElement_NumberBox_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-			switch (e.PropertyName) {
-				case nameof(Value):
-					RaisePropertyChanged(nameof(IntValue));
-					UpdateUI();
-					ValueChanged?.Invoke();
-					break;
-				case nameof(MinValue):
-				case nameof(MaxValue):
-				case nameof(NumberType):
-				case nameof(NumberFormat):
-					RaisePropertyChanged(nameof(Value));
-					break;
-			}
-		}
+    public float MinValue {
+        get => (float)GetValue(MinValueProperty);
+        set {
+            SetValue(MinValueProperty, value);
+            RaisePropertyChanged(nameof(MinValue));
+        }
+    }
 
-		private void UpdateUI() {
-			ValueTextBox.Text = DisplayValue;
-		}
-		private void UpdateValue() {
-			float resultValue;
-			if (NumberType == NumberType.Int) {
-				int resultValueInt;
-				if (!int.TryParse(ValueTextBox.Text, out resultValueInt)) {
-					resultValueInt = 0;
-				}
-				resultValue = resultValueInt;
-			} else {
-				if (!float.TryParse(ValueTextBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out resultValue)) {
-					resultValue = 0f;
-				}
-			}
-			Value = resultValue;
-		}
+    public float MaxValue {
+        get => (float)GetValue(MaxValueProperty);
+        set {
+            SetValue(MaxValueProperty, value);
+            RaisePropertyChanged(nameof(MaxValue));
+        }
+    }
 
-		private void AdjustButton_MouseDown(object sender, MouseButtonEventArgs e) {
-			Mouse.Capture(AdjustButton);
+    public NumberType NumberType {
+        get => (NumberType)GetValue(NumberTypeProperty);
+        set {
+            SetValue(NumberTypeProperty, value);
+            RaisePropertyChanged(nameof(NumberType));
+        }
+    }
 
-			onDragging = true;
-			dragStartValue = Value;
-			dragStartCursorPosX = (float)e.GetPosition(AdjustButton).X;
-		}
-		private void AdjustButton_MouseMove(object sender, MouseEventArgs e) {
-			if (!onDragging)
-				return;
+    public string NumberFormat {
+        get => (string)GetValue(NumberFormatProperty);
+        set {
+            SetValue(NumberFormatProperty, value);
+            RaisePropertyChanged(nameof(NumberFormat));
+        }
+    }
 
-			float cursorPosXDiff = (float)e.GetPosition(AdjustButton).X - dragStartCursorPosX;
+    public float AdjustFactor {
+        get => (float)GetValue(AdjustFactorProperty);
+        set {
+            SetValue(AdjustFactorProperty, value);
+            RaisePropertyChanged(nameof(AdjustFactor));
+        }
+    }
 
-			Value = dragStartValue + cursorPosXDiff * AdjustFactor;
-		}
-		private void AdjustButton_MouseUp(object sender, MouseButtonEventArgs e) {
-			Mouse.Capture(null);
+    //Cursor drag
+    private bool onDragging;
+    private float dragStartValue;
+    private float dragStartCursorPosX;
 
-			onDragging = false;
-		}
-	}
+    public NumberEditor() {
+        InitializeComponent();
+
+        // Initialize
+        NumberType = NumberType.Float;
+        AdjustFactor = 0.2f;
+
+        RegisterEvents();
+    }
+
+    private void RegisterEvents() {
+        Loaded += OnLoaded;
+        PropertyChanged += ValueEditorElement_NumberBox_PropertyChanged;
+    }
+
+    private void OnLoaded(object sender, RoutedEventArgs e) {
+        UpdateUI();
+        UpdateValue();
+    }
+
+    private void RaisePropertyChanged(string propertyName) {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    private void ValueTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e) {
+        string numPattern;
+        if (NumberType == NumberType.Int)
+            numPattern = "[^0-9\\-]+";
+        else
+            numPattern = "[^0-9.\\-]+";
+
+        Regex regex = new(numPattern);
+        e.Handled = regex.IsMatch(e.Text);
+    }
+
+    private void ValueTextBox_LostFocus(object sender, RoutedEventArgs e) {
+        UpdateValue();
+    }
+
+    private void ValueTextBox_PreviewKeyDown(object sender, KeyEventArgs e) {
+        if (e.Key == Key.Return) {
+            UpdateValue();
+
+            e.Handled = true;
+        }
+    }
+
+    private void ValueEditorElement_NumberBox_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        switch (e.PropertyName) {
+            case nameof(Value):
+                RaisePropertyChanged(nameof(IntValue));
+                UpdateUI();
+                ValueChanged?.Invoke();
+                break;
+            case nameof(MinValue):
+            case nameof(MaxValue):
+            case nameof(NumberType):
+            case nameof(NumberFormat):
+                RaisePropertyChanged(nameof(Value));
+                break;
+        }
+    }
+
+    private void UpdateUI() {
+        ValueTextBox.SetTextOptimize(DisplayValue);
+    }
+
+    private void UpdateValue() {
+        float resultValue;
+        if (NumberType == NumberType.Int) {
+            int resultValueInt;
+            if (!int.TryParse(ValueTextBox.Text, out resultValueInt))
+                resultValueInt = 0;
+            resultValue = resultValueInt;
+        } else {
+            if (!float.TryParse(ValueTextBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out resultValue))
+                resultValue = 0f;
+        }
+
+        Value = resultValue;
+    }
+
+    private void AdjustButton_MouseDown(object sender, MouseButtonEventArgs e) {
+        Mouse.Capture(AdjustButton);
+
+        onDragging = true;
+        dragStartValue = Value;
+        dragStartCursorPosX = (float)e.GetPosition(AdjustButton).X;
+    }
+
+    private void AdjustButton_MouseMove(object sender, MouseEventArgs e) {
+        if (!onDragging)
+            return;
+
+        float cursorPosXDiff = (float)e.GetPosition(AdjustButton).X - dragStartCursorPosX;
+
+        Value = dragStartValue + cursorPosXDiff * AdjustFactor;
+    }
+
+    private void AdjustButton_MouseUp(object sender, MouseButtonEventArgs e) {
+        Mouse.Capture(null);
+
+        onDragging = false;
+    }
 }

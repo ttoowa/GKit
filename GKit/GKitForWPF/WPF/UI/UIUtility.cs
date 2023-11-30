@@ -29,11 +29,10 @@ public static class UIUtility {
 
     public static Color GetCoverColor(float lightnessAlpha) {
         Color color = new();
-        if (lightnessAlpha < 0f) {
+        if (lightnessAlpha < 0f)
             color.R = color.G = color.B = 0;
-        } else {
+        else
             color.R = color.G = color.B = 255;
-        }
 
         color.A = (byte)(Mathf.Clamp01(Mathf.Abs(lightnessAlpha)) * GMath.Float2Byte);
         return color;
@@ -81,9 +80,8 @@ public static class UIUtility {
     }
 
     public static void DetachParent(this FrameworkElement element) {
-        if (element.Parent != null) {
+        if (element.Parent != null)
             element.Parent.Cast<Panel>().Children.Remove(element);
-        }
     }
 
     public static void SetParent(this FrameworkElement element, Panel parent) {
@@ -97,17 +95,14 @@ public static class UIUtility {
         int grabbedIndex = 0;
         bool onDragging = false;
         context.MouseDown += (object sender, MouseButtonEventArgs e) => {
-            if (e.ChangedButton != MouseButton.Left) {
+            if (e.ChangedButton != MouseButton.Left)
                 return;
-            }
 
-            if (e.OriginalSource is FrameworkElement) {
+            if (e.OriginalSource is FrameworkElement)
                 grabbedItem = GetPressedItem((FrameworkElement)e.OriginalSource);
-            }
 
-            if (grabbedItem == null) {
+            if (grabbedItem == null)
                 return;
-            }
 
             int initGrabbedIndex = context.Children.IndexOf(grabbedItem);
             grabbedIndex = initGrabbedIndex;
@@ -116,9 +111,8 @@ public static class UIUtility {
             onDragging = true;
         };
         context.MouseMove += (object sender, MouseEventArgs e) => {
-            if (!onDragging) {
+            if (!onDragging)
                 return;
-            }
 
             //Find Cursor Index
             int newIndex = -1;
@@ -134,14 +128,12 @@ public static class UIUtility {
                 }
             }
 
-            if (newIndex == -1) {
+            if (newIndex == -1)
                 newIndex = count;
-            }
 
             if (newIndex != grabbedIndex) {
-                if (newIndex > grabbedIndex) {
+                if (newIndex > grabbedIndex)
                     --newIndex;
-                }
 
                 context.Children.Remove(grabbedItem);
                 context.Children.Insert(newIndex, grabbedItem);
@@ -151,9 +143,8 @@ public static class UIUtility {
             }
         };
         context.MouseUp += (object sender, MouseButtonEventArgs e) => {
-            if (e.ChangedButton != MouseButton.Left) {
+            if (e.ChangedButton != MouseButton.Left)
                 return;
-            }
 
             onDragging = false;
             Mouse.Capture(null);
@@ -163,13 +154,12 @@ public static class UIUtility {
             //부모 트리로 Item이 나올 때까지 탐색하는 함수이다.
             DependencyObject parent = pressedElement.Parent;
 
-            if (pressedElement is ElementType && parent == context) {
+            if (pressedElement is ElementType && parent == context)
                 return pressedElement as ElementType;
-            } else if (parent != null && !(parent is Window) && parent is FrameworkElement) {
+            else if (parent != null && !(parent is Window) && parent is FrameworkElement)
                 return GetPressedItem((FrameworkElement)parent);
-            } else {
+            else
                 return null;
-            }
         }
     }
 
@@ -178,14 +168,12 @@ public static class UIUtility {
         int grabbedIndex = 0;
         bool onDragging = false;
         control.MouseDown += (object sender, MouseButtonEventArgs e) => {
-            if (e.ChangedButton != MouseButton.Left) {
+            if (e.ChangedButton != MouseButton.Left)
                 return;
-            }
 
             StackPanel parentPanel = control.Parent as StackPanel;
-            if (parentPanel == null) {
+            if (parentPanel == null)
                 return;
-            }
 
             grabbedItem = control;
             grabbedIndex = parentPanel.Children.IndexOf(control);
@@ -194,14 +182,12 @@ public static class UIUtility {
             onDragging = true;
         };
         control.MouseMove += (object sender, MouseEventArgs e) => {
-            if (!onDragging) {
+            if (!onDragging)
                 return;
-            }
 
             StackPanel parentPanel = grabbedItem.Parent as StackPanel;
-            if (parentPanel == null) {
+            if (parentPanel == null)
                 return;
-            }
 
             //Find Cursor Index
             int newIndex = -1;
@@ -217,14 +203,12 @@ public static class UIUtility {
                 }
             }
 
-            if (newIndex == -1) {
+            if (newIndex == -1)
                 newIndex = count;
-            }
 
             if (newIndex != grabbedIndex) {
-                if (newIndex > grabbedIndex) {
+                if (newIndex > grabbedIndex)
                     --newIndex;
-                }
 
                 parentPanel.Children.Remove(grabbedItem);
                 parentPanel.Children.Insert(newIndex, grabbedItem);
@@ -234,9 +218,8 @@ public static class UIUtility {
             }
         };
         control.MouseUp += (object sender, MouseButtonEventArgs e) => {
-            if (e.ChangedButton != MouseButton.Left) {
+            if (e.ChangedButton != MouseButton.Left)
                 return;
-            }
 
             onDragging = false;
             Mouse.Capture(null);
@@ -248,19 +231,26 @@ public static class UIUtility {
     }
 
     public static bool IsUserVisible(this UIElement element) {
-        if (!element.IsVisible) {
+        if (!element.IsVisible)
             return false;
-        }
 
         FrameworkElement container = VisualTreeHelper.GetParent(element) as FrameworkElement;
-        if (container == null) {
+        if (container == null)
             throw new ArgumentNullException("container");
-        }
 
         Rect bounds = element.TransformToAncestor(container)
             .TransformBounds(new Rect(0.0, 0.0, element.RenderSize.Width, element.RenderSize.Height));
         Rect rect = new(0.0, 0.0, container.ActualWidth, container.ActualHeight);
         return rect.IntersectsWith(bounds);
+    }
+
+    public static void SetTextOptimize(this TextBox textBox, string text, int tempMemorySize = 10000000) {
+        if (textBox.Text == text)
+            return;
+
+        GC.TryStartNoGCRegion(tempMemorySize);
+        textBox.Text = text;
+        GC.EndNoGCRegion();
     }
 
     # region Click events
@@ -294,40 +284,35 @@ public static class UIUtility {
     public static void RegisterClickEvent(this Button button, Action action, bool handled = false) {
         button.Click += (object sender, RoutedEventArgs e) => {
             action?.Invoke();
-            if (handled) {
+            if (handled)
                 e.Handled = true;
-            }
         };
     }
 
     public static void RegisterClickEvent(this Button button, ActionEvent actionEvent, bool handled = false) {
         button.Click += (object sender, RoutedEventArgs e) => {
             actionEvent?.Invoke();
-            if (handled) {
+            if (handled)
                 e.Handled = true;
-            }
         };
     }
 
     public static void RegisterClickEvent(this Button button, RoutedEventHandler handler, bool handled = false) {
         button.Click += (object sender, RoutedEventArgs e) => {
             handler.Invoke(sender, e);
-            if (handled) {
+            if (handled)
                 e.Handled = true;
-            }
         };
     }
 
     public static void RegisterClickEvent(this FrameworkElement control, Action action, bool handled = false) {
         control.MouseLeftButtonDown += (object sender, MouseButtonEventArgs e) => {
             MouseInput.Left.UpOnce += () => {
-                if (control.IsMouseOver) {
+                if (control.IsMouseOver)
                     action?.Invoke();
-                }
 
-                if (handled) {
+                if (handled)
                     e.Handled = true;
-                }
             };
         };
     }
@@ -335,26 +320,22 @@ public static class UIUtility {
     public static void RegisterRightClickEvent(this FrameworkElement control, Action action, bool handled = false) {
         control.MouseRightButtonDown += (object sender, MouseButtonEventArgs e) => {
             MouseInput.Right.UpOnce += () => {
-                if (control.IsMouseOver) {
+                if (control.IsMouseOver)
                     action?.Invoke();
-                }
 
-                if (handled) {
+                if (handled)
                     e.Handled = true;
-                }
             };
         };
     }
 
     public static void RegisterDoubleClickEvent(this FrameworkElement control, Action action, bool handled = false) {
         control.MouseLeftButtonDown += (object sender, MouseButtonEventArgs e) => {
-            if (e.ClickCount == 2) {
+            if (e.ClickCount == 2)
                 action?.Invoke();
-            }
 
-            if (handled) {
+            if (handled)
                 e.Handled = true;
-            }
         };
     }
 
@@ -556,23 +537,20 @@ public static class UIUtility {
 
     public static void RegisterButtonReaction(this Shape control, Action on, Action over, Action down) {
         control.MouseLeftButtonUp += (object sender, MouseButtonEventArgs e) => {
-            if (control.IsMouseOver) {
+            if (control.IsMouseOver)
                 over.TryInvoke();
-            } else {
+            else
                 on.TryInvoke();
-            }
 
             control.ReleaseMouseCapture();
         };
         control.MouseLeave += (object sender, MouseEventArgs e) => {
-            if (Mouse.LeftButton == MouseButtonState.Released) {
+            if (Mouse.LeftButton == MouseButtonState.Released)
                 on.TryInvoke();
-            }
         };
         control.MouseEnter += (object sender, MouseEventArgs e) => {
-            if (Mouse.LeftButton == MouseButtonState.Released) {
+            if (Mouse.LeftButton == MouseButtonState.Released)
                 over.TryInvoke();
-            }
         };
         control.MouseLeftButtonDown += (object sender, MouseButtonEventArgs e) => {
             down.TryInvoke();
@@ -590,23 +568,20 @@ public static class UIUtility {
     public static void RegisterButtonReaction(this Shape control, SolidColorBrush on, SolidColorBrush over,
         SolidColorBrush down) {
         control.MouseLeftButtonUp += (object sender, MouseButtonEventArgs e) => {
-            if (control.IsMouseOver) {
+            if (control.IsMouseOver)
                 control.Fill = over;
-            } else {
+            else
                 control.Fill = on;
-            }
 
             control.ReleaseMouseCapture();
         };
         control.MouseLeave += (object sender, MouseEventArgs e) => {
-            if (Mouse.LeftButton == MouseButtonState.Released) {
+            if (Mouse.LeftButton == MouseButtonState.Released)
                 control.Fill = on;
-            }
         };
         control.MouseEnter += (object sender, MouseEventArgs e) => {
-            if (Mouse.LeftButton == MouseButtonState.Released) {
+            if (Mouse.LeftButton == MouseButtonState.Released)
                 control.Fill = over;
-            }
         };
         control.MouseLeftButtonDown += (object sender, MouseButtonEventArgs e) => {
             control.Fill = down;
@@ -616,23 +591,20 @@ public static class UIUtility {
 
     public static void RegisterButtonReaction(this Border control, Action on, Action over, Action down) {
         control.MouseLeftButtonUp += (object sender, MouseButtonEventArgs e) => {
-            if (control.IsMouseOver) {
+            if (control.IsMouseOver)
                 over.TryInvoke();
-            } else {
+            else
                 on.TryInvoke();
-            }
 
             control.ReleaseMouseCapture();
         };
         control.MouseLeave += (object sender, MouseEventArgs e) => {
-            if (Mouse.LeftButton == MouseButtonState.Released) {
+            if (Mouse.LeftButton == MouseButtonState.Released)
                 on.TryInvoke();
-            }
         };
         control.MouseEnter += (object sender, MouseEventArgs e) => {
-            if (Mouse.LeftButton == MouseButtonState.Released) {
+            if (Mouse.LeftButton == MouseButtonState.Released)
                 over.TryInvoke();
-            }
         };
         control.MouseLeftButtonDown += (object sender, MouseButtonEventArgs e) => {
             down.TryInvoke();
@@ -650,23 +622,20 @@ public static class UIUtility {
     public static void RegisterButtonReaction(this Border control, SolidColorBrush on, SolidColorBrush over,
         SolidColorBrush down) {
         control.MouseLeftButtonUp += (object sender, MouseButtonEventArgs e) => {
-            if (control.IsMouseOver) {
+            if (control.IsMouseOver)
                 control.Background = over;
-            } else {
+            else
                 control.Background = on;
-            }
 
             control.ReleaseMouseCapture();
         };
         control.MouseLeave += (object sender, MouseEventArgs e) => {
-            if (Mouse.LeftButton == MouseButtonState.Released) {
+            if (Mouse.LeftButton == MouseButtonState.Released)
                 control.Background = on;
-            }
         };
         control.MouseEnter += (object sender, MouseEventArgs e) => {
-            if (Mouse.LeftButton == MouseButtonState.Released) {
+            if (Mouse.LeftButton == MouseButtonState.Released)
                 control.Background = over;
-            }
         };
         control.MouseLeftButtonDown += (object sender, MouseButtonEventArgs e) => {
             control.Background = down;
@@ -676,23 +645,20 @@ public static class UIUtility {
 
     public static void RegisterButtonReaction(this Panel control, Action on, Action over, Action down) {
         control.MouseLeftButtonUp += (object sender, MouseButtonEventArgs e) => {
-            if (control.IsMouseOver) {
+            if (control.IsMouseOver)
                 over.TryInvoke();
-            } else {
+            else
                 on.TryInvoke();
-            }
 
             control.ReleaseMouseCapture();
         };
         control.MouseLeave += (object sender, MouseEventArgs e) => {
-            if (Mouse.LeftButton == MouseButtonState.Released) {
+            if (Mouse.LeftButton == MouseButtonState.Released)
                 on.TryInvoke();
-            }
         };
         control.MouseEnter += (object sender, MouseEventArgs e) => {
-            if (Mouse.LeftButton == MouseButtonState.Released) {
+            if (Mouse.LeftButton == MouseButtonState.Released)
                 over.TryInvoke();
-            }
         };
         control.MouseLeftButtonDown += (object sender, MouseButtonEventArgs e) => {
             down.TryInvoke();
@@ -710,23 +676,20 @@ public static class UIUtility {
     public static void RegisterButtonReaction(this Panel control, SolidColorBrush on, SolidColorBrush over,
         SolidColorBrush down) {
         control.MouseLeftButtonUp += (object sender, MouseButtonEventArgs e) => {
-            if (control.IsMouseOver) {
+            if (control.IsMouseOver)
                 control.Background = over;
-            } else {
+            else
                 control.Background = on;
-            }
 
             control.ReleaseMouseCapture();
         };
         control.MouseLeave += (object sender, MouseEventArgs e) => {
-            if (Mouse.LeftButton == MouseButtonState.Released) {
+            if (Mouse.LeftButton == MouseButtonState.Released)
                 control.Background = on;
-            }
         };
         control.MouseEnter += (object sender, MouseEventArgs e) => {
-            if (Mouse.LeftButton == MouseButtonState.Released) {
+            if (Mouse.LeftButton == MouseButtonState.Released)
                 control.Background = over;
-            }
         };
         control.MouseLeftButtonDown += (object sender, MouseButtonEventArgs e) => {
             control.Background = down;
@@ -736,23 +699,20 @@ public static class UIUtility {
 
     public static void RegisterButtonReaction(this Control control, Action on, Action over, Action down) {
         control.MouseLeftButtonUp += (object sender, MouseButtonEventArgs e) => {
-            if (control.IsMouseOver) {
+            if (control.IsMouseOver)
                 over.TryInvoke();
-            } else {
+            else
                 on.TryInvoke();
-            }
 
             control.ReleaseMouseCapture();
         };
         control.MouseLeave += (object sender, MouseEventArgs e) => {
-            if (Mouse.LeftButton == MouseButtonState.Released) {
+            if (Mouse.LeftButton == MouseButtonState.Released)
                 on.TryInvoke();
-            }
         };
         control.MouseEnter += (object sender, MouseEventArgs e) => {
-            if (Mouse.LeftButton == MouseButtonState.Released) {
+            if (Mouse.LeftButton == MouseButtonState.Released)
                 over.TryInvoke();
-            }
         };
         control.MouseLeftButtonDown += (object sender, MouseButtonEventArgs e) => {
             down.TryInvoke();
@@ -770,23 +730,20 @@ public static class UIUtility {
     public static void RegisterButtonReaction(this Control control, SolidColorBrush on, SolidColorBrush over,
         SolidColorBrush down) {
         control.MouseLeftButtonUp += (object sender, MouseButtonEventArgs e) => {
-            if (control.IsMouseOver) {
+            if (control.IsMouseOver)
                 control.Background = over;
-            } else {
+            else
                 control.Background = on;
-            }
 
             control.ReleaseMouseCapture();
         };
         control.MouseLeave += (object sender, MouseEventArgs e) => {
-            if (Mouse.LeftButton == MouseButtonState.Released) {
+            if (Mouse.LeftButton == MouseButtonState.Released)
                 control.Background = on;
-            }
         };
         control.MouseEnter += (object sender, MouseEventArgs e) => {
-            if (Mouse.LeftButton == MouseButtonState.Released) {
+            if (Mouse.LeftButton == MouseButtonState.Released)
                 control.Background = over;
-            }
         };
         control.MouseLeftButtonDown += (object sender, MouseButtonEventArgs e) => {
             control.Background = down;
