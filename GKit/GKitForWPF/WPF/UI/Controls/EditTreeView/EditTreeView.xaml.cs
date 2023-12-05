@@ -592,7 +592,6 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
                     if (frameworkItem != null) {
                         // 부모를 포함해서 Visibility가 Visible이 아니면 제외
                         if (!frameworkItem.IsUserVisible()) {
-                            Debug.WriteLine(item.DisplayName);
                             return;
                         }
                     }
