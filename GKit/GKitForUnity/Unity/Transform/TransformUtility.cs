@@ -49,7 +49,7 @@ public static class TransformUtility {
     public static void ClearChilds(this GameObject gameObject) {
         int childCount = gameObject.transform.childCount;
         for (int i = childCount - 1; i >= 0; --i) {
-            Object.Destroy(gameObject.transform.GetChild(i));
+            Object.Destroy(gameObject.transform.GetChild(i).gameObject);
         }
     }
 
