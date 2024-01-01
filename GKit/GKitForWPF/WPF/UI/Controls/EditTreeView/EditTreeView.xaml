@@ -11,7 +11,7 @@
         <ScrollViewer Name="ChildItemScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" x:FieldModifier="public">
             <Grid>
                 <Grid Background="Transparent" MouseDown="Background_MouseDown" />
-                <StackPanel Margin="0,0,0,100">
+                <StackPanel Margin="0,0,0,20">
                     <StackPanel Name="ChildItemStackPanel"
                                 MouseDown="ItemContext_MouseDown" MouseMove="ItemContext_MouseMove" MouseUp="ItemContext_MouseUp" VerticalAlignment="Top" />
                     <Controls:ItemShadow x:Name="ItemShadow" />
