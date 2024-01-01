@@ -89,8 +89,7 @@ public static class UIUtility {
     }
 
 
-    public static void SetIndexChangeableContext<ElementType>(this StackPanel context,
-        IndexChangedDelegate OnIndexChanged = null) where ElementType : FrameworkElement {
+    public static void SetIndexChangeableContext<ElementType>(this StackPanel context, IndexChangedDelegate OnIndexChanged = null) where ElementType : FrameworkElement {
         ElementType grabbedItem = null;
         int grabbedIndex = 0;
         bool onDragging = false;
@@ -238,8 +237,7 @@ public static class UIUtility {
         if (container == null)
             throw new ArgumentNullException("container");
 
-        Rect bounds = element.TransformToAncestor(container)
-            .TransformBounds(new Rect(0.0, 0.0, element.RenderSize.Width, element.RenderSize.Height));
+        Rect bounds = element.TransformToAncestor(container).TransformBounds(new Rect(0.0, 0.0, element.RenderSize.Width, element.RenderSize.Height));
         Rect rect = new(0.0, 0.0, container.ActualWidth, container.ActualHeight);
         return rect.IntersectsWith(bounds);
     }
@@ -305,27 +303,39 @@ public static class UIUtility {
         };
     }
 
-    public static void RegisterClickEvent(this FrameworkElement control, Action action, bool handled = false) {
+    public static void RegisterClickEvent(this FrameworkElement control, Action action, bool handled = false, bool checkMouseUp = true) {
         control.MouseLeftButtonDown += (object sender, MouseButtonEventArgs e) => {
-            MouseInput.Left.UpOnce += () => {
-                if (control.IsMouseOver)
-                    action?.Invoke();
+            if (checkMouseUp) {
+                MouseInput.Left.UpOnce += () => {
+                    if (control.IsMouseOver)
+                        action?.Invoke();
 
+                    if (handled)
+                        e.Handled = true;
+                };
+            } else {
+                action?.Invoke();
                 if (handled)
                     e.Handled = true;
-            };
+            }
         };
     }
 
-    public static void RegisterRightClickEvent(this FrameworkElement control, Action action, bool handled = false) {
+    public static void RegisterRightClickEvent(this FrameworkElement control, Action action, bool handled = false, bool checkMouseUp = true) {
         control.MouseRightButtonDown += (object sender, MouseButtonEventArgs e) => {
-            MouseInput.Right.UpOnce += () => {
-                if (control.IsMouseOver)
-                    action?.Invoke();
+            if (checkMouseUp) {
+                MouseInput.Right.UpOnce += () => {
+                    if (control.IsMouseOver)
+                        action?.Invoke();
 
+                    if (handled)
+                        e.Handled = true;
+                };
+            } else {
+                action?.Invoke();
                 if (handled)
                     e.Handled = true;
-            };
+            }
         };
     }
 
@@ -340,27 +350,22 @@ public static class UIUtility {
     }
 
     public static void RegisterButtonReaction(this Shape control, float value = DefaultCoverValue) {
-        control.RegisterButtonReaction(GetCoverColor(0f).ToBrush(), GetCoverColor(value).ToBrush(),
-            GetCoverColor(-value).ToBrush());
+        control.RegisterButtonReaction(GetCoverColor(0f).ToBrush(), GetCoverColor(value).ToBrush(), GetCoverColor(-value).ToBrush());
     }
 
     public static void RegisterButtonReaction(this Border control, float value = DefaultCoverValue) {
-        control.RegisterButtonReaction(GetCoverColor(0f).ToBrush(), GetCoverColor(value).ToBrush(),
-            GetCoverColor(-value).ToBrush());
+        control.RegisterButtonReaction(GetCoverColor(0f).ToBrush(), GetCoverColor(value).ToBrush(), GetCoverColor(-value).ToBrush());
     }
 
     public static void RegisterButtonReaction(this Panel control, float value = DefaultCoverValue) {
-        control.RegisterButtonReaction(GetCoverColor(0f).ToBrush(), GetCoverColor(value).ToBrush(),
-            GetCoverColor(-value).ToBrush());
+        control.RegisterButtonReaction(GetCoverColor(0f).ToBrush(), GetCoverColor(value).ToBrush(), GetCoverColor(-value).ToBrush());
     }
 
     public static void RegisterButtonReaction(this Control control, float value = DefaultCoverValue) {
-        control.RegisterButtonReaction(GetCoverColor(0f).ToBrush(), GetCoverColor(value).ToBrush(),
-            GetCoverColor(-value).ToBrush());
+        control.RegisterButtonReaction(GetCoverColor(0f).ToBrush(), GetCoverColor(value).ToBrush(), GetCoverColor(-value).ToBrush());
     }
 
-    public static void RegisterButtonReaction(this Control control, Shape transparentCover,
-        float value = DefaultCoverValue) {
+    public static void RegisterButtonReaction(this Control control, Shape transparentCover, float value = DefaultCoverValue) {
         control.RegisterButtonReaction(() => {
             transparentCover.Fill = GetCoverColor(0f).ToBrush();
         }, () => {
@@ -370,8 +375,7 @@ public static class UIUtility {
         });
     }
 
-    public static void RegisterButtonReaction(this Control control, Border transparentCover,
-        float value = DefaultCoverValue) {
+    public static void RegisterButtonReaction(this Control control, Border transparentCover, float value = DefaultCoverValue) {
         control.RegisterButtonReaction(() => {
             transparentCover.Background = GetCoverColor(0f).ToBrush();
         }, () => {
@@ -381,8 +385,7 @@ public static class UIUtility {
         });
     }
 
-    public static void RegisterButtonReaction(this Control control, Panel transparentCover,
-        float value = DefaultCoverValue) {
+    public static void RegisterButtonReaction(this Control control, Panel transparentCover, float value = DefaultCoverValue) {
         control.RegisterButtonReaction(() => {
             transparentCover.Background = GetCoverColor(0f).ToBrush();
         }, () => {
@@ -392,8 +395,7 @@ public static class UIUtility {
         });
     }
 
-    public static void RegisterButtonReaction(this Control control, Control transparentCover,
-        float value = DefaultCoverValue) {
+    public static void RegisterButtonReaction(this Control control, Control transparentCover, float value = DefaultCoverValue) {
         control.RegisterButtonReaction(() => {
             transparentCover.Background = GetCoverColor(0f).ToBrush();
         }, () => {
@@ -403,8 +405,7 @@ public static class UIUtility {
         });
     }
 
-    public static void RegisterButtonReaction(this Panel control, Shape transparentCover,
-        float value = DefaultCoverValue) {
+    public static void RegisterButtonReaction(this Panel control, Shape transparentCover, float value = DefaultCoverValue) {
         control.RegisterButtonReaction(() => {
             transparentCover.Fill = GetCoverColor(0f).ToBrush();
         }, () => {
@@ -414,8 +415,7 @@ public static class UIUtility {
         });
     }
 
-    public static void RegisterButtonReaction(this Panel control, Border transparentCover,
-        float value = DefaultCoverValue) {
+    public static void RegisterButtonReaction(this Panel control, Border transparentCover, float value = DefaultCoverValue) {
         control.RegisterButtonReaction(() => {
             transparentCover.Background = GetCoverColor(0f).ToBrush();
         }, () => {
@@ -425,8 +425,7 @@ public static class UIUtility {
         });
     }
 
-    public static void RegisterButtonReaction(this Panel control, Panel transparentCover,
-        float value = DefaultCoverValue) {
+    public static void RegisterButtonReaction(this Panel control, Panel transparentCover, float value = DefaultCoverValue) {
         control.RegisterButtonReaction(() => {
             transparentCover.Background = GetCoverColor(0f).ToBrush();
         }, () => {
@@ -436,8 +435,7 @@ public static class UIUtility {
         });
     }
 
-    public static void RegisterButtonReaction(this Panel control, Control transparentCover,
-        float value = DefaultCoverValue) {
+    public static void RegisterButtonReaction(this Panel control, Control transparentCover, float value = DefaultCoverValue) {
         control.RegisterButtonReaction(() => {
             transparentCover.Background = GetCoverColor(0f).ToBrush();
         }, () => {
@@ -447,8 +445,7 @@ public static class UIUtility {
         });
     }
 
-    public static void RegisterButtonReaction(this Shape control, Shape transparentCover,
-        float value = DefaultCoverValue) {
+    public static void RegisterButtonReaction(this Shape control, Shape transparentCover, float value = DefaultCoverValue) {
         control.RegisterButtonReaction(() => {
             transparentCover.Fill = GetCoverColor(0f).ToBrush();
         }, () => {
@@ -458,8 +455,7 @@ public static class UIUtility {
         });
     }
 
-    public static void RegisterButtonReaction(this Shape control, Border transparentCover,
-        float value = DefaultCoverValue) {
+    public static void RegisterButtonReaction(this Shape control, Border transparentCover, float value = DefaultCoverValue) {
         control.RegisterButtonReaction(() => {
             transparentCover.Background = GetCoverColor(0f).ToBrush();
         }, () => {
@@ -469,8 +465,7 @@ public static class UIUtility {
         });
     }
 
-    public static void RegisterButtonReaction(this Shape control, Panel transparentCover,
-        float value = DefaultCoverValue) {
+    public static void RegisterButtonReaction(this Shape control, Panel transparentCover, float value = DefaultCoverValue) {
         control.RegisterButtonReaction(() => {
             transparentCover.Background = GetCoverColor(0f).ToBrush();
         }, () => {
@@ -480,8 +475,7 @@ public static class UIUtility {
         });
     }
 
-    public static void RegisterButtonReaction(this Shape control, Control transparentCover,
-        float value = DefaultCoverValue) {
+    public static void RegisterButtonReaction(this Shape control, Control transparentCover, float value = DefaultCoverValue) {
         control.RegisterButtonReaction(() => {
             transparentCover.Background = GetCoverColor(0f).ToBrush();
         }, () => {
@@ -491,8 +485,7 @@ public static class UIUtility {
         });
     }
 
-    public static void RegisterButtonReaction(this Border control, Shape transparentCover,
-        float value = DefaultCoverValue) {
+    public static void RegisterButtonReaction(this Border control, Shape transparentCover, float value = DefaultCoverValue) {
         control.RegisterButtonReaction(() => {
             transparentCover.Fill = GetCoverColor(0f).ToBrush();
         }, () => {
@@ -502,8 +495,7 @@ public static class UIUtility {
         });
     }
 
-    public static void RegisterButtonReaction(this Border control, Border transparentCover,
-        float value = DefaultCoverValue) {
+    public static void RegisterButtonReaction(this Border control, Border transparentCover, float value = DefaultCoverValue) {
         control.RegisterButtonReaction(() => {
             transparentCover.Background = GetCoverColor(0f).ToBrush();
         }, () => {
@@ -513,8 +505,7 @@ public static class UIUtility {
         });
     }
 
-    public static void RegisterButtonReaction(this Border control, Panel transparentCover,
-        float value = DefaultCoverValue) {
+    public static void RegisterButtonReaction(this Border control, Panel transparentCover, float value = DefaultCoverValue) {
         control.RegisterButtonReaction(() => {
             transparentCover.Background = GetCoverColor(0f).ToBrush();
         }, () => {
@@ -524,8 +515,7 @@ public static class UIUtility {
         });
     }
 
-    public static void RegisterButtonReaction(this Border control, Control transparentCover,
-        float value = DefaultCoverValue) {
+    public static void RegisterButtonReaction(this Border control, Control transparentCover, float value = DefaultCoverValue) {
         control.RegisterButtonReaction(() => {
             transparentCover.Background = GetCoverColor(0f).ToBrush();
         }, () => {
@@ -565,8 +555,7 @@ public static class UIUtility {
         RegisterButtonReaction(control, onBrush, overBrush, downBrush);
     }
 
-    public static void RegisterButtonReaction(this Shape control, SolidColorBrush on, SolidColorBrush over,
-        SolidColorBrush down) {
+    public static void RegisterButtonReaction(this Shape control, SolidColorBrush on, SolidColorBrush over, SolidColorBrush down) {
         control.MouseLeftButtonUp += (object sender, MouseButtonEventArgs e) => {
             if (control.IsMouseOver)
                 control.Fill = over;
@@ -619,8 +608,7 @@ public static class UIUtility {
         RegisterButtonReaction(control, onBrush, overBrush, downBrush);
     }
 
-    public static void RegisterButtonReaction(this Border control, SolidColorBrush on, SolidColorBrush over,
-        SolidColorBrush down) {
+    public static void RegisterButtonReaction(this Border control, SolidColorBrush on, SolidColorBrush over, SolidColorBrush down) {
         control.MouseLeftButtonUp += (object sender, MouseButtonEventArgs e) => {
             if (control.IsMouseOver)
                 control.Background = over;
@@ -673,8 +661,7 @@ public static class UIUtility {
         RegisterButtonReaction(control, onBrush, overBrush, downBrush);
     }
 
-    public static void RegisterButtonReaction(this Panel control, SolidColorBrush on, SolidColorBrush over,
-        SolidColorBrush down) {
+    public static void RegisterButtonReaction(this Panel control, SolidColorBrush on, SolidColorBrush over, SolidColorBrush down) {
         control.MouseLeftButtonUp += (object sender, MouseButtonEventArgs e) => {
             if (control.IsMouseOver)
                 control.Background = over;
@@ -727,8 +714,7 @@ public static class UIUtility {
         RegisterButtonReaction(control, onBrush, overBrush, downBrush);
     }
 
-    public static void RegisterButtonReaction(this Control control, SolidColorBrush on, SolidColorBrush over,
-        SolidColorBrush down) {
+    public static void RegisterButtonReaction(this Control control, SolidColorBrush on, SolidColorBrush over, SolidColorBrush down) {
         control.MouseLeftButtonUp += (object sender, MouseButtonEventArgs e) => {
             if (control.IsMouseOver)
                 control.Background = over;
