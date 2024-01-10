@@ -1,24 +1,18 @@
 ﻿using System.Windows;
 using GKitForWPF;
 
-namespace GKitForWPF.UI.Controls {
-	public interface ITreeItem : ISelectable {
-		string DisplayName {
-			get;
-		}
+namespace GKitForWPF.UI.Controls;
 
-		FrameworkElement ItemContext {
-			get;
-		}
+public interface ITreeItem : ISelectable {
+    string DisplayName { get; }
 
-		ITreeFolder ParentItem {
-			get; set;
-		}
+    FrameworkElement ItemContext { get; }
 
-		void SetDisplayName(string name);
+    ITreeFolder ParentItem { get; set; }
 
-		//IListFolder GetParentItem();
+    void SetDisplayName(string name);
 
-		Point TranslatePoint(Point point, UIElement targetElement);
-	}
+    //IListFolder GetParentItem();
+
+    Point TranslatePoint(Point point, UIElement targetElement);
 }

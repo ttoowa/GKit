@@ -457,10 +457,10 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
         ITreeItem[] sortedSelectedItems = CollectSelectedItems();
 
         //이동
-        if (target.node is ITreeFolder && target.direction == NodeDirection.Bottom &&
-            ((ITreeFolder)target.node).ChildItemCollection.Count > 0) {
-            target.direction = NodeDirection.InnerTop;
-        }
+        // if (target.node is ITreeFolder && target.direction == NodeDirection.Bottom &&
+        //     ((ITreeFolder)target.node).ChildItemCollection.Count > 0) {
+        //     target.direction = NodeDirection.InnerTop;
+        // }
 
         if (target.direction == NodeDirection.Bottom || target.direction == NodeDirection.InnerTop) {
             sortedSelectedItems = sortedSelectedItems.Reverse().ToArray();
