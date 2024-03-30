@@ -24,7 +24,8 @@ public class SelectedItemSet : IEnumerable<ISelectable> {
 
     public event ItemDelegate SelectionAdded;
     public event ItemDelegate SelectionRemoved;
-
+    
+    public HashSet<ISelectable> ItemSet => itemSet;
 
     public SelectedItemSet() {
         itemSet = new HashSet<ISelectable>();
