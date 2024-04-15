@@ -205,8 +205,12 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
         bool isHandled = false;
         if (onDragging) {
             foreach (EditTreeView globalDraggingTarget in GlobalDraggingTargetList) {
-                HitTestResult result = VisualTreeHelper.HitTest(globalDraggingTarget, e.GetPosition(globalDraggingTarget));
-                if (result != null) {
+                // IsMouseOver 가 동작하지 않으므로 위치 검사를 통해 isOver 를 알아냅니다.
+                Point cursorRelPoint = e.GetPosition(globalDraggingTarget);
+                bool isOver = cursorRelPoint.X >= 0 && cursorRelPoint.X <= globalDraggingTarget.ActualWidth &&
+                              cursorRelPoint.Y >= 0 && cursorRelPoint.Y <= globalDraggingTarget.ActualHeight;
+                // HitTestResult result = VisualTreeHelper.HitTest(globalDraggingTarget, e.GetPosition(globalDraggingTarget));
+                if (isOver) {
                     if (!isHandled) {
                         isHandled = true;
 
@@ -229,7 +233,7 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
 
         SetDraggingCursorVisible(false);
         treeView.SetDraggingCursorVisible(true);
-        treeView.GetNodeTargetWithUpdateCursor((float)cursorPos.Y);
+        treeView.GetNodeTargetWithUpdateCursor((float)cursorPos.Y, false);
     }
 
     private void OnLocalMouseMove(MouseEventArgs e) {
@@ -307,7 +311,7 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
 
         Point cursorPos = e.GetPosition(treeView.ChildItemScrollViewer);
         Point absoluteCursorPos = e.GetPosition(treeView.ChildItemStackPanel);
-        NodeTarget target = treeView.GetNodeTargetWithUpdateCursor((float)cursorPos.Y);
+        NodeTarget target = treeView.GetNodeTargetWithUpdateCursor((float)cursorPos.Y, false);
 
         treeView.GlobalDropped?.Invoke(pressedItem, target);
     }
@@ -637,7 +641,7 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
         }
     }
 
-    private NodeTarget GetNodeTargetWithUpdateCursor(float cursorPosY) {
+    private NodeTarget GetNodeTargetWithUpdateCursor(float cursorPosY, bool withoutSelf = true) {
         NodeTarget target = null;
 
         float bottom = (float)ChildItemStackPanel
@@ -656,61 +660,61 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
             //성능을 위해 탐색하면서 SetDraggingCursorPosition을 같이 호출합니다.
         {
             ForeachItemsOptimize((ITreeItem item, ref bool breakFlag) => {
-                if (item != pressedItem) {
-                    // 보이지 않는 상태면 제외
-                    FrameworkElement frameworkItem = item as FrameworkElement;
-                    if (frameworkItem != null) {
-                        // 부모를 포함해서 Visibility가 Visible이 아니면 제외
-                        if (!frameworkItem.IsUserVisible()) {
-                            return;
-                        }
-                    }
-
-                    float top = (float)item.TranslatePoint(new Point(0, 0), ChildItemScrollViewer).Y;
-                    float diff = cursorPosY - top;
-
-                    float itemHeight = (float)item.ItemContext.ActualHeight;
-                    if (diff <= 0f || diff >= itemHeight) {
+                if (withoutSelf && item == pressedItem)
+                    return;
+                // 보이지 않는 상태면 제외
+                FrameworkElement frameworkItem = item as FrameworkElement;
+                if (frameworkItem != null) {
+                    // 부모를 포함해서 Visibility가 Visible이 아니면 제외
+                    if (!frameworkItem.IsUserVisible()) {
                         return;
                     }
-
-                    target = new NodeTarget(item);
-
-                    if (item is ITreeFolder) {
-                        //Folder
-                        float sideEventHeight = itemHeight * SideEventRatio;
-                        float centerEventHeight = itemHeight * CenterEventRatio;
-
-                        if (diff < sideEventHeight) {
-                            //Top
-                            target.direction = NodeDirection.Top;
-                            SetDraggingCursorPosition(top, sideEventHeight);
-                        } else if (diff > itemHeight - sideEventHeight) {
-                            //Bottom
-                            target.direction = NodeDirection.Bottom;
-                            SetDraggingCursorPosition(top + itemHeight - sideEventHeight, sideEventHeight);
-                        } else {
-                            //Center
-                            target.direction = NodeDirection.InnerBottom;
-                            SetDraggingCursorPosition(top + sideEventHeight, centerEventHeight);
-                        }
-                    } else {
-                        //Item
-                        float sideEventHeight = itemHeight * 0.5f;
-
-                        if (diff < sideEventHeight) {
-                            //Top
-                            target.direction = NodeDirection.Top;
-                            SetDraggingCursorPosition(top, sideEventHeight);
-                        } else {
-                            //Bottom
-                            target.direction = NodeDirection.Bottom;
-                            SetDraggingCursorPosition(top + sideEventHeight, sideEventHeight);
-                        }
-                    }
-
-                    breakFlag = true;
                 }
+
+                float top = (float)item.TranslatePoint(new Point(0, 0), ChildItemScrollViewer).Y;
+                float diff = cursorPosY - top;
+
+                float itemHeight = (float)item.ItemContext.ActualHeight;
+                if (diff <= 0f || diff >= itemHeight) {
+                    return;
+                }
+
+                target = new NodeTarget(item);
+
+                if (item is ITreeFolder) {
+                    //Folder
+                    float sideEventHeight = itemHeight * SideEventRatio;
+                    float centerEventHeight = itemHeight * CenterEventRatio;
+
+                    if (diff < sideEventHeight) {
+                        //Top
+                        target.direction = NodeDirection.Top;
+                        SetDraggingCursorPosition(top, sideEventHeight);
+                    } else if (diff > itemHeight - sideEventHeight) {
+                        //Bottom
+                        target.direction = NodeDirection.Bottom;
+                        SetDraggingCursorPosition(top + itemHeight - sideEventHeight, sideEventHeight);
+                    } else {
+                        //Center
+                        target.direction = NodeDirection.InnerBottom;
+                        SetDraggingCursorPosition(top + sideEventHeight, centerEventHeight);
+                    }
+                } else {
+                    //Item
+                    float sideEventHeight = itemHeight * 0.5f;
+
+                    if (diff < sideEventHeight) {
+                        //Top
+                        target.direction = NodeDirection.Top;
+                        SetDraggingCursorPosition(top, sideEventHeight);
+                    } else {
+                        //Bottom
+                        target.direction = NodeDirection.Bottom;
+                        SetDraggingCursorPosition(top + sideEventHeight, sideEventHeight);
+                    }
+                }
+
+                breakFlag = true;
             });
         }
 
