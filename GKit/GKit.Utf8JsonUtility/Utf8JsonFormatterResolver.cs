@@ -9,6 +9,7 @@ public class Utf8JsonFormatterResolver : IJsonFormatterResolver {
     public static Utf8JsonFormatterResolver Instance = new();
     
     private readonly Dictionary<Type, IJsonFormatter> formatterDict = new();
+    public IJsonFormatterResolver fallbackResolver = StandardResolver.ExcludeNull;
     
     private Utf8JsonFormatterResolver() {
     }
@@ -22,6 +23,6 @@ public class Utf8JsonFormatterResolver : IJsonFormatterResolver {
             return (IJsonFormatter<T>)typeFormatter;
         }
         
-        return StandardResolver.ExcludeNull.GetFormatter<T>();
+        return fallbackResolver.GetFormatter<T>();
     }
 }
