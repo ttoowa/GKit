@@ -40,6 +40,10 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
         DependencyProperty.RegisterAttached(nameof(ItemShadowVisible), typeof(bool), typeof(EditTreeView),
             new PropertyMetadata(false));
     
+    public static readonly DependencyProperty AllowMoveToOtherParentProperty =
+        DependencyProperty.RegisterAttached(nameof(AllowMoveToOtherParent), typeof(bool), typeof(EditTreeView),
+            new PropertyMetadata(true));
+    
     public readonly List<EditTreeView> GlobalDraggingTargetList = new();
     
     private FrameworkElement draggingClone;
@@ -70,6 +74,11 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
     public Brush DraggingCursorBrush {
         get => (Brush)GetValue(DraggingCursorBrushProperty);
         set => SetValue(DraggingCursorBrushProperty, value);
+    }
+    
+    public bool AllowMoveToOtherParent {
+        get => (bool)GetValue(AllowMoveToOtherParentProperty);
+        set => SetValue(AllowMoveToOtherParentProperty, value);
     }
     
     public float DisplayHeight => 0f;
@@ -146,6 +155,11 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
     
     //Events
     private void ItemContext_MouseDown(object sender, MouseButtonEventArgs e) {
+        if (e == null)
+            return;
+        
+        e.Handled = true;
+        
         if (e.ChangedButton != MouseButton.Left) {
             return;
         }
@@ -190,6 +204,10 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
     }
     
     private void ItemContext_MouseMove(object sender, MouseEventArgs e) {
+        if (e != null) {
+            e.Handled = true;
+        }
+        
         if (isPressed && e.LeftButton != MouseButtonState.Pressed) {
             isPressed = false;
             onMouseCapture = false;
@@ -272,6 +290,10 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
     }
     
     private void ItemContext_MouseUp(object sender, MouseButtonEventArgs e) {
+        if (e != null) {
+            e.Handled = true;
+        }
+        
         if (!isPressed || !onMouseCapture) {
             return;
         }
@@ -548,8 +570,7 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
         foreach (ITreeItem item in sortedSelectedItems) {
             ITreeFolder oldParent = item.ParentItem ?? this;
             ITreeFolder newParent = null;
-            int index = -1;
-            
+            int newIndex = -1;
             FrameworkElement uiItem = (FrameworkElement)item;
             
             if (oldParent != null) {
@@ -561,31 +582,51 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
             if (target.direction == NodeDirection.InnerTop) {
                 //폴더 내부로
                 newParent = target.node as ITreeFolder;
-                index = 0;
+                newIndex = 0;
             } else if (target.direction == NodeDirection.InnerBottom) {
                 //폴더 내부로
                 newParent = target.node as ITreeFolder;
-                index = newParent.ChildItemCollection.Count;
+                newIndex = newParent.ChildItemCollection.Count;
             } else {
                 //아이템 위아래로
                 newParent = target.node.ParentItem ?? this;
-                index = newParent.ChildItemCollection.IndexOf(target.node as UIElement) +
-                        (target.direction == NodeDirection.Bottom ? 1 : 0);
+                newIndex = newParent.ChildItemCollection.IndexOf(target.node as UIElement) +
+                           (target.direction == NodeDirection.Bottom ? 1 : 0);
+            }
+            
+            EditTreeView oldParentEditTreeView = FindRootEditTreeView(oldParent);
+            EditTreeView newParentEditTreeView = FindRootEditTreeView(newParent);
+            
+            if (oldParentEditTreeView != newParentEditTreeView || (!AllowMoveToOtherParent && oldParent != newParent)) {
+                newParent = oldParent;
+                Console.WriteLine("[EditTreeView.MoveSelectedItems] Tried to move between different parent.");
             }
             
             if (AutoApplyItemMove) {
-                newParent.ChildItemCollection.Insert(index, item as UIElement);
+                uiItem.DetachParent();
+                newIndex = Mathf.Clamp(newIndex, 0, newParent.ChildItemCollection.Count);
+                newParent.ChildItemCollection.Insert(newIndex, item as UIElement);
             }
             
             item.ParentItem = newParent;
             
-            ItemMoved?.Invoke(item, oldParent, newParent, index);
+            ItemMoved?.Invoke(item, oldParent, newParent, newIndex);
         }
         
         return true;
     }
     
     // Utility
+    private EditTreeView FindRootEditTreeView(ITreeFolder item) {
+        for (ITreeFolder parent = item; parent != null; parent = parent.ParentItem) {
+            if (parent is EditTreeView editTreeView) {
+                return editTreeView;
+            }
+        }
+        
+        return this;
+    }
+    
     private bool IsContainsChildRecursive(ITreeFolder folder, ITreeItem target) {
         foreach (ITreeItem childItem in folder.ChildItemCollection) {
             if (childItem == target) {
