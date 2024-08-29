@@ -193,8 +193,7 @@ namespace GKit
 
 		public static string NormalizePath(string path) {
 			return path.Replace('/', '\\')
-					   .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
-					   .ToLowerInvariant();
+					   .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 		}
 		public static bool ComparePath(string path1, string path2) {
 			return NormalizePath(path1) == NormalizePath(path2);
