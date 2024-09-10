@@ -13,7 +13,7 @@ public static class ParseUtility {
             return default;
         }
     }
-
+    
     public static T GetValue<T>(this JObject jObject, string propertyName, T failedReturnValue) {
         T value;
         JToken token = jObject[propertyName];

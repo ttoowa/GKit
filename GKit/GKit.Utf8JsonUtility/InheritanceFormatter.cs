@@ -13,7 +13,7 @@ public class InheritanceFormatter<EnumType, BaseModel> : IEnumerable, IJsonForma
     
     public InheritanceFormatter(GetEnumTypeDelegate getEnumType) {
         this.getEnumType = getEnumType;
-        this.typeDict = new();
+        typeDict = new Dictionary<EnumType, Type>();
     }
     
     public void Serialize(ref JsonWriter writer, BaseModel value, IJsonFormatterResolver formatterResolver) {
