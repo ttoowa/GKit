@@ -145,7 +145,11 @@
     <!--ScrollBar-->
     <GConverters:DoubleToHalfRadiusConverter x:Key="DoubleToHalfRadiusConverter" />
     <System:Double x:Key="ScrollBarWidth">8</System:Double>
+    <System:Double x:Key="ScrollBarMinimumThumbLength">80</System:Double>
     <Style x:Key="ScrollBarTrackThumb" TargetType="Thumb">
+        <!-- Horizontal scrollbars rotate this vertical Track, so MinHeight becomes
+             the visible minimum width in horizontal orientation as well. -->
+        <Setter Property="MinHeight" Value="{StaticResource ScrollBarMinimumThumbLength}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Thumb">
