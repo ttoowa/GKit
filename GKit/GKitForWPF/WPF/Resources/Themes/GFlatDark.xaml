@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:System="clr-namespace:System;assembly=mscorlib"
                     xmlns:GBehaviors="clr-namespace:GKitForWPF.UI.Behaviors"
+                    xmlns:GControls="clr-namespace:GKitForWPF.UI.Controls"
                     xmlns:GConverters="clr-namespace:GKitForWPF.UI.Converters">
 
     <SolidColorBrush x:Key="Color_Background_D1" Color="#2E2E2E" />
@@ -147,9 +148,6 @@
     <System:Double x:Key="ScrollBarWidth">8</System:Double>
     <System:Double x:Key="ScrollBarMinimumThumbLength">80</System:Double>
     <Style x:Key="ScrollBarTrackThumb" TargetType="Thumb">
-        <!-- Horizontal scrollbars rotate this vertical Track, so MinHeight becomes
-             the visible minimum width in horizontal orientation as well. -->
-        <Setter Property="MinHeight" Value="{StaticResource ScrollBarMinimumThumbLength}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Thumb">
@@ -184,7 +182,12 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ScrollBar}">
                     <Grid x:Name="GridRoot" Background="{StaticResource Color_ScrollbarBackground}" Margin="0" Width="{TemplateBinding Width}">
-                        <Track x:Name="PART_Track" Grid.Row="0" IsDirectionReversed="true" Focusable="false">
+                        <GControls:MinimumThumbTrack x:Name="PART_Track"
+                                                    Grid.Row="0"
+                                                    Orientation="{TemplateBinding Orientation}"
+                                                    IsDirectionReversed="true"
+                                                    MinimumThumbLength="{StaticResource ScrollBarMinimumThumbLength}"
+                                                    Focusable="false">
                             <Track.Thumb>
                                 <Thumb x:Name="Thumb" Background="{TemplateBinding Foreground}" Style="{DynamicResource ScrollBarTrackThumb}" />
                             </Track.Thumb>
@@ -194,7 +197,7 @@
                             <Track.DecreaseRepeatButton>
                                 <RepeatButton x:Name="PageDown" Command="ScrollBar.PageUpCommand" Opacity="0" Focusable="false" />
                             </Track.DecreaseRepeatButton>
-                        </Track>
+                        </GControls:MinimumThumbTrack>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <!-- <Trigger SourceName="Thumb" Property="IsMouseOver" Value="true"> -->
@@ -208,18 +211,9 @@
                             <Setter TargetName="Thumb" Property="Visibility" Value="Collapsed" />
                         </Trigger>
                         <Trigger Property="Orientation" Value="Horizontal">
-                            <Setter TargetName="GridRoot" Property="LayoutTransform">
-                                <Setter.Value>
-                                    <RotateTransform Angle="-90" />
-                                </Setter.Value>
-                            </Setter>
-                            <Setter TargetName="PART_Track" Property="LayoutTransform">
-                                <Setter.Value>
-                                    <RotateTransform Angle="-90" />
-                                </Setter.Value>
-                            </Setter>
                             <Setter Property="Width" Value="Auto" />
                             <Setter Property="Height" Value="{StaticResource ScrollBarWidth}" />
+                            <Setter TargetName="PART_Track" Property="IsDirectionReversed" Value="false" />
                             <Setter TargetName="Thumb" Property="Tag" Value="Horizontal" />
                             <Setter TargetName="PageDown" Property="Command" Value="ScrollBar.PageLeftCommand" />
                             <Setter TargetName="PageUp" Property="Command" Value="ScrollBar.PageRightCommand" />
