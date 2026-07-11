@@ -22,7 +22,7 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
     public delegate void MessageDelegate(string message);
     
     private const float SideEventRatio = 0.25f;
-    private const float CenterEventRatio = 1f - SideEventRatio * 2f;
+    private const float DraggingCursorLineHeight = 2f;
     
     public static readonly DependencyProperty DraggingCursorBrushProperty =
         DependencyProperty.RegisterAttached(nameof(DraggingCursorBrush), typeof(Brush), typeof(EditTreeView),
@@ -46,8 +46,12 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
     
     public readonly List<EditTreeView> GlobalDraggingTargetList = new();
     
-    private FrameworkElement draggingClone;
+    private DragRowGhostPopup draggingGhost;
+    private DragWheelScrollController dragWheelScroll;
     private float dragStartOffset;
+    private Cursor previousOverrideCursor;
+    private float draggingCursorTop = float.NaN;
+    private float draggingCursorHeight = float.NaN;
     
     //Drag
     private bool isPressed;
@@ -209,9 +213,6 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
         }
         
         if (isPressed && e.LeftButton != MouseButtonState.Pressed) {
-            isPressed = false;
-            onMouseCapture = false;
-            
             ItemContext_MouseUp(sender, null);
             return;
         }
@@ -251,7 +252,9 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
         
         SetDraggingCursorVisible(false);
         treeView.SetDraggingCursorVisible(true);
-        treeView.GetNodeTargetWithUpdateCursor((float)cursorPos.Y, false);
+        NodeTarget target = treeView.GetNodeTargetWithUpdateCursor(cursorPos, false);
+        Point localCursorPos = e.GetPosition(ChildItemScrollViewer);
+        UpdateDraggingClone(localCursorPos.Y, IsInvalidMoveTarget(target));
     }
     
     private void OnLocalMouseMove(MouseEventArgs e) {
@@ -282,11 +285,8 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
         
         //Dragging
         SetDraggingCursorVisible(true);
-        GetNodeTargetWithUpdateCursor((float)cursorPos.Y);
-        
-        //Move draggingClone
-        draggingClone.Margin = new Thickness(0d, cursorPos.Y - dragStartOffset, 0d, 0d);
-        draggingClone.Opacity = 0.3d;
+        NodeTarget target = GetNodeTargetWithUpdateCursor(cursorPos);
+        UpdateDraggingClone(cursorPos.Y, IsInvalidMoveTarget(target));
     }
     
     private void ItemContext_MouseUp(object sender, MouseButtonEventArgs e) {
@@ -333,7 +333,7 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
         
         Point cursorPos = e.GetPosition(treeView.ChildItemScrollViewer);
         Point absoluteCursorPos = e.GetPosition(treeView.ChildItemStackPanel);
-        NodeTarget target = treeView.GetNodeTargetWithUpdateCursor((float)cursorPos.Y, false);
+        NodeTarget target = treeView.GetNodeTargetWithUpdateCursor(cursorPos, false);
         
         treeView.GlobalDropped?.Invoke(pressedItem, target);
     }
@@ -347,7 +347,7 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
         if (e == null) return;
         Point cursorPos = e.GetPosition(ChildItemScrollViewer);
         Point absoluteCursorPos = e.GetPosition(ChildItemStackPanel);
-        NodeTarget target = GetNodeTargetWithUpdateCursor((float)cursorPos.Y);
+        NodeTarget target = GetNodeTargetWithUpdateCursor(cursorPos);
         
         if (SelectedItemSet.Count > 1) {
             MoveSelectedItems(SelectedItemSet.ItemSet.Select(x => x as ITreeItem).ToArray(), target);
@@ -496,24 +496,51 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
     
     // DraggingStates
     private void CreateDraggingClone(FrameworkElement refItem) {
-        if (draggingClone != null) {
+        if (draggingGhost != null) {
             return;
         }
-        
-        draggingClone = (FrameworkElement)Activator.CreateInstance(pressedItem.GetType());
-        draggingClone.IsHitTestVisible = false;
-        draggingClone.VerticalAlignment = VerticalAlignment.Top;
-        ((ITreeItem)draggingClone).SetDisplayName(((ITreeItem)refItem).DisplayName);
-        ContentGrid.Children.Add(draggingClone);
+
+        FrameworkElement rowVisual = (pressedItem as ITreeItem)?.ItemContext ?? refItem;
+        draggingGhost = DragRowGhostPopup.TryCreate(this, rowVisual);
+        dragWheelScroll = DragWheelScrollController.TryCreate(ChildItemScrollViewer);
+        if (dragWheelScroll != null)
+            dragWheelScroll.Scrolled += OnDragWheelScrolled;
+        previousOverrideCursor = Mouse.OverrideCursor;
     }
-    
+
     private void RemoveDraggingClone() {
-        if (draggingClone == null) {
+        draggingGhost?.Dispose();
+        draggingGhost = null;
+        dragWheelScroll?.Dispose();
+        dragWheelScroll = null;
+        Mouse.OverrideCursor = previousOverrideCursor;
+        previousOverrideCursor = null;
+    }
+
+    private void UpdateDraggingClone(double pointerY, bool invalid) {
+        draggingGhost?.SetInvalid(invalid);
+        Mouse.OverrideCursor = invalid ? Cursors.No : previousOverrideCursor;
+    }
+
+    private void OnDragWheelScrolled() {
+        if (!onDragging)
             return;
+        Point cursorPos = Mouse.GetPosition(ChildItemScrollViewer);
+        NodeTarget target = GetNodeTargetWithUpdateCursor(cursorPos);
+        UpdateDraggingClone(cursorPos.Y, IsInvalidMoveTarget(target));
+    }
+
+    private bool IsInvalidMoveTarget(NodeTarget target) {
+        if (target?.node == null)
+            return false;
+        IEnumerable<ITreeItem> draggedItems = SelectedItemSet.Count > 1 && SelectedItemSet.Contains(pressedItem)
+            ? SelectedItemSet.ItemSet.Select(item => item as ITreeItem)
+            : new[] { pressedItem };
+        foreach (ITreeFolder folder in draggedItems.OfType<ITreeFolder>()) {
+            if (ReferenceEquals(folder, target.node) || IsContainsChildRecursive(folder, target.node))
+                return true;
         }
-        
-        ContentGrid.Children.Remove(draggingClone);
-        draggingClone = null;
+        return false;
     }
     
     private void SetDraggingState(bool onDragging) {
@@ -521,12 +548,21 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
     }
     
     private void SetDraggingCursorVisible(bool visible) {
-        DraggingCursor.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+        Visibility visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+        if (DraggingCursor.Visibility != visibility)
+            DraggingCursor.Visibility = visibility;
     }
     
     private void SetDraggingCursorPosition(float top, float height) {
-        DraggingCursor.Margin = new Thickness(0d, top, 0d, 0d);
-        DraggingCursor.Height = height;
+        height = Math.Max(1f, height);
+        if (draggingCursorTop != top) {
+            draggingCursorTop = top;
+            DraggingCursorTranslate.Y = top;
+        }
+        if (draggingCursorHeight != height) {
+            draggingCursorHeight = height;
+            DraggingCursorScale.ScaleY = height;
+        }
     }
     
     private bool MoveSelectedItems(ITreeItem[] items, NodeTarget target) {
@@ -687,86 +723,76 @@ public partial class EditTreeView : UserControl, ITreeFolder, IListItemPageProvi
         }
     }
     
-    private NodeTarget GetNodeTargetWithUpdateCursor(float cursorPosY, bool withoutSelf = true) {
+    private NodeTarget GetNodeTargetWithUpdateCursor(Point cursorPos, bool withoutSelf = true) {
+        if (cursorPos.X < 0d || cursorPos.Y < 0d || cursorPos.X > ChildItemScrollViewer.ActualWidth ||
+            cursorPos.Y > ChildItemScrollViewer.ActualHeight) {
+            SetDraggingCursorVisible(false);
+            return null;
+        }
         NodeTarget target = null;
-        
+
         float bottom = (float)ChildItemStackPanel
             .TranslatePoint(new Point(0f, ChildItemStackPanel.ActualHeight), ChildItemScrollViewer).Y;
-        
-        //최하단으로 이동
+
         const float ClippingBias = 2f;
-        if (cursorPosY > bottom - ClippingBias) {
-            cursorPosY = bottom - 1f;
-            
+        if (cursorPos.Y > bottom - ClippingBias) {
             target = new NodeTarget(RootFolder, NodeDirection.InnerBottom);
-            SetDraggingCursorPosition(bottom, 10f);
-        }
-        
-        if (target == null)
-            //성능을 위해 탐색하면서 SetDraggingCursorPosition을 같이 호출합니다.
-        {
-            ForeachItemsOptimize((ITreeItem item, ref bool breakFlag) => {
-                if (withoutSelf && item == pressedItem)
-                    return;
-                // 보이지 않는 상태면 제외
-                FrameworkElement frameworkItem = item as FrameworkElement;
-                if (frameworkItem != null) {
-                    // 부모를 포함해서 Visibility가 Visible이 아니면 제외
-                    if (!frameworkItem.IsUserVisible()) {
-                        return;
-                    }
-                }
-                
-                float top = (float)item.TranslatePoint(new Point(0, 0), ChildItemScrollViewer).Y;
-                float diff = cursorPosY - top;
-                
+            SetDraggingCursorPosition(Math.Max(0f, bottom - DraggingCursorLineHeight),
+                DraggingCursorLineHeight);
+        } else {
+            // Hit testing walks only from the visual under the pointer to its row
+            // owner. The old implementation recursively scanned every tree item on
+            // every mouse move, which became O(n) for large Clip lists.
+            ITreeItem item = FindTreeItemAt(cursorPos);
+            if (item != null && (!withoutSelf || !ReferenceEquals(item, pressedItem))) {
+                float top = (float)item.ItemContext.TranslatePoint(new Point(), ChildItemScrollViewer).Y;
                 float itemHeight = (float)item.ItemContext.ActualHeight;
-                if (diff <= 0f || diff >= itemHeight) {
-                    return;
-                }
-                
-                target = new NodeTarget(item);
-                
-                if (item is ITreeFolder) {
-                    //Folder
-                    float sideEventHeight = itemHeight * SideEventRatio;
-                    float centerEventHeight = itemHeight * CenterEventRatio;
-                    
-                    if (diff < sideEventHeight) {
-                        //Top
+                float diff = (float)cursorPos.Y - top;
+                if (diff >= 0f && diff <= itemHeight) {
+                    target = new NodeTarget(item);
+                    if (item is ITreeFolder) {
+                        float sideEventHeight = itemHeight * SideEventRatio;
+                        if (diff < sideEventHeight) {
+                            target.direction = NodeDirection.Top;
+                            SetDraggingCursorPosition(top, DraggingCursorLineHeight);
+                        } else if (diff > itemHeight - sideEventHeight) {
+                            target.direction = NodeDirection.Bottom;
+                            SetDraggingCursorPosition(top + itemHeight - DraggingCursorLineHeight,
+                                DraggingCursorLineHeight);
+                        } else {
+                            target.direction = NodeDirection.InnerBottom;
+                            SetDraggingCursorPosition(top, itemHeight);
+                        }
+                    } else if (diff < itemHeight * 0.5f) {
                         target.direction = NodeDirection.Top;
-                        SetDraggingCursorPosition(top, sideEventHeight);
-                    } else if (diff > itemHeight - sideEventHeight) {
-                        //Bottom
-                        target.direction = NodeDirection.Bottom;
-                        SetDraggingCursorPosition(top + itemHeight - sideEventHeight, sideEventHeight);
+                        SetDraggingCursorPosition(top, DraggingCursorLineHeight);
                     } else {
-                        //Center
-                        target.direction = NodeDirection.InnerBottom;
-                        SetDraggingCursorPosition(top + sideEventHeight, centerEventHeight);
-                    }
-                } else {
-                    //Item
-                    float sideEventHeight = itemHeight * 0.5f;
-                    
-                    if (diff < sideEventHeight) {
-                        //Top
-                        target.direction = NodeDirection.Top;
-                        SetDraggingCursorPosition(top, sideEventHeight);
-                    } else {
-                        //Bottom
                         target.direction = NodeDirection.Bottom;
-                        SetDraggingCursorPosition(top + sideEventHeight, sideEventHeight);
+                        SetDraggingCursorPosition(top + itemHeight - DraggingCursorLineHeight,
+                            DraggingCursorLineHeight);
                     }
                 }
-                
-                breakFlag = true;
-            });
+            }
         }
-        
+
         SetDraggingCursorVisible(target != null);
-        
         return target;
+    }
+
+    private ITreeItem FindTreeItemAt(Point cursorPos) {
+        if (cursorPos.X < 0d || cursorPos.Y < 0d || cursorPos.X > ChildItemScrollViewer.ActualWidth ||
+            cursorPos.Y > ChildItemScrollViewer.ActualHeight)
+            return null;
+
+        DependencyObject current = ChildItemScrollViewer.InputHitTest(cursorPos) as DependencyObject;
+        while (current != null && !ReferenceEquals(current, this)) {
+            if (current is ITreeItem item && !ReferenceEquals(item, this))
+                return item;
+            current = current is Visual
+                ? VisualTreeHelper.GetParent(current)
+                : LogicalTreeHelper.GetParent(current);
+        }
+        return null;
     }
     
     private ITreeItem GetPressedItem(FrameworkElement pressedElement) {

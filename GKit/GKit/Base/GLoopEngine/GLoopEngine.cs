@@ -144,25 +144,17 @@ namespace GKit
         }
 #endif
         public GRoutine AddGRoutine(IEnumerator routine) {
-            //메인 스레드에서 같은 락이 두 번 걸릴 수 있어 이렇게 처리했다.
-            //아래 함수들에서도 같은 이유.
             GRoutine coroutine = new(this, routine);
-            Task pushTask = Task.Factory.StartNew(() => {
-                lock (GRoutineWriteLock) {
-                    GRoutineAddQueue.Enqueue(coroutine);
-                }
-            });
-            pushTask.Wait();
+            lock (GRoutineWriteLock) {
+                GRoutineAddQueue.Enqueue(coroutine);
+            }
             return coroutine;
         }
 
         public void RemoveGRoutine(GRoutine routince) {
-            Task pushTask = Task.Factory.StartNew(() => {
-                lock (GRoutineWriteLock) {
-                    GRoutineRemoveQueue.Enqueue(routince);
-                }
-            });
-            pushTask.Wait();
+            lock (GRoutineWriteLock) {
+                GRoutineRemoveQueue.Enqueue(routince);
+            }
         }
 
         public GLoopAction AddLoopAction(Action action, GLoopCycle cycle = GLoopCycle.EveryFrame, GWhen removeCondition = GWhen.None) {
@@ -171,22 +163,16 @@ namespace GKit
 
         public GLoopAction AddLoopAction(Action action, int cycleDelay, GWhen removeCondition = GWhen.None) {
             GLoopAction task = new(this, action, cycleDelay, removeCondition);
-            Task pushTask = Task.Factory.StartNew(() => {
-                lock (loopActionWriteLock) {
-                    loopActionAddQueue.Enqueue(task);
-                }
-            });
-            pushTask.Wait();
+            lock (loopActionWriteLock) {
+                loopActionAddQueue.Enqueue(task);
+            }
             return task;
         }
 
         public void RemoveLoopAction(GLoopAction task) {
-            Task pushTask = Task.Factory.StartNew(() => {
-                lock (loopActionWriteLock) {
-                    loopActionRemoveQueue.Enqueue(task);
-                }
-            });
-            pushTask.Wait();
+            lock (loopActionWriteLock) {
+                loopActionRemoveQueue.Enqueue(task);
+            }
         }
 
         public void AddJob(Action action, float delaySec = 0f) {
@@ -287,7 +273,7 @@ namespace GKit
         }
 #else
         private async Task LoopInvokeRoutine() {
-            for (;;) {
+            while (IsRunning) {
                 UpdateTimeInfo();
                 int loopCount = GetLoopCount(overTime, globalLoopWatch.GetElapsedMilliseconds(), sleepMs);
                 ExecLoops(loopCount);

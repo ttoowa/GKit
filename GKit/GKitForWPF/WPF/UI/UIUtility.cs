@@ -245,10 +245,7 @@ public static class UIUtility {
     public static void SetTextOptimize(this TextBox textBox, string text, int tempMemorySize = 10000000) {
         if (textBox.Text == text)
             return;
-
-        GC.TryStartNoGCRegion(tempMemorySize);
         textBox.Text = text;
-        GC.EndNoGCRegion();
     }
 
     # region Click events

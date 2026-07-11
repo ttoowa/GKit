@@ -18,6 +18,14 @@
                 </StackPanel>
             </Grid>
         </ScrollViewer>
-        <Border Name="DraggingCursor" Height="10" VerticalAlignment="Top" Opacity="0.35" />
+        <Border Name="DraggingCursor" Height="1" VerticalAlignment="Top" Opacity="0.35"
+                RenderTransformOrigin="0,0" IsHitTestVisible="False">
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform x:Name="DraggingCursorScale" ScaleY="1" />
+                    <TranslateTransform x:Name="DraggingCursorTranslate" Y="0" />
+                </TransformGroup>
+            </Border.RenderTransform>
+        </Border>
     </Grid>
 </UserControl>
