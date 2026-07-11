@@ -15,8 +15,15 @@ namespace GKitForWPF.UI.Windows {
 		[DllImport("user32.dll")]
 		public static extern int SetWindowLong(IntPtr hwnd, int index, int newStyle);
 
+		public static Action<string> MessagePresenter { get; set; }
+
 		// [ Static function ]
 		public static void Show(string text) {
+			Action<string> presenter = MessagePresenter;
+			if (presenter != null) {
+				presenter(text);
+				return;
+			}
 			ToastMessage toastMessage = new ToastMessage(text);
 			toastMessage.Show();
 		}
